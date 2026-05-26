@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Penilaian Hasil Karya - TK Wonoayu Madiun</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#634c00",
+                        "on-tertiary": "#fff8f0",
+                        "on-background": "#2c3437",
+                        "on-secondary-container": "#005f1d",
+                        "on-tertiary-container": "#584300",
+                        "secondary-fixed": "#9ff79f",
+                        "on-secondary-fixed": "#004a15",
+                        "error-dim": "#67040d",
+                        "surface-bright": "#f8f9fb",
+                        "secondary": "#136e27",
+                        "inverse-primary": "#68abff",
+                        "tertiary-dim": "#685000",
+                        "on-primary-container": "#002b52",
+                        "tertiary-fixed-dim": "#edba10",
+                        "error": "#a83836",
+                        "tertiary": "#775b00",
+                        "on-error": "#fff7f6",
+                        "on-primary-fixed": "#000c1e",
+                        "on-tertiary-fixed": "#403000",
+                        "on-surface": "#2c3437",
+                        "on-error-container": "#6e0a12",
+                        "surface-container": "#eaeff2",
+                        "surface-tint": "#0060ad",
+                        "secondary-container": "#9ff79f",
+                        "surface-variant": "#dce4e8",
+                        "surface-dim": "#d4dbdf",
+                        "primary-container": "#68abff",
+                        "outline": "#747c80",
+                        "on-secondary-fixed-variant": "#0c6a24",
+                        "on-surface-variant": "#596064",
+                        "on-primary-fixed-variant": "#003461",
+                        "secondary-fixed-dim": "#91e892",
+                        "outline-variant": "#acb3b7",
+                        "inverse-on-surface": "#9a9d9f",
+                        "background": "#f8f9fb",
+                        "primary-fixed": "#68abff",
+                        "primary": "#0060ad",
+                        "primary-fixed-dim": "#599ef1",
+                        "tertiary-container": "#fdc825",
+                        "inverse-surface": "#0b0f10",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9fb",
+                        "surface-container-high": "#e3e9ed",
+                        "on-secondary": "#eaffe4",
+                        "on-primary": "#f8f8ff",
+                        "surface-container-highest": "#dce4e8",
+                        "secondary-dim": "#00611e",
+                        "primary-dim": "#005498",
+                        "tertiary-fixed": "#fdc825",
+                        "error-container": "#fa746f",
+                        "surface-container-low": "#f0f4f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Mobile Only) -->
+<nav class="md:hidden fixed top-0 w-full flex justify-between items-center px-8 h-16 bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl z-50 shadow-sm bg-slate-100 dark:bg-slate-900 border-b border-surface-variant font-['Plus_Jakarta_Sans'] font-bold text-base text-blue-700 dark:text-blue-400">
+<div class="text-xl font-black text-blue-800 dark:text-blue-300 tracking-tight">TK Wonoayu Madiun</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-300 rounded-full p-2 cursor-pointer text-slate-500 dark:text-slate-400" data-icon="notifications">notifications</span>
+<img alt="Avatar Guru" class="w-8 h-8 rounded-full border-2 border-primary-container" data-alt="close-up portrait of a friendly female teacher smiling warmly outdoors with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYv4VFLVgaxzmKk2-g2tl14efwhOaqZo1gJcZ2ybAiVoe3-useyq-sKMirVFNCwWEPVlcZOfaA9ZvDfjQPZyxlyVAHjpKG-H0pbvoBz6ZKJbx0vMic2rsu1i1tnrUFEgbXW30MvU4rMjcDRrFJkika1xHD1MSuo-kTocfHdgeUuQ2nWvIzcGh0jUnoXIWyKfoPG6InMkEuGnlrz27X9LQu80if9QuLLaJ5sjPeKdsy0aRAxO88b3XZGFO2-fAZeleydfUZ89JFsOyS"/>
+</div>
+</nav>
+<!-- SideNavBar (Web Only) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full flex-col py-8 border-r-0 h-screen w-64 rounded-r-[3rem] bg-slate-50 dark:bg-slate-950 text-blue-700 dark:text-blue-400 font-['Plus_Jakarta_Sans'] text-sm font-medium shadow-xl bg-slate-200/50 dark:bg-slate-800/50 z-40">
+<div class="px-8 mb-8 flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mb-4 text-on-primary-container shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+<span class="material-symbols-outlined text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<h1 class="text-lg font-bold text-blue-700 tracking-tight text-center">Portal Guru</h1>
+<p class="text-xs text-outline text-center mt-1">TK Wonoayu</p>
+</div>
+<nav class="flex-1 overflow-y-auto px-4 space-y-2">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-6 py-3 mx-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full hover:translate-x-1 transition-transform group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="forum">forum</span>
+<span class="font-semibold group-hover:text-primary transition-colors">Percakapan</span>
+</a>
+<a class="flex items-center gap-3 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 rounded-full px-6 py-3 mx-2 hover:translate-x-1 transition-transform shadow-[0_4px_12px_rgba(0,96,173,0.08)]" href="#">
+<span class="material-symbols-outlined" data-icon="palette" data-weight="fill" style="font-variation-settings: 'FILL' 1;">palette</span>
+<span class="font-bold">Hasil Karya</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-6 py-3 mx-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full hover:translate-x-1 transition-transform group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="description">description</span>
+<span class="font-semibold group-hover:text-primary transition-colors">Anekdot</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-6 py-3 mx-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full hover:translate-x-1 transition-transform group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="rule">rule</span>
+<span class="font-semibold group-hover:text-primary transition-colors">Ceklis</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-full font-bold shadow-[0_8px_24px_rgba(0,96,173,0.2)] hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Input Nilai Baru
+            </button>
+</div>
+<div class="mt-8 px-4 space-y-2 border-t border-surface-variant/50 pt-4 mx-4">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 mx-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+                Bantuan
+            </a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 mx-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-sm transition-colors text-error-container hover:text-error hover:bg-error-container/10" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+                Keluar
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-6 md:p-12 pt-24 md:pt-12 min-h-screen">
+<!-- Header Section -->
+<header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+<span class="material-symbols-outlined text-[14px]">stars</span>
+                    Seni &amp; Kreativitas
+                </div>
+<h2 class="text-4xl md:text-5xl font-extrabold text-primary font-headline tracking-tight">Penilaian Hasil Karya</h2>
+<p class="text-on-surface-variant text-base font-body leading-relaxed max-w-xl">
+                    Dokumentasi dan evaluasi ekspresi kreatif anak-anak TK Wonoayu. Berikan apresiasi pada setiap proses perkembangan motorik halus dan imajinasi mereka.
+                </p>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap gap-3">
+<button class="px-5 py-2.5 bg-surface-container-lowest text-primary rounded-full font-bold text-sm shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-outline-variant/15 hover:scale-105 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                    Kelompok A
+                </button>
+<button class="px-5 py-2.5 bg-primary-container text-on-primary-container rounded-full font-bold text-sm shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:scale-105 transition-transform">
+                    Kelompok B
+                </button>
+<div class="relative">
+<select class="appearance-none px-5 py-2.5 pr-10 bg-surface-container-lowest text-on-surface rounded-full font-bold text-sm shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-outline-variant/15 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+<option>Bulan Ini</option>
+<option>Bulan Lalu</option>
+<option>Semester 1</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Gallery Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 (Evaluated) -->
+<article class="bg-surface-container-lowest rounded-lg p-3 shadow-[0_8px_32px_rgba(44,52,55,0.04)] flex flex-col group relative overflow-hidden">
+<div class="h-48 w-full rounded-DEFAULT bg-surface-container mb-4 overflow-hidden relative">
+<img alt="Lukisan anak" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="childs colorful watercolor painting of a house and sun pinned on a corkboard soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnPKcsnGTsJVj6kuZs8x5y5cq_0FrHGtvcqWcGJ1GQlnYOuhoxdYNjZI2lug4AEJmWStvx14dF-sLJ2dTxyQR1xBG_MZ-tAp3ICv7JOc_-E-OAPDnNY5_veN-OQn-WMA6neQBfJ3u_noAnzoNVxNNHPLFR2gj44Pt6kec9ehawrcdiaNGznES2A4s8l_ToN6dGhGtD0SjYVVRMolrTe8Y0oJaLpMXMV-XFQQTq3lnsVqK4dz2Ee_-yFe3_gEiWHfvuTiGosQipJmax"/>
+<div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-opacity-90 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done</span> Dinilai
+                    </div>
+</div>
+<div class="px-3 pb-3 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-xl text-primary leading-tight">Bima Arya</h3>
+<div aria-label="BSB (Berkembang Sangat Baik)" class="flex text-tertiary">
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="text-sm font-semibold text-on-surface mb-1">Melukis Bebas "Keluargaku"</p>
+<p class="text-xs text-on-surface-variant flex-1 line-clamp-2">Aspek: Motorik Halus (Memegang kuas), Seni (Kombinasi warna primer), Sosial Emosional (Menceritakan karya).</p>
+<div class="mt-4 pt-4 border-t border-outline-variant/15 flex justify-between items-center">
+<span class="text-xs font-medium text-outline">12 Okt 2023</span>
+<button class="text-primary text-sm font-bold hover:text-primary-dim transition-colors flex items-center gap-1">
+                            Lihat Detail <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 (Needs Evaluation) -->
+<article class="bg-surface-container-lowest rounded-lg p-3 shadow-[0_8px_32px_rgba(44,52,55,0.04)] flex flex-col group relative overflow-hidden border border-tertiary-container/30">
+<div class="h-48 w-full rounded-DEFAULT bg-surface-container mb-4 overflow-hidden relative">
+<img alt="Kerajinan clay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="colorful playdough sculptures of animals made by a child on a light wooden table top down view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmQYfLGwK9VwjQWBAtzfdMejsTQ0SMaaTGhqPSfzr2xAUhfZlquwTUhv9G1IxWYVxah4ch6S6WY8v5_xCBzwxV9P-IxVAWIRQbB0hHJkNtg8VHnYd6Ucf9h8nyzoSnO1Ge-4Z3C6f7VJMFt035FLJ2GQVV-JX_2sGSmwNHe09BjPqWHnUoVHQau_2DOTxfe7_F1AZs-_FPbe0x470OF7FyxVsriQ5sr-rS2E0AouXtNQHbQBQi-N5mZM-NePbBSFjEHCPAyzyVHfMv"/>
+<div class="absolute top-3 left-3 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-opacity-90 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">pending_actions</span> Belum Dinilai
+                    </div>
+</div>
+<div class="px-3 pb-3 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-xl text-primary leading-tight">Siti Aisyah</h3>
+<div class="flex text-outline-variant">
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+</div>
+</div>
+<p class="text-sm font-semibold text-on-surface mb-1">Bentuk Hewan dari Plastisin</p>
+<p class="text-xs text-on-surface-variant flex-1 line-clamp-2">Aspek: Motorik Halus (Meremas, membentuk), Kognitif (Mengenal bentuk hewan).</p>
+<div class="mt-4 pt-4 border-t border-outline-variant/15 flex justify-between items-center">
+<span class="text-xs font-medium text-outline">14 Okt 2023</span>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold hover:scale-105 transition-transform shadow-[0_4px_12px_rgba(0,96,173,0.2)]">
+                            Nilai Sekarang
+                        </button>
+</div>
+</div>
+</article>
+<!-- Card 3 (Evaluated) -->
+<article class="bg-surface-container-lowest rounded-lg p-3 shadow-[0_8px_32px_rgba(44,52,55,0.04)] flex flex-col group relative overflow-hidden">
+<div class="h-48 w-full rounded-DEFAULT bg-surface-container mb-4 overflow-hidden relative">
+<img alt="Menyusun balok" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="childs hands stacking colorful wooden blocks to build a tower on a play mat bright natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwnDlqPYuL13C9tF26nos8-7lPL8vA-cUv3S2ttDTbdBk2CWqVC0d_uvJsHpwKPcrACQywQYCC4vtvu8FtdBB7SaOO1xM6v9NiSrKzb_AWCnMbPdc293g-cvXhu0Qavlkwl6ye0v6s50kayEAtnKsXHzRRPCurZItcNYFk6LQaN8D6vN9wIwO66PFyotlK6sOkQ4bxxXQdQNO3uWv57CNkFvjDemuqPago6x5YQ73gbSzn4N4kJvLArI64b8sdXWIouqPCMqXFINzk"/>
+<div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-opacity-90 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done</span> Dinilai
+                    </div>
+</div>
+<div class="px-3 pb-3 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline font-bold text-xl text-primary leading-tight">Raka Putra</h3>
+<div aria-label="BSH (Berkembang Sesuai Harapan)" class="flex text-tertiary">
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg text-outline-variant">star</span>
+</div>
+</div>
+<p class="text-sm font-semibold text-on-surface mb-1">Membangun Menara Balok</p>
+<p class="text-xs text-on-surface-variant flex-1 line-clamp-2">Aspek: Kognitif (Konsep keseimbangan, tinggi-rendah), Fisik Motorik (Koordinasi mata-tangan).</p>
+<div class="mt-4 pt-4 border-t border-outline-variant/15 flex justify-between items-center">
+<span class="text-xs font-medium text-outline">10 Okt 2023</span>
+<button class="text-primary text-sm font-bold hover:text-primary-dim transition-colors flex items-center gap-1">
+                            Lihat Detail <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+</body></html>

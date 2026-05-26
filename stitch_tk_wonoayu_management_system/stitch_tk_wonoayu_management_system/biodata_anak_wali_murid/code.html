@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profil Anak - Wonoayu Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#0060ad",
+                    "tertiary": "#775b00",
+                    "tertiary-container": "#fdc825",
+                    "surface-dim": "#d4dbdf",
+                    "on-background": "#2c3437",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-dim": "#005498",
+                    "on-secondary-fixed": "#004a15",
+                    "on-tertiary-fixed-variant": "#634c00",
+                    "primary-fixed": "#68abff",
+                    "surface-container-highest": "#dce4e8",
+                    "on-tertiary": "#fff8f0",
+                    "primary": "#0060ad",
+                    "primary-fixed-dim": "#599ef1",
+                    "on-primary": "#f8f8ff",
+                    "surface-bright": "#f8f9fb",
+                    "secondary-fixed-dim": "#91e892",
+                    "on-secondary": "#eaffe4",
+                    "surface-container-low": "#f0f4f7",
+                    "secondary-fixed": "#9ff79f",
+                    "outline-variant": "#acb3b7",
+                    "surface-container-high": "#e3e9ed",
+                    "inverse-on-surface": "#9a9d9f",
+                    "error": "#a83836",
+                    "tertiary-fixed-dim": "#edba10",
+                    "primary-container": "#68abff",
+                    "error-container": "#fa746f",
+                    "secondary-dim": "#00611e",
+                    "inverse-primary": "#68abff",
+                    "secondary": "#136e27",
+                    "on-secondary-fixed-variant": "#0c6a24",
+                    "surface-variant": "#dce4e8",
+                    "on-surface": "#2c3437",
+                    "on-secondary-container": "#005f1d",
+                    "on-tertiary-container": "#584300",
+                    "surface-container": "#eaeff2",
+                    "on-surface-variant": "#596064",
+                    "outline": "#747c80",
+                    "on-primary-container": "#002b52",
+                    "secondary-container": "#9ff79f",
+                    "on-primary-fixed": "#000c1e",
+                    "on-error-container": "#6e0a12",
+                    "background": "#f8f9fb",
+                    "error-dim": "#67040d",
+                    "on-tertiary-fixed": "#403000",
+                    "inverse-surface": "#0b0f10",
+                    "tertiary-dim": "#685000",
+                    "on-error": "#fff7f6",
+                    "on-primary-fixed-variant": "#003461",
+                    "tertiary-fixed": "#fdc825",
+                    "surface": "#f8f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col md:flex-row">
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(0,96,173,0.05)]">
+<div class="text-lg font-black text-[#0060ad] dark:text-blue-400 font-['Plus_Jakarta_Sans'] font-bold tracking-tight">
+            Wonoayu Portal
+        </div>
+<div class="flex gap-4">
+<button class="text-[#0060ad] dark:text-blue-400 hover:scale-105 transition-transform duration-300 scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-[#0060ad] dark:text-blue-400 hover:scale-105 transition-transform duration-300 scale-95 duration-200 ease-in-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 border-r-0 bg-[#f8f9fb] dark:bg-slate-950 rounded-r-[3rem] z-40">
+<div class="p-8 mb-8">
+<div class="flex items-center gap-4 mb-2">
+<img alt="Logo TK Wonoayu" class="w-12 h-12 rounded-full object-cover" data-alt="Playful abstract geometric logo for a kindergarten with vibrant colors and soft shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4nl73RZWkAxNZk2vyNB7XT6N5AQmVfQLQ6CN03GnwvBJ3hvkZiPnfi7qovy37uWkopiOD-QTpIHbl2ygcPyFElwjqeB4OXcPhXX52xD8v9DC3tndX3T3GfmOOEKHSDWO4_W2JTwMDXRASlday2q463PVI5b9LGzXweo0qAQOuvndl5_e1O8P-BGKaSwZGYSsvAxGpv-0bgeTgxvX0qxsS8biOWZ4jLOLPjpiCiuNb3o07WGCshggXRXJn3q7FRKIaP6qHU-tKFiMe"/>
+<div>
+<h2 class="font-headline font-black text-[#0060ad] text-xl">Wali Murid</h2>
+<p class="text-xs text-on-surface-variant">Portal Digital TK Wonoayu</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2 px-4">
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-['Plus_Jakarta_Sans']" href="#">
+<span class="material-symbols-outlined">home</span> Beranda
+            </a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-['Plus_Jakarta_Sans']" href="#">
+<span class="material-symbols-outlined">event</span> Jadwal Harian
+            </a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-['Plus_Jakarta_Sans']" href="#">
+<span class="material-symbols-outlined">chat</span> Kontak Guru
+            </a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-['Plus_Jakarta_Sans']" href="#">
+<span class="material-symbols-outlined">help</span> Bantuan
+            </a>
+<!-- Active State using intent fallback: Profile matches "Siti Aisyah" viewing -->
+<a class="flex items-center gap-4 bg-green-50 text-[#136e27] rounded-full font-bold px-4 py-3 hover:translate-x-2 transition-all font-['Plus_Jakarta_Sans'] mt-4" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span> Profil Anak
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-72 pt-24 md:pt-12 pb-32 md:pb-12 px-6 md:px-12 max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div>
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-2">Profil Biodata</h1>
+<p class="text-on-surface-variant text-lg">Data lengkap peserta didik TK Wonoayu</p>
+</div>
+<div class="hidden md:flex gap-4">
+<button class="bg-surface-container-low text-primary p-3 rounded-full hover:scale-105 transition-transform shadow-sm">
+<span class="material-symbols-outlined">download</span>
+</button>
+<button class="bg-surface-container-low text-primary p-3 rounded-full hover:scale-105 transition-transform shadow-sm">
+<span class="material-symbols-outlined">print</span>
+</button>
+</div>
+</div>
+<!-- Hero Card: Student Profile Overview -->
+<section class="bg-gradient-to-br from-primary to-primary-container rounded-xl p-8 mb-8 shadow-[0_20px_50px_rgba(0,96,173,0.1)] relative overflow-hidden text-on-primary">
+<!-- Decorative Blobs -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute -bottom-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+<img alt="Foto Profil Siti Aisyah" class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/20 object-cover shadow-lg" data-alt="Portrait of a happy young Indonesian girl smiling warmly, wearing a neat school uniform, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPvtWEoVOQ07O5tMt5o4xk4-E6Soh-nViQ1ajNvpG1s3Pq7bM_hfvoJHf4t9RISCEiYJ6wisr-UJ-pbWYCQ72hcykdy1tLvGOhSwAxL0miw2AJ5_LROMfKguLQTchLqcdL_kAD1qO6AD6G-2ySm44i9_lQjSQvEw85cW91Kfw0eG_ZBlw0nxKTMrSCvKWqrw_9PonKhuWl9Bms1uYpdk1xazfgcjTRX9rtNTwNMM5aXnKa9qkFAQ1ogYskwzlGmp5JwgMMvoYuQvVi"/>
+<div class="text-center md:text-left">
+<div class="inline-block bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-sm font-bold mb-3">
+                        Kelompok B - Mawar
+                    </div>
+<h2 class="font-headline text-3xl md:text-4xl font-extrabold mb-2">Siti Aisyah</h2>
+<div class="flex flex-wrap justify-center md:justify-start gap-4 text-primary-fixed-dim text-sm font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">badge</span> No. Induk: 2023045</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">fingerprint</span> NISN: 3124567890</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Identitas Anak -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_8px_30px_rgba(44,52,55,0.04)] relative">
+<div class="absolute top-0 left-0 w-2 h-full bg-secondary rounded-l-xl opacity-80"></div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">face</span>
+                    Identitas Anak
+                </h3>
+<div class="space-y-4">
+<div>
+<p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mb-1">Nama Lengkap</p>
+<p class="text-base font-medium">Siti Aisyah Putri Permata</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mb-1">NIK</p>
+<p class="text-base font-medium">3578012345678901</p>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mb-1">Jenis Kelamin</p>
+<p class="text-base font-medium">Perempuan</p>
+</div>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mb-1">Tempat, Tanggal Lahir</p>
+<p class="text-base font-medium">Madiun, 15 Agustus 2018</p>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mb-1">Agama</p>
+<p class="text-base font-medium">Islam</p>
+</div>
+</div>
+</div>
+<!-- Identitas Orang Tua -->
+<div class="bg-surface-container-low rounded-xl p-8 relative">
+<h3 class="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">family_restroom</span>
+                    Identitas Orang Tua
+                </h3>
+<div class="space-y-6">
+<!-- Ayah -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm border border-outline-variant/15">
+<p class="text-xs text-primary font-bold uppercase tracking-wider mb-2">Data Ayah</p>
+<div class="grid gap-2">
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">Nama:</span> <span class="font-medium">Budi Santoso</span></p>
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">Pekerjaan:</span> <span class="font-medium">Wiraswasta</span></p>
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">No. HP:</span> <span class="font-medium">0812-3456-7890</span></p>
+</div>
+</div>
+<!-- Ibu -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm border border-outline-variant/15">
+<p class="text-xs text-tertiary font-bold uppercase tracking-wider mb-2">Data Ibu</p>
+<div class="grid gap-2">
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">Nama:</span> <span class="font-medium">Sri Wahyuni</span></p>
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">Pekerjaan:</span> <span class="font-medium">Ibu Rumah Tangga</span></p>
+<p><span class="text-on-surface-variant text-sm w-24 inline-block">No. HP:</span> <span class="font-medium">0813-4567-8901</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Alamat -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-8 shadow-[0_8px_30px_rgba(44,52,55,0.04)] relative overflow-hidden flex flex-col md:flex-row gap-8 items-center">
+<div class="absolute -right-16 -top-16 w-48 h-48 bg-tertiary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex-1 w-full">
+<h3 class="font-headline text-xl font-bold text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                        Alamat Tempat Tinggal
+                    </h3>
+<p class="text-lg font-medium leading-relaxed mb-4">
+                        Jl. Pahlawan No. 45, RT 03 / RW 01,<br/>
+                        Kelurahan Pangongangan, Kecamatan Manguharjo,<br/>
+                        Kota Madiun, Jawa Timur 63121
+                    </p>
+<div class="flex items-center gap-2 text-sm text-on-surface-variant bg-surface-container-low px-3 py-2 rounded-lg inline-flex">
+<span class="material-symbols-outlined text-base">directions_bus</span> Jarak ke sekolah: ~2.5 km
+                    </div>
+</div>
+<!-- Decorative Map Element -->
+<div class="w-full md:w-1/3 h-48 bg-surface-container-high rounded-xl overflow-hidden relative border border-outline-variant/15">
+<img alt="Map Illustration" class="w-full h-full object-cover opacity-80" data-alt="Stylized flat lay map illustration of Madiun city with soft pastel colors, no text labels, clean aesthetic" data-location="Madiun" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4D6azCYbG5Bupl_RyM08ThjMXZjDBBMPoa6Y9IS9UL5AzyDq6AQ__GOF_i-ag005XQDshsDVAGGvN785M5dckSA6PkiicUzxvgKiLMfHWRznaHkXMVnQWSbRMp9g95ZZuxxRaj3wZpm0aLe9qzoFcxhzEVer-HigvwSuclb-6QpPMKvvH4AHQZvuKUISGq-IizxOw2TzR8epqSC6W11G4Pq6WF76B4B1ZJpOt1UJPjX8V5zA3Ji-HAF9TbugKv_ZrghOc8PtMgwFT"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-4 h-4 bg-error rounded-full border-2 border-white shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<!-- Profile is active based on intent (Viewing Profile/Biodata) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-white dark:bg-slate-900 rounded-t-[3rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Laporan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined">palette</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Galeri</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#0060ad] to-[#004a85] text-white rounded-full p-3 -mt-6 shadow-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">child_care</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Profil</span>
+</a>
+</nav>
+</body></html>

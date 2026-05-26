@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Wali Murid TK Wonoayu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#0060ad",
+                        "tertiary": "#775b00",
+                        "tertiary-container": "#fdc825",
+                        "surface-dim": "#d4dbdf",
+                        "on-background": "#2c3437",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-dim": "#005498",
+                        "on-secondary-fixed": "#004a15",
+                        "on-tertiary-fixed-variant": "#634c00",
+                        "primary-fixed": "#68abff",
+                        "surface-container-highest": "#dce4e8",
+                        "on-tertiary": "#fff8f0",
+                        "primary": "#0060ad",
+                        "primary-fixed-dim": "#599ef1",
+                        "on-primary": "#f8f8ff",
+                        "surface-bright": "#f8f9fb",
+                        "secondary-fixed-dim": "#91e892",
+                        "on-secondary": "#eaffe4",
+                        "surface-container-low": "#f0f4f7",
+                        "secondary-fixed": "#9ff79f",
+                        "outline-variant": "#acb3b7",
+                        "surface-container-high": "#e3e9ed",
+                        "inverse-on-surface": "#9a9d9f",
+                        "error": "#a83836",
+                        "tertiary-fixed-dim": "#edba10",
+                        "primary-container": "#68abff",
+                        "error-container": "#fa746f",
+                        "secondary-dim": "#00611e",
+                        "inverse-primary": "#68abff",
+                        "secondary": "#136e27",
+                        "on-secondary-fixed-variant": "#0c6a24",
+                        "surface-variant": "#dce4e8",
+                        "on-surface": "#2c3437",
+                        "on-secondary-container": "#005f1d",
+                        "on-tertiary-container": "#584300",
+                        "surface-container": "#eaeff2",
+                        "on-surface-variant": "#596064",
+                        "outline": "#747c80",
+                        "on-primary-container": "#002b52",
+                        "secondary-container": "#9ff79f",
+                        "on-primary-fixed": "#000c1e",
+                        "on-error-container": "#6e0a12",
+                        "background": "#f8f9fb",
+                        "error-dim": "#67040d",
+                        "on-tertiary-fixed": "#403000",
+                        "inverse-surface": "#0b0f10",
+                        "tertiary-dim": "#685000",
+                        "on-error": "#fff7f6",
+                        "on-primary-fixed-variant": "#003461",
+                        "tertiary-fixed": "#fdc825",
+                        "surface": "#f8f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen lg:pl-72 pb-24 md:pb-0">
+<!-- TopAppBar (Mobile Only) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl docked full-width top-0 rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(0,96,173,0.05)] md:hidden">
+<div class="text-lg font-black text-[#0060ad] dark:text-blue-400 font-['Plus_Jakarta_Sans'] font-bold tracking-tight">Wonoayu Portal</div>
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-[#0060ad] dark:text-blue-400">notifications</span>
+<img alt="Foto Profil Anak" class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a happy young Indonesian girl with braided hair, smiling brightly in a colorful kindergarten setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD7FMYktGZwvg3EaO_f9qZJaBMSbsJ9zqXQdM9XPLnj-pm4WCBSr0kcmU8Xki2hvp0ElFmmzfiU23wSt6CytDiC5DOjPfTzWNBiswg-aXBArR7nUfYZNFT3kOupk8Ngitoxao_iRyl1MpU42MsXMNm894WHEL53k1kMvRnX55tjziOw1JhZJB4MS6LF80lHrQ285h7V08Ry8tGbjqIYqZKKgjd2brUnUeuixuXeGQ4kqclY76GUFvzJGnjFlph5A5A-VjqDUsTCh8F"/>
+</div>
+</header>
+<!-- SideNavBar (Desktop Only) -->
+<nav class="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 border-r-0 bg-[#f8f9fb] dark:bg-slate-950 rounded-r-[3rem] h-full z-40 p-6">
+<div class="flex flex-col items-center mb-10">
+<img alt="Logo TK Wonoayu" class="w-20 h-20 rounded-full mb-4 object-cover shadow-sm" data-alt="Close up of a colorful abstract finger painting in vibrant yellow, blue, and green, suggesting a child's art project" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARi0kB5jD7PwQsAC8aSsg0U4KruJjXaKBq3zHPWuxbXZ2nZOB2yAF8dO-ObwUFdLzThIoibZ0hrkFHEEOsGGJaUIJ3U9vqMGXSF1pX3PAzwytJoHz1bKS8RxDkPb7QwhapylXw9GNjfCNSEzediOhgbshYh_gDadq77LnAEYY6ZrVpxlHC3GntTvVSiX1OMP9yldOlbY9AxFi0Bf45pvL6DCVBLKCxX_Oh1fgd_ydjavutjXSGPuiIwrKFuH9dTQcf9TxhsgJCrSHB"/>
+<h2 class="font-headline font-black text-xl text-[#0060ad]">Wali Murid</h2>
+<p class="text-sm text-on-surface-variant font-label">Portal Digital TK Wonoayu</p>
+</div>
+<ul class="flex flex-col gap-2 font-['Plus_Jakarta_Sans'] w-full">
+<li>
+<a class="flex items-center gap-4 bg-green-50 text-[#136e27] rounded-full font-bold px-4 py-3 hover:translate-x-2 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+                    Beranda
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined">event</span>
+                    Jadwal Harian
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined">chat</span>
+                    Kontak Guru
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all hover:bg-surface-container-low rounded-full mt-auto" href="#">
+<span class="material-symbols-outlined">help</span>
+                    Bantuan
+                </a>
+</li>
+</ul>
+</nav>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-white dark:bg-slate-900 rounded-t-[3rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.04)] md:hidden">
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#0060ad] to-[#004a85] text-white rounded-full p-3 -mt-6 shadow-lg text-[11px] font-['Manrope'] font-bold uppercase tracking-wider" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+            Dashboard
+        </a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full text-[11px] font-['Manrope'] font-bold uppercase tracking-wider" href="#">
+<span class="material-symbols-outlined mb-1">assessment</span>
+            Laporan
+        </a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full text-[11px] font-['Manrope'] font-bold uppercase tracking-wider" href="#">
+<span class="material-symbols-outlined mb-1">palette</span>
+            Galeri
+        </a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full text-[11px] font-['Manrope'] font-bold uppercase tracking-wider" href="#">
+<span class="material-symbols-outlined mb-1">child_care</span>
+            Profil
+        </a>
+</nav>
+<!-- Main Content -->
+<main class="pt-24 md:pt-10 px-6 max-w-7xl mx-auto">
+<!-- Hero Section -->
+<header class="mb-12 relative">
+<div class="absolute right-0 top-0 w-64 h-64 bg-tertiary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+<div class="absolute right-20 top-20 w-48 h-48 bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+<h1 class="text-4xl md:text-5xl font-headline font-black text-on-surface mb-2 relative z-10">Halo, Ibu Siti!</h1>
+<p class="text-on-surface-variant font-body text-lg relative z-10">Berikut adalah ringkasan hari ini untuk <span class="font-bold text-primary">Aisyah</span>.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+<!-- Kehadiran (Spans 8 cols) -->
+<section class="md:col-span-8 bg-surface-container-lowest rounded-lg p-6 relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline text-xl font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+                            Kehadiran Minggu Ini
+                        </h2>
+<p class="text-on-surface-variant text-sm mt-1">Minggu, 12 Nov - 16 Nov</p>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm">100% Hadir</span>
+</div>
+<div class="flex justify-between mt-8 relative">
+<!-- Connecting Line -->
+<div class="absolute top-1/2 left-0 w-full h-1 bg-surface-container-high -z-10 -translate-y-1/2 rounded-full"></div>
+<!-- Days -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label text-sm font-bold">Sen</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label text-sm font-bold">Sel</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label text-sm font-bold">Rab</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label text-sm font-bold">Kam</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center border-2 border-dashed border-outline-variant shadow-sm">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<span class="font-label text-sm font-medium text-on-surface-variant">Jum</span>
+</div>
+</div>
+</section>
+<!-- Ringkasan Perkembangan (Spans 4 cols) -->
+<section class="md:col-span-4 bg-gradient-to-br from-primary to-primary-container rounded-lg p-6 text-white relative shadow-[0_8px_30px_rgba(0,96,173,0.2)] overflow-hidden">
+<!-- Decorative Circle -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+<h2 class="font-headline text-xl font-bold mb-4">Laporan Terbaru</h2>
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 mb-4">
+<p class="font-body text-sm leading-relaxed text-white/90">Aisyah menunjukkan perkembangan sangat baik dalam motorik halus minggu ini, terutama saat kegiatan mewarnai dan melipat kertas.</p>
+</div>
+<a class="inline-flex items-center justify-center w-full bg-white text-primary font-bold py-3 px-6 rounded-full hover:scale-105 transition-transform duration-300 shadow-md" href="#">
+                    Lihat Detail Laporan
+                    <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
+</a>
+</section>
+<!-- Pengumuman (Spans 6 cols) -->
+<section class="md:col-span-6 bg-tertiary-container rounded-lg p-6 shadow-sm">
+<h2 class="font-headline text-xl font-bold text-on-tertiary-container flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">campaign</span>
+                    Pengumuman Sekolah
+                </h2>
+<div class="flex flex-col gap-4">
+<div class="bg-white/60 rounded-xl p-4 flex gap-4 items-start">
+<div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<div>
+<h3 class="font-bold text-on-tertiary-container">Pekan Budaya Nusantara</h3>
+<p class="text-sm text-on-tertiary-container/80 mt-1">Mohon siapkan pakaian adat untuk kegiatan hari Jumat, 17 Nov.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Pintasan Cepat (Spans 6 cols) -->
+<section class="md:col-span-6 bg-surface-container-low rounded-lg p-6">
+<h2 class="font-headline text-xl font-bold text-on-surface mb-6">Menu Cepat</h2>
+<div class="grid grid-cols-2 gap-4">
+<a class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/15 flex flex-col items-center text-center hover:scale-[1.02] transition-transform" href="#">
+<div class="w-12 h-12 rounded-full bg-primary-fixed/30 text-primary-fixed-dim flex items-center justify-center mb-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<span class="font-bold text-sm text-on-surface">Info Tagihan</span>
+</a>
+<a class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/15 flex flex-col items-center text-center hover:scale-[1.02] transition-transform" href="#">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed/30 text-secondary-fixed-dim flex items-center justify-center mb-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">photo_library</span>
+</div>
+<span class="font-bold text-sm text-on-surface">Galeri Kegiatan</span>
+</a>
+</div>
+</section>
+</div>
+</main>
+</body></html>

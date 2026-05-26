@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Galeri Karya &amp; Catatan Anekdot - TK Wonoayu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#0060ad",
+                        "tertiary": "#775b00",
+                        "tertiary-container": "#fdc825",
+                        "surface-dim": "#d4dbdf",
+                        "on-background": "#2c3437",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-dim": "#005498",
+                        "on-secondary-fixed": "#004a15",
+                        "on-tertiary-fixed-variant": "#634c00",
+                        "primary-fixed": "#68abff",
+                        "surface-container-highest": "#dce4e8",
+                        "on-tertiary": "#fff8f0",
+                        "primary": "#0060ad",
+                        "primary-fixed-dim": "#599ef1",
+                        "on-primary": "#f8f8ff",
+                        "surface-bright": "#f8f9fb",
+                        "secondary-fixed-dim": "#91e892",
+                        "on-secondary": "#eaffe4",
+                        "surface-container-low": "#f0f4f7",
+                        "secondary-fixed": "#9ff79f",
+                        "outline-variant": "#acb3b7",
+                        "surface-container-high": "#e3e9ed",
+                        "inverse-on-surface": "#9a9d9f",
+                        "error": "#a83836",
+                        "tertiary-fixed-dim": "#edba10",
+                        "primary-container": "#68abff",
+                        "error-container": "#fa746f",
+                        "secondary-dim": "#00611e",
+                        "inverse-primary": "#68abff",
+                        "secondary": "#136e27",
+                        "on-secondary-fixed-variant": "#0c6a24",
+                        "surface-variant": "#dce4e8",
+                        "on-surface": "#2c3437",
+                        "on-secondary-container": "#005f1d",
+                        "on-tertiary-container": "#584300",
+                        "surface-container": "#eaeff2",
+                        "on-surface-variant": "#596064",
+                        "outline": "#747c80",
+                        "on-primary-container": "#002b52",
+                        "secondary-container": "#9ff79f",
+                        "on-primary-fixed": "#000c1e",
+                        "on-error-container": "#6e0a12",
+                        "background": "#f8f9fb",
+                        "error-dim": "#67040d",
+                        "on-tertiary-fixed": "#403000",
+                        "inverse-surface": "#0b0f10",
+                        "tertiary-dim": "#685000",
+                        "on-error": "#fff7f6",
+                        "on-primary-fixed-variant": "#003461",
+                        "tertiary-fixed": "#fdc825",
+                        "surface": "#f8f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen pb-24 md:pb-0 md:pl-72 pt-20 md:pt-0">
+<!-- TopAppBar Mobile -->
+<header class="md:hidden bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl docked full-width top-0 rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(0,96,173,0.05)] fixed w-full z-50 flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Foto Profil Anak" class="w-full h-full object-cover" data-alt="Portrait of a happy young Indonesian child smiling brightly, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbYe1x9Ibr9nPTNG-3LSym6IWII9kjJbzRv5VEUjZGVDRBVmxT3sxzyBZ-gYEzSq69fmxDgyUXSKYKcE8BEs4Aar9LNHsARnOuSKYZo8JxAmUZ1THUBuijst5JSbPsg-6aUYldIc-WDP3anX1wJUj6VJoPYmWmmm31FKo_tSiSD83m-QnIQA-pIVLJRprSfcbVJGGiOvOMNT0cnaKi6aWBJhf4BXifU0-cS2jYo4hzBqYb80B2G--Jiy8a5zLBMKmB0GaoHVuztE2G"/>
+</div>
+<span class="text-lg font-black text-[#0060ad] dark:text-blue-400 font-headline tracking-tight">Wonoayu Portal</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-[#0060ad] dark:text-blue-400 hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-[#0060ad] dark:text-blue-400 hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar Desktop -->
+<nav class="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 border-r-0 bg-[#f8f9fb] dark:bg-slate-950 rounded-r-[3rem] z-40">
+<div class="px-8 pt-10 pb-8 flex flex-col gap-4">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center overflow-hidden shadow-sm">
+<img alt="Logo TK Wonoayu" class="w-full h-full object-cover" data-alt="Colorful abstract child-friendly logo design, playful shapes and primary colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOT9EpUL9V5q-HJyGnBx5G0q3GpSJ2uR7tSP-6df6yt94d2dKRGBQSHjr5JdjMlvKF5OqfpnqSeXvB7md9Wxhfdzr2f75cvpElTYLgxRX8vjBoPZy8RYvLKxk3WjEQ825fdDYG6ipnninKvjWxHJXz7gvSZdV6erGf8fFBQRDFmW7hcfPOkpay_bsQijesexUshQ1xh77mjnS114Fc7FZ7n5Bv53xNNXzYJsOW6HE72Fv5Cq5wlszWwXCbtFsY2yUY-2y6HSK47WrY"/>
+</div>
+<div>
+<h2 class="font-headline font-bold text-xl text-on-surface">Wali Murid</h2>
+<p class="text-sm text-on-surface-variant mt-1">Portal Digital TK Wonoayu</p>
+</div>
+</div>
+<div class="flex-1 px-4 py-6 flex flex-col gap-2 overflow-y-auto">
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-headline" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span>Beranda</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-headline" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span>Jadwal Harian</span>
+</a>
+<a class="flex items-center gap-4 bg-green-50 text-[#136e27] rounded-full font-bold px-4 py-3 font-headline" href="#">
+<span class="material-symbols-outlined" data-icon="palette">palette</span>
+<span>Galeri</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-headline" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span>Kontak Guru</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3437] px-4 py-3 hover:translate-x-2 transition-all font-headline" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Bantuan</span>
+</a>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+<!-- Header Section -->
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold mb-4">
+<span class="material-symbols-outlined text-[18px]">star</span>
+                    Portofolio Siti Aisyah
+                </div>
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-2">Galeri &amp; Catatan</h1>
+<p class="text-on-surface-variant text-lg max-w-2xl">Kumpulan karya kreatif dan momen berharga perkembangan ananda di sekolah.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-low text-primary px-6 py-3 rounded-full font-bold text-sm border border-outline-variant/15 hover:scale-105 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined">filter_list</span> Filter
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Left Column: Artwork Gallery (Bento Grid) -->
+<div class="xl:col-span-2 space-y-8">
+<h2 class="font-headline text-2xl font-bold flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">brush</span>
+</span>
+                    Hasil Karya Anak
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Artwork Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgba(44,52,55,0.04)] overflow-hidden flex flex-col">
+<div class="h-48 relative overflow-hidden bg-surface-variant">
+<img alt="Lukisan Pemandangan" class="w-full h-full object-cover" data-alt="Child's finger painting of a vibrant sunset over mountains, messy but expressive brushstrokes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3eN4mh1YuWTzBKutL2ROv7RT55IUAWSgvzV9fYANEF_RZ1GhkbaoBaoicMGHlvezpjpmQ8rHKx4NtdelzzfgLsM0GeampzH5X7MLTTx5Kb5dHD73zW9nQ9XocUSwYB9vBMmS1jyo6nUElZqx9AZcwby7GrqHmh91Ns5g8iezKpui8U1AM2a_0m9PhvypI0gNRCsEVR7b_lVrKteDpbCZYR-XE4_HdrCuGMlX4e20HBb-GgbUcNefh6qBWBa1TyimHIZ7RMCFe8N2z"/>
+<div class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-primary flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> 12 Okt 2023
+                            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="font-headline font-bold text-xl mb-2 text-on-surface">Melukis Pemandangan</h3>
+<p class="text-sm text-on-surface-variant mb-4 flex-1">Siti sangat antusias mencampur warna biru dan kuning untuk membuat warna hijau. Ia bercerita bahwa ini adalah gambar sawah di desa neneknya.</p>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/15">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">done</span>
+</span>
+<span class="font-bold text-sm text-on-surface">Penilaian Guru</span>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-xs font-bold text-primary shadow-sm">Kreativitas (BSH)</span>
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-xs font-bold text-secondary shadow-sm">Motorik Halus (BSH)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Artwork Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgba(44,52,55,0.04)] overflow-hidden flex flex-col">
+<div class="h-48 relative overflow-hidden bg-surface-variant">
+<img alt="Kolase Kertas" class="w-full h-full object-cover" data-alt="Child's paper collage art showing a colorful butterfly made from torn paper pieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDRgEvkqvcSdgPrLW9SpxSKhTmMue_BmK6WSmdeavZhGcDTbKIrIzphw--lgyuroJ6s4Au5f_Uvn8RrUfMmyleGCAdIPZ0NuZC5Evm9tNvNoHske4hDIKPuZvvvdFq2Rn5RVSAEaaOc_0FNoHvxpn0lPbx3peoawqE9MCQlTxEWMp5mDRtgXp4KL1W3xNcBtR-4qQyr546DqFC1hyDLGZ5aYAAJYKFh4myRnA5ppVpcSPFJSUsKTPijKqYYLdMAiSozVCa_47eDzDK"/>
+<div class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-primary flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> 05 Okt 2023
+                            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="font-headline font-bold text-xl mb-2 text-on-surface">Kolase Kupu-kupu</h3>
+<p class="text-sm text-on-surface-variant mb-4 flex-1">Aisyah menunjukkan kesabaran saat menyobek kertas kecil-kecil dan menempelkannya dengan rapi di dalam garis pola.</p>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/15">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">done</span>
+</span>
+<span class="font-bold text-sm text-on-surface">Penilaian Guru</span>
+</div>
+<div class="flex gap-2 flex-wrap">
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-xs font-bold text-primary shadow-sm">Kemandirian (BSB)</span>
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-xs font-bold text-tertiary shadow-sm">Fokus (BSH)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Anecdotal Timeline -->
+<div class="xl:col-span-1 space-y-8">
+<h2 class="font-headline text-2xl font-bold flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined">menu_book</span>
+</span>
+                    Catatan Anekdot
+                </h2>
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_30px_rgba(44,52,55,0.04)]">
+<div class="relative border-l-2 border-surface-container-high ml-4 space-y-8 pb-4">
+<!-- Timeline Item 1 -->
+<div class="relative pl-6">
+<div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-secondary ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-1 mb-2">
+<span class="text-xs font-bold text-secondary uppercase tracking-wider">14 Oktober 2023 • 09:30</span>
+<h4 class="font-headline font-bold text-lg text-on-surface">Berbagi Mainan</h4>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/15">
+<div class="flex items-center gap-2 text-xs text-on-surface-variant font-bold mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span> Area Balok
+                                </div>
+<p class="text-sm text-on-surface">Siti melihat temannya (Rudi) menangis karena tidak mendapat balok merah. Siti secara inisiatif mendekati Rudi dan memberikan setengah dari balok merah miliknya sambil berkata, "Kita main sama-sama ya."</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-6">
+<div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-tertiary ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-1 mb-2">
+<span class="text-xs font-bold text-tertiary uppercase tracking-wider">10 Oktober 2023 • 08:15</span>
+<h4 class="font-headline font-bold text-lg text-on-surface">Keberanian Bercerita</h4>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/15">
+<div class="flex items-center gap-2 text-xs text-on-surface-variant font-bold mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span> Karpet Lingkaran
+                                </div>
+<p class="text-sm text-on-surface">Saat kegiatan pembukaan, Siti yang biasanya pemalu berani mengangkat tangan dan menceritakan pengalamannya pergi ke kebun binatang bersama keluarga dengan suara yang cukup lantang dan ekspresif.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-white dark:bg-slate-900 rounded-t-[3rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Laporan</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#0060ad] to-[#004a85] text-white rounded-full p-3 -mt-6 shadow-lg" href="#">
+<span class="material-symbols-outlined" data-icon="palette" data-weight="fill" style="font-variation-settings: 'FILL' 1;">palette</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Galeri</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#2c3437] dark:text-slate-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="child_care">child_care</span>
+<span class="text-[11px] font-['Manrope'] font-bold uppercase tracking-wider mt-1">Profil</span>
+</a>
+</nav>
+</body></html>

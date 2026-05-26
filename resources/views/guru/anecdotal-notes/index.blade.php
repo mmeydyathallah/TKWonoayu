@@ -1,0 +1,150 @@
+@extends('layouts.teacher')
+
+@php
+    $title = 'Catatan Anekdot - TK Wonoayu';
+@endphp
+
+@section('styles')
+<style>
+    .gradient-primary { background: linear-gradient(135deg, #0060ad, #68abff); }
+    .ambient-shadow { box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+</style>
+@endsection
+
+@section('content')
+
+{{-- TOP BAR --}}
+<header class="bg-white/90 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-100 shadow-sm flex items-center justify-between px-6 py-4 w-full -mx-8 mb-6 docked full-width">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-white shadow-md">
+            <span class="material-symbols-outlined text-[20px]">description</span>
+        </div>
+        <div>
+            <h1 class="text-lg font-extrabold text-slate-900 font-headline leading-tight">Catatan Anekdot</h1>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Dokumentasi Peristiwa Khusus Siswa</p>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-7xl mx-auto w-full pb-20">
+
+    @if(session('success'))
+    <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-sm font-bold">
+        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+        {{ session('success') }}
+    </div>
+    @endif
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        
+        {{-- LEFT COLUMN: FORM INPUT --}}
+        <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden sticky top-24">
+            <div class="px-6 py-5 border-b border-slate-50 bg-gradient-to-b from-slate-50/50 to-white">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span> Tambah Catatan
+                </h3>
+            </div>
+            
+            <form action="{{ route('guru.anecdotal.store') }}" method="POST" class="p-6 space-y-5">
+                @csrf
+                
+                {{-- Student --}}
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Siswa</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">person</span>
+                        <select name="student_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
+                            <option value="">Pilih Siswa...</option>
+                            @foreach($students as $student)
+                            <option value="{{ $student->id }}">Kel. {{ $student->class_group }} - {{ $student->full_name }}</option>
+                            @endforeach
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                {{-- Date & Time --}}
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Waktu Kejadian</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[18px]">schedule</span>
+                        <input name="recorded_at" type="datetime-local" value="{{ now()->format('Y-m-d\TH:i') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
+                    </div>
+                </div>
+
+                {{-- Location --}}
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Tempat/Lokasi</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">location_on</span>
+                        <input name="location" type="text" placeholder="Contoh: Taman Bermain" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium">
+                    </div>
+                </div>
+
+                {{-- Description --}}
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Deskripsi Peristiwa</label>
+                    <textarea name="description" rows="5" placeholder="Tuliskan kejadian secara objektif..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium resize-none"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full gradient-primary text-white py-3.5 rounded-xl text-sm font-extrabold shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">save</span> Simpan Catatan
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- RIGHT COLUMN: LIST OF RECORDS --}}
+        <div class="lg:col-span-2 space-y-6">
+            
+            {{-- Records List --}}
+            <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                    <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[18px]">history</span> Riwayat Catatan
+                    </h3>
+                    <span class="text-[10px] font-black text-slate-400 uppercase bg-slate-200/50 px-2.5 py-1 rounded-md">{{ $notes->count() }} Data</span>
+                </div>
+                
+                <div class="divide-y divide-slate-50">
+                    @forelse($notes as $note)
+                    <div class="p-6 hover:bg-slate-50/50 transition-colors">
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $note->student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($note->student->full_name).'&background=e0efff&color=0060ad&bold=true&size=64' }}"
+                                     class="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 leading-tight">{{ $note->student->full_name }}</p>
+                                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">
+                                        Kel. {{ $note->student->class_group }} • {{ $note->recorded_at?->format('d M Y, H:i') }}
+                                    </p>
+                                </div>
+                            </div>
+                            @if($note->location)
+                            <span class="flex items-center gap-1 text-[10px] font-black text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">
+                                <span class="material-symbols-outlined text-[14px]">location_on</span> {{ $note->location }}
+                            </span>
+                            @endif
+                        </div>
+                        
+                        <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100">
+                            <p class="text-sm text-slate-700 font-medium leading-relaxed italic">"{{ $note->description }}"</p>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="py-16 text-center bg-slate-50/50">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-slate-100">
+                            <span class="material-symbols-outlined text-3xl text-slate-300">sticky_note_2</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-600">Belum ada catatan anekdot</p>
+                        <p class="text-[11px] font-medium text-slate-400 mt-1">Dokumentasikan peristiwa penting melalui formulir di kiri.</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@endsection

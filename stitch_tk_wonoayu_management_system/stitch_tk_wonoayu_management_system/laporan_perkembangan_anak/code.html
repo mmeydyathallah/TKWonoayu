@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Laporan Perkembangan Anak - Wonoayu Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#0060ad",
+                        "tertiary": "#775b00",
+                        "tertiary-container": "#fdc825",
+                        "surface-dim": "#d4dbdf",
+                        "on-background": "#2c3437",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-dim": "#005498",
+                        "on-secondary-fixed": "#004a15",
+                        "on-tertiary-fixed-variant": "#634c00",
+                        "primary-fixed": "#68abff",
+                        "surface-container-highest": "#dce4e8",
+                        "on-tertiary": "#fff8f0",
+                        "primary": "#0060ad",
+                        "primary-fixed-dim": "#599ef1",
+                        "on-primary": "#f8f8ff",
+                        "surface-bright": "#f8f9fb",
+                        "secondary-fixed-dim": "#91e892",
+                        "on-secondary": "#eaffe4",
+                        "surface-container-low": "#f0f4f7",
+                        "secondary-fixed": "#9ff79f",
+                        "outline-variant": "#acb3b7",
+                        "surface-container-high": "#e3e9ed",
+                        "inverse-on-surface": "#9a9d9f",
+                        "error": "#a83836",
+                        "tertiary-fixed-dim": "#edba10",
+                        "primary-container": "#68abff",
+                        "error-container": "#fa746f",
+                        "secondary-dim": "#00611e",
+                        "inverse-primary": "#68abff",
+                        "secondary": "#136e27",
+                        "on-secondary-fixed-variant": "#0c6a24",
+                        "surface-variant": "#dce4e8",
+                        "on-surface": "#2c3437",
+                        "on-secondary-container": "#005f1d",
+                        "on-tertiary-container": "#584300",
+                        "surface-container": "#eaeff2",
+                        "on-surface-variant": "#596064",
+                        "outline": "#747c80",
+                        "on-primary-container": "#002b52",
+                        "secondary-container": "#9ff79f",
+                        "on-primary-fixed": "#000c1e",
+                        "on-error-container": "#6e0a12",
+                        "background": "#f8f9fb",
+                        "error-dim": "#67040d",
+                        "on-tertiary-fixed": "#403000",
+                        "inverse-surface": "#0b0f10",
+                        "tertiary-dim": "#685000",
+                        "on-error": "#fff7f6",
+                        "on-primary-fixed-variant": "#003461",
+                        "tertiary-fixed": "#fdc825",
+                        "surface": "#f8f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
+        h1, h2, h3, h4, h5, h6, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col md:flex-row pb-[80px] md:pb-0">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex lg:flex flex-col w-72 h-screen fixed left-0 top-0 border-r-0 bg-surface-bright dark:bg-slate-950 rounded-r-xl shadow-[0_20px_50px_rgba(0,0,0,0.02)] z-40">
+<div class="p-8 pb-4">
+<div class="flex items-center gap-4 mb-8">
+<img alt="Logo TK Wonoayu" class="w-12 h-12 rounded-full object-cover border-2 border-primary/20" data-alt="Playful abstract geometric logo with bright primary colors suggesting learning and growth in a modern style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFt-Tb49UTtUfAX3BEcxirxgOpol09t8NQPv9Omv2dys5MfKCuUlNybpJ0-ZF_JSJana7ckBplnHvimLEHag-fjJ2olEOXnKSa-qO8LgERFrJyhdCqJC05kwOpYhgS8HSXVDgTH7jZGMjV3VHodul3TdMJlRM7pPOM8n3JnN_Vxtkz1xpkU54z23g_UIfhmTYUfmFVkETOh-i2ODF4uZUjjQr3gbnDGR7ejMMKDLeu7ZGbMoLlPTyp00QyDP2uA_k-JcXP-NEM65ny"/>
+<div>
+<h2 class="font-headline font-bold text-lg text-primary tracking-tight">Wali Murid</h2>
+<p class="font-body text-xs text-on-surface-variant">Portal Digital TK Wonoayu</p>
+</div>
+</div>
+<ul class="flex flex-col gap-2">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface hover:translate-x-2 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-body font-medium">Beranda</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface hover:translate-x-2 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">event</span>
+<span class="font-body font-medium">Jadwal Harian</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary-container text-on-secondary-container font-bold hover:translate-x-2 transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assessment</span>
+<span class="font-body">Laporan</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface hover:translate-x-2 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat</span>
+<span class="font-body font-medium">Kontak Guru</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface hover:translate-x-2 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+<span class="font-body font-medium">Bantuan</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(0,96,173,0.05)]">
+<h1 class="font-headline font-black text-lg text-primary tracking-tight">Wonoayu Portal</h1>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-white dark:bg-slate-900 rounded-t-[3rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-on-surface p-2 w-16" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="text-[11px] font-body font-bold uppercase tracking-wider text-center">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-primary to-primary-dim text-white rounded-full p-3 -mt-6 shadow-lg w-16 h-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assessment</span>
+<span class="text-[10px] font-body font-bold uppercase tracking-wider text-center mt-1">Laporan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface p-2 w-16" href="#">
+<span class="material-symbols-outlined mb-1">palette</span>
+<span class="text-[11px] font-body font-bold uppercase tracking-wider text-center">Galeri</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface p-2 w-16" href="#">
+<span class="material-symbols-outlined mb-1">child_care</span>
+<span class="text-[11px] font-body font-bold uppercase tracking-wider text-center">Profil</span>
+</a>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-72 p-6 md:p-10 lg:p-14 mt-20 md:mt-0 max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-12 relative">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-tertiary-container/30 rounded-full blur-3xl -z-10"></div>
+<div class="absolute top-20 -left-10 w-32 h-32 bg-secondary-container/20 rounded-full blur-2xl -z-10"></div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl md:text-5xl font-headline font-extrabold text-primary mb-2 tracking-tight">Raport Digital</h1>
+<p class="text-on-surface-variant font-body text-lg">Semester Ganjil • Tahun Ajaran 2023/2024</p>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl shadow-sm border border-outline-variant/15">
+<img alt="Foto Profil Anak" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" data-alt="Portrait of a happy young Indonesian child in a neat school uniform smiling brightly with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhEoW6_B6z2LInhzyqKucU7lZ0-J_TPgvk8siny2nuKQAzy9XFdv7_he9jz2KvL3pedhOcNp0D74t-3eHEoR71i71rhlxnyznaQdTq02tjFruZzgX9hDa0Q7bsUWFpOk4AgKbWD2gdffxj8ACO1PSAJQeIed79fxWSfmNSadpJgdeuGW3P4JriRMlX1kn1zzsWCAJlzxAUC1hb0SB_OXUhtCXeWGSYHnvimbW4vgLN8aRRNH4It05YrUE7mLZiP1DgIfCjkshr-V9v"/>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Bima Arya Surya</h3>
+<p class="font-body text-sm text-on-surface-variant">Kelompok B (Matahari)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
+<!-- Hero Summary Card (Spans full width on mobile, 8 cols on desktop) -->
+<div class="col-span-1 md:col-span-8 bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_10px_40px_rgba(44,52,55,0.04)] border border-outline-variant/10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-full h-2 bg-gradient-to-r from-primary via-secondary to-tertiary"></div>
+<div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+<span class="material-symbols-outlined text-[15rem]">emoji_events</span>
+</div>
+<h2 class="font-headline font-bold text-2xl text-on-surface mb-6 flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</span>
+                    Ringkasan Capaian
+                </h2>
+<div class="prose prose-sm md:prose-base font-body text-on-surface-variant max-w-none leading-relaxed relative z-10">
+<p class="mb-4">
+                        Ananda Bima menunjukkan perkembangan yang <strong>sangat membanggakan</strong> selama semester ini. Dalam aspek kemandirian, Bima kini mampu menyelesaikan tugas-tugas sederhana tanpa bantuan, seperti merapikan mainan dan menyiapkan alat tulisnya sendiri. 
+                    </p>
+<p>
+                        Ketertarikan Bima pada kegiatan seni dan motorik halus juga berkembang pesat. Ia sangat antusias saat diajak menggambar dan mewarnai, menunjukkan imajinasi yang kaya. Interaksi sosialnya dengan teman sebaya terjalin hangat, seringkali menjadi inisiator dalam permainan kelompok.
+                    </p>
+</div>
+<div class="mt-8 flex flex-wrap gap-3 relative z-10">
+<span class="px-4 py-2 bg-secondary-container rounded-full text-on-secondary-container font-body text-sm font-semibold">Kemandirian Baik</span>
+<span class="px-4 py-2 bg-tertiary-container rounded-full text-on-tertiary-container font-body text-sm font-semibold">Kreatif Aktif</span>
+<span class="px-4 py-2 bg-primary-container rounded-full text-on-primary-container font-body text-sm font-semibold">Sosialisasi Positif</span>
+</div>
+</div>
+<!-- Legend/Key Card (Spans 4 cols on desktop) -->
+<div class="col-span-1 md:col-span-4 bg-surface-container-low rounded-[2rem] p-8 shadow-[0_10px_30px_rgba(44,52,55,0.03)] border border-outline-variant/15 flex flex-col justify-center">
+<h3 class="font-headline font-bold text-lg text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">stars</span>
+                    Keterangan Penilaian
+                </h3>
+<ul class="space-y-4 font-body text-sm">
+<li class="flex items-start gap-4 p-3 bg-surface-container-lowest rounded-xl">
+<div class="flex text-tertiary mt-0.5 min-w-[60px]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<div>
+<strong class="text-on-surface block">BB (Belum Berkembang)</strong>
+<span class="text-on-surface-variant text-xs">Membutuhkan bimbingan penuh.</span>
+</div>
+</li>
+<li class="flex items-start gap-4 p-3 bg-surface-container-lowest rounded-xl">
+<div class="flex text-tertiary mt-0.5 min-w-[60px]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<div>
+<strong class="text-on-surface block">MB (Mulai Berkembang)</strong>
+<span class="text-on-surface-variant text-xs">Membutuhkan sedikit bimbingan.</span>
+</div>
+</li>
+<li class="flex items-start gap-4 p-3 bg-surface-container-lowest rounded-xl">
+<div class="flex text-tertiary mt-0.5 min-w-[60px]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<div>
+<strong class="text-on-surface block">BSH (Berkembang Sesuai Harapan)</strong>
+<span class="text-on-surface-variant text-xs">Mampu mandiri secara konsisten.</span>
+</div>
+</li>
+<li class="flex items-start gap-4 p-3 bg-surface-container-lowest rounded-xl border border-tertiary-container/50 bg-tertiary-container/5">
+<div class="flex text-tertiary mt-0.5 min-w-[60px]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div>
+<strong class="text-tertiary-dim block">BSB (Berkembang Sangat Baik)</strong>
+<span class="text-on-surface-variant text-xs">Mampu menginspirasi teman lain.</span>
+</div>
+</li>
+</ul>
+</div>
+<!-- Assessment Sections (Spans full width) -->
+<div class="col-span-1 md:col-span-12 mt-8">
+<h2 class="font-headline font-bold text-3xl text-on-surface mb-8 pl-4 border-l-4 border-primary">Detail Penilaian Ceklis</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Nilai Agama & Moral (NAM) -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_8px_30px_rgba(44,52,55,0.03)] flex flex-col h-full border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+<span class="material-symbols-outlined">mosque</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Nilai Agama &amp; Moral</h3>
+</div>
+<div class="space-y-5 flex-1">
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Mengenal kegiatan ibadah sehari-hari</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">BSH</span>
+</div>
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Menunjukkan sikap peduli pada sesama</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-tertiary-container/30 rounded text-[10px] font-bold text-tertiary-dim">BSB</span>
+</div>
+</div>
+</div>
+<!-- Fisik Motorik (FM) -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_8px_30px_rgba(44,52,55,0.03)] flex flex-col h-full border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+<span class="material-symbols-outlined">directions_run</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Fisik Motorik</h3>
+</div>
+<div class="space-y-5 flex-1">
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Melakukan gerakan tubuh terkoordinasi</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">BSH</span>
+</div>
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Menggunakan otot halus untuk berkarya</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">MB</span>
+</div>
+</div>
+</div>
+<!-- Kognitif (KOG) -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_8px_30px_rgba(44,52,55,0.03)] flex flex-col h-full border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+<span class="material-symbols-outlined">extension</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Kognitif</h3>
+</div>
+<div class="space-y-5 flex-1">
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Memecahkan masalah sederhana</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-tertiary-container/30 rounded text-[10px] font-bold text-tertiary-dim">BSB</span>
+</div>
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Mengenal pola dan konsep ukuran</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">BSH</span>
+</div>
+</div>
+</div>
+<!-- Bahasa (BHS) -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_8px_30px_rgba(44,52,55,0.03)] flex flex-col h-full border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+<span class="material-symbols-outlined">record_voice_over</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Bahasa</h3>
+</div>
+<div class="space-y-5 flex-1">
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Memahami bahasa reseptif (menyimak)</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-tertiary-container/30 rounded text-[10px] font-bold text-tertiary-dim">BSB</span>
+</div>
+<div class="bg-surface p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<p class="font-body text-sm font-medium text-on-surface w-3/4">Menunjukkan kemampuan keaksaraan</p>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px] text-outline-variant" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<span class="inline-block px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">BSH</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Notes Section -->
+<div class="col-span-1 md:col-span-12 mt-8 bg-surface-container-low rounded-[2rem] p-8 relative overflow-hidden">
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<h3 class="font-headline font-bold text-xl text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                    Catatan Wali Kelas
+                </h3>
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/15 font-body text-on-surface-variant italic relative z-10">
+                    "Bima adalah anak yang sangat ceria dan mudah bergaul. Terus tingkatkan kemampuan motorik halusnya dengan lebih sering mengajak berlatih memegang pensil atau gunting di rumah. Semangat terus belajar Bima!"
+                </div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TK Wonoayu Madiun - Teacher Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#fdc825",
+                    "background": "#f8f9fb",
+                    "secondary": "#136e27",
+                    "tertiary-fixed-dim": "#edba10",
+                    "on-surface-variant": "#596064",
+                    "inverse-surface": "#0b0f10",
+                    "outline-variant": "#acb3b7",
+                    "on-primary-fixed-variant": "#003461",
+                    "on-tertiary-fixed": "#403000",
+                    "primary-fixed-dim": "#599ef1",
+                    "inverse-primary": "#68abff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#fff7f6",
+                    "surface-container": "#eaeff2",
+                    "surface-tint": "#0060ad",
+                    "on-secondary": "#eaffe4",
+                    "surface-container-highest": "#dce4e8",
+                    "surface": "#f8f9fb",
+                    "surface-variant": "#dce4e8",
+                    "on-primary": "#f8f8ff",
+                    "surface-container-low": "#f0f4f7",
+                    "error-container": "#fa746f",
+                    "on-surface": "#2c3437",
+                    "tertiary-container": "#fdc825",
+                    "surface-bright": "#f8f9fb",
+                    "tertiary": "#775b00",
+                    "on-primary-fixed": "#000c1e",
+                    "error": "#a83836",
+                    "error-dim": "#67040d",
+                    "on-secondary-fixed-variant": "#0c6a24",
+                    "secondary-dim": "#00611e",
+                    "on-background": "#2c3437",
+                    "primary-fixed": "#68abff",
+                    "on-secondary-fixed": "#004a15",
+                    "secondary-container": "#9ff79f",
+                    "on-tertiary-fixed-variant": "#634c00",
+                    "tertiary-dim": "#685000",
+                    "primary": "#0060ad",
+                    "surface-dim": "#d4dbdf",
+                    "on-tertiary-container": "#584300",
+                    "on-error-container": "#6e0a12",
+                    "on-tertiary": "#fff8f0",
+                    "secondary-fixed": "#9ff79f",
+                    "surface-container-high": "#e3e9ed",
+                    "primary-dim": "#005498",
+                    "secondary-fixed-dim": "#91e892",
+                    "on-primary-container": "#002b52",
+                    "primary-container": "#68abff",
+                    "inverse-on-surface": "#9a9d9f",
+                    "outline": "#747c80",
+                    "on-secondary-container": "#005f1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Manrope"
+                    ],
+                    "label": [
+                            "Manrope"
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low text-primary flex flex-col h-screen py-8 gap-2 w-64 fixed left-0 top-0 rounded-r-xl shadow-2xl shadow-primary-dim/10 hidden md:flex z-40">
+<div class="px-6 mb-8">
+<h1 class="font-headline text-lg font-extrabold text-on-primary-container">Teacher Portal</h1>
+<p class="text-sm text-on-surface-variant">TK Wonoayu Madiun</p>
+</div>
+<div class="flex-1 overflow-y-auto px-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 scale-105 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium text-sm">Student Database</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-medium text-sm">Daily Assessment</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-medium text-sm">Conversation Sheet</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="font-medium text-sm">Work Results</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-medium text-sm">Anecdotal Records</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-medium text-sm">Checklist Assessment</span>
+</a>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined">add</span>
+                Add New Entry
+            </button>
+<div class="flex flex-col gap-1 border-t border-outline-variant/15 pt-4">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors text-sm" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+                    Logout
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-8 overflow-y-auto">
+<!-- Header Section -->
+<header class="flex justify-between items-end mb-12 flex-wrap gap-6">
+<div>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mb-2">Good morning, Bu Guru</h2>
+<p class="text-on-surface-variant font-medium">Here is the overview for Kelompok A today.</p>
+</div>
+<!-- Class Stats Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)] flex items-center gap-6 min-w-[280px]">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">groups</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-1">Total Students</p>
+<p class="font-headline text-4xl font-bold text-primary">25</p>
+</div>
+</div>
+</header>
+<!-- Quick Links Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<!-- Link 1 -->
+<a class="group bg-surface-container-low p-6 rounded-xl hover:bg-surface-container-lowest transition-all duration-300 hover:shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)] flex flex-col justify-between min-h-[160px] relative overflow-hidden" href="#">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined">face</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Biodata Siswa</h3>
+<p class="text-sm text-on-surface-variant">Manage student profiles</p>
+</div>
+</a>
+<!-- Link 2 -->
+<a class="group bg-surface-container-low p-6 rounded-xl hover:bg-surface-container-lowest transition-all duration-300 hover:shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)] flex flex-col justify-between min-h-[160px] relative overflow-hidden" href="#">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-container/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined">edit_note</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">arrow_forward</span>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Input Penilaian</h3>
+<p class="text-sm text-on-surface-variant">Daily &amp; weekly assessments</p>
+</div>
+</a>
+<!-- Link 3 -->
+<a class="group bg-surface-container-low p-6 rounded-xl hover:bg-surface-container-lowest transition-all duration-300 hover:shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)] flex flex-col justify-between min-h-[160px] relative overflow-hidden" href="#">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-error-container/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-error transition-colors">arrow_forward</span>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Catatan Anekdot</h3>
+<p class="text-sm text-on-surface-variant">Behavioral observations</p>
+</div>
+</a>
+</section>
+<!-- Main Dashboard Content (Bento Style) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Daily Activities Panel -->
+<section class="lg:col-span-8">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-6">Today's Activities</h3>
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)]">
+<div class="flex flex-col gap-4">
+<!-- Activity Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-outline-variant/15">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">self_improvement</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Pembiasaan</h4>
+<p class="text-sm text-on-surface-variant">Morning greeting, praying, singing national anthem</p>
+</div>
+<span class="text-sm font-bold text-secondary">07:30</span>
+</div>
+<!-- Activity Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-outline-variant/15">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Agama</h4>
+<p class="text-sm text-on-surface-variant">Learning short surahs and daily prayers</p>
+</div>
+<span class="text-sm font-bold text-tertiary">08:00</span>
+</div>
+<!-- Activity Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-outline-variant/15">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sports_gymnastics</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Fisik Motorik (FM)</h4>
+<p class="text-sm text-on-surface-variant">Outdoor play, balancing exercises</p>
+</div>
+<span class="text-sm font-bold text-primary">09:00</span>
+</div>
+<!-- Activity Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-outline-variant/15">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">palette</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface">Seni</h4>
+<p class="text-sm text-on-surface-variant">Finger painting and crafts</p>
+</div>
+<span class="text-sm font-bold text-on-surface-variant">10:00</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Calendar Widget -->
+<section class="lg:col-span-4">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-6">Calendar</h3>
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_8px_32px_-8px_rgba(44,52,55,0.06)]">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-bold text-lg">October 2023</h4>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center mb-2">
+<span class="text-xs font-bold text-on-surface-variant">Su</span>
+<span class="text-xs font-bold text-on-surface-variant">Mo</span>
+<span class="text-xs font-bold text-on-surface-variant">Tu</span>
+<span class="text-xs font-bold text-on-surface-variant">We</span>
+<span class="text-xs font-bold text-on-surface-variant">Th</span>
+<span class="text-xs font-bold text-on-surface-variant">Fr</span>
+<span class="text-xs font-bold text-on-surface-variant">Sa</span>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center text-sm">
+<!-- Empty slots for previous month -->
+<div class="p-2 text-on-surface-variant/30">1</div>
+<div class="p-2 text-on-surface-variant/30">2</div>
+<!-- Current month days -->
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">3</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">4</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">5</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">6</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">7</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">8</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">9</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">10</div>
+<div class="p-2 bg-primary text-on-primary rounded-full font-bold shadow-md shadow-primary/30">11</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer relative">12
+                            <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-tertiary rounded-full"></div>
+</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">13</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">14</div>
+<!-- Rest of days simplified for demo -->
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">15</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">16</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">17</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">18</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">19</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">20</div>
+<div class="p-2 hover:bg-surface-container-high rounded-full cursor-pointer">21</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>
