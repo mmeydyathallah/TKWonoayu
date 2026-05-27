@@ -36,7 +36,8 @@
                     Kehadiran Minggu Ini
                 </h2>
                 <p class="text-on-surface-variant text-sm mt-1">
-                    Hari ini: <span class="font-bold text-primary">{{ $todayAttendance ? ($attendanceStatusMeta[$todayAttendance->status]['label'] ?? ucfirst($todayAttendance->status)) : 'Belum dicatat' }}</span>
+                    Hari ini, {{ now()->isoFormat('D MMMM YYYY') }}:
+                    <span class="font-bold text-primary">{{ $todayAttendance ? ($attendanceStatusMeta[$todayAttendance->status]['label'] ?? ucfirst($todayAttendance->status)) : 'Belum dicatat' }}</span>
                 </p>
             </div>
             <a href="{{ route('wali.attendance') }}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:scale-[1.02] transition-transform">
@@ -66,6 +67,7 @@
                         </div>
                     @endif
                     <span class="font-label text-sm font-bold">{{ $days[$i] }}</span>
+                    <span class="text-[10px] font-bold text-on-surface-variant">{{ $d->format('d/m') }}</span>
                     <span class="text-[10px] font-bold text-on-surface-variant">{{ $meta['label'] ?? 'Belum' }}</span>
                 </div>
             @endforeach
