@@ -95,6 +95,15 @@
                         <p class="text-xs text-slate-500 mt-0.5">Capaian aspek perkembangan</p>
                     </div>
                 </a>
+                <a href="{{ route('guru.attendance.index') }}" class="group bg-white p-6 rounded-3xl border border-slate-100 ambient-shadow hover:border-primary/30 transition-all flex items-center gap-5">
+                    <div class="w-12 h-12 rounded-2xl bg-violet-50 text-violet-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-[28px]">event_available</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base">Absensi</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Catat kehadiran siswa</p>
+                    </div>
+                </a>
             </div>
 
             {{-- UPCOMING AGENDAS WITH EDIT/DELETE --}}

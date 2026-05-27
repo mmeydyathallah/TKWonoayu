@@ -29,24 +29,36 @@
                 </h2>
                 <p class="text-on-surface-variant text-sm mt-1">Minggu aktif belajar</p>
             </div>
-            <span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm">100% Hadir</span>
+            <span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm">{{ isset($attendancePercent) ? $attendancePercent . '% Hadir' : '—' }}</span>
         </div>
         <div class="flex justify-between mt-8 relative">
             <div class="absolute top-1/2 left-0 w-full h-1 bg-surface-container-high -z-10 -translate-y-1/2 rounded-full"></div>
-            @foreach(['Sen','Sel','Rab','Kam'] as $day)
-            <div class="flex flex-col items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
-                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+            @php
+                $weekStart = now()->startOfWeek();
+                $days = ['Sen','Sel','Rab','Kam','Jum'];
+            @endphp
+            @foreach(range(0,4) as $i)
+                @php
+                    $d = $weekStart->copy()->addDays($i);
+                    $att = $weekAttendances->firstWhere('date', $d->toDateString());
+                @endphp
+                <div class="flex flex-col items-center gap-2">
+                    @if($att && $att->status === 'hadir')
+                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+                        </div>
+                    @elseif($att && in_array($att->status, ['izin','sakit']))
+                        <div class="w-10 h-10 rounded-full bg-amber-400 text-white flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-sm">help</span>
+                        </div>
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center border-2 border-dashed border-outline-variant shadow-sm">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                        </div>
+                    @endif
+                    <span class="font-label text-sm font-bold">{{ $days[$i] }}</span>
                 </div>
-                <span class="font-label text-sm font-bold">{{ $day }}</span>
-            </div>
             @endforeach
-            <div class="flex flex-col items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center border-2 border-dashed border-outline-variant shadow-sm">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                </div>
-                <span class="font-label text-sm font-medium text-on-surface-variant">Jum</span>
-            </div>
         </div>
     </section>
 

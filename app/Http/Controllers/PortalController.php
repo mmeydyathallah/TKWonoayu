@@ -13,6 +13,7 @@ use App\Models\SchoolAnnouncement;
 use App\Models\Student;
 use App\Models\SchoolAgenda;
 use App\Models\User;
+use App\Models\Attendance;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -169,6 +170,76 @@ class PortalController extends Controller
     public function studentForm(): View
     {
         return view('guru.students.create');
+    }
+
+    public function parentDashboard(): View
+    {
+        $user = Auth::user();
+        // Redirect Guru if they accidentally access Wali routes
+        if ($user->role === 'guru') {
+            return redirect()->route('guru.dashboard');
+        }
+
+        $student = $user->student;
+        if (!$student) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['username' => 'Akun Anda belum terhubung dengan data siswa.']);
+        }
+
+        $guardian = $student->parentProfile;
+        $latestReport = DevelopmentReport::query()->where('student_id', $student->id)->latest()->first();
+        $announcement = SchoolAnnouncement::query()->latest('published_on')->first();
+        $upcomingAgendas = SchoolAgenda::query()
+            ->where('is_public', true)
+            ->where(function($q) {
+                $q->where('event_date', '>=', now()->toDateString())
+                  ->orWhere('end_date', '>=', now()->toDateString());
+            })
+            ->orderBy('event_date')
+            ->limit(3)
+            ->get();
+
+        // attendance this week (Mon-Fri)
+        $attendancePercent = null;
+        $weekAttendances = collect();
+        if ($student) {
+            $weekStart = now()->startOfWeek();
+            $weekEnd = $weekStart->copy()->addDays(4);
+            $weekAttendances = Attendance::where('student_id', $student->id)
+                ->whereBetween('date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+                ->get();
+            $presentCount = $weekAttendances->where('status', 'hadir')->count();
+            $expectedDays = 5;
+            $attendancePercent = $expectedDays > 0 ? round($presentCount / $expectedDays * 100) : null;
+        }
+
+        return view('wali_murid.dashboard', compact('guardian', 'student', 'latestReport', 'announcement', 'upcomingAgendas', 'attendancePercent', 'weekAttendances'));
+    }
+
+    public function parentAttendance()
+    {
+        $guardian = Auth::user();
+        $student = Student::where('wali_id', $guardian->id)->first();
+        if (! $student) {
+            return redirect()->route('wali.dashboard')->with('error', 'Siswa terkait tidak ditemukan.');
+        }
+
+        // latest paginated attendances
+        $attendances = Attendance::where('student_id', $student->id)
+            ->orderByDesc('date')
+            ->paginate(20);
+
+        // compute this week's percent
+        $weekStart = now()->startOfWeek();
+        $weekEnd = $weekStart->copy()->addDays(4);
+        $weekAttendances = Attendance::where('student_id', $student->id)
+            ->whereBetween('date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+            ->get();
+        $presentCount = $weekAttendances->where('status', 'hadir')->count();
+        $expectedDays = 5;
+        $attendancePercent = $expectedDays > 0 ? round($presentCount / $expectedDays * 100) : null;
+
+        return view('wali_murid.attendance.index', compact('guardian', 'student', 'attendances', 'attendancePercent', 'weekAttendances'));
     }
 
     public function studentProfile(): View
@@ -551,36 +622,8 @@ class PortalController extends Controller
         return back()->with('success', 'Penilaian percakapan berhasil dihapus.');
     }
 
-    public function parentDashboard()
-    {
-        $user = Auth::user();
-        
-        // Redirect Guru if they accidentally access Wali routes
-        if ($user->role === 'guru') {
-            return redirect()->route('guru.dashboard');
-        }
-
-        $student = $user->student;
-        if (!$student) {
-            Auth::logout();
-            return redirect()->route('login')->withErrors(['username' => 'Akun Anda belum terhubung dengan data siswa.']);
-        }
-
-        $guardian = $student->parentProfile;
-        $latestReport = DevelopmentReport::query()->where('student_id', $student->id)->latest()->first();
-        $announcement = SchoolAnnouncement::query()->latest('published_on')->first();
-        $upcomingAgendas = SchoolAgenda::query()
-            ->where('is_public', true)
-            ->where(function($q) {
-                $q->where('event_date', '>=', now()->toDateString())
-                  ->orWhere('end_date', '>=', now()->toDateString());
-            })
-            ->orderBy('event_date')
-            ->limit(3)
-            ->get();
-
-        return view('wali_murid.dashboard', compact('guardian', 'student', 'latestReport', 'announcement', 'upcomingAgendas'));
-    }
+    
+    
 
     public function parentReport()
     {

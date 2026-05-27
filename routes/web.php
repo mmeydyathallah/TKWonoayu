@@ -58,6 +58,8 @@ Route::prefix('wali')->name('wali.')->middleware('auth')->group(function (): voi
     Route::get('/profil', [PortalController::class, 'studentProfile'])->name('profile');
     Route::get('/laporan', [PortalController::class, 'parentReport'])->name('report');
     Route::get('/galeri', [PortalController::class, 'parentGallery'])->name('gallery');
+    // Parent attendance
+    Route::get('/absensi', [PortalController::class, 'parentAttendance'])->name('attendance');
     Route::get('/agenda', [PortalController::class, 'parentAgenda'])->name('agenda');
 });
 

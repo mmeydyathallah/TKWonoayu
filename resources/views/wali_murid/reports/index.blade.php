@@ -113,7 +113,7 @@
 </div>
 
 {{-- ===== TAB: HARIAN (Grouped by Week) ===== --}}
-<div id="tab-harian" class="hidden">
+<div id="tab-harian" class="hidden max-h-screen overflow-y-auto">
 
     @php
         $allAspects = [
@@ -146,10 +146,11 @@
                 <p class="text-[10px] text-slate-400 mt-0.5">Skor per aspek tiap minggu (1=BB, 2=MB, 3=BSH, 4=BSB)</p>
             </div>
         </div>
-        <div style="position:relative;height:220px;">
+        <div style="position:relative;height:240px;max-height:240px;">
             <canvas id="trend-chart"></canvas>
         </div>
     </div>
+    <div id="charts-container" class="mb-8"></div>
     @endif
 
     @php
@@ -514,22 +515,16 @@ function initCharts() {
     // If there's no meaningful data (all zeros), show placeholder and stop
     const hasData = Object.values(trendDatasets).some(arr => arr.some(v => v > 0));
     if (!hasData) {
-        if (trendEl) {
-            const wrapper = trendEl.parentElement?.parentElement;
-            if (wrapper) {
-                const placeholder = document.createElement('div');
-                placeholder.className = 'py-12 text-center text-slate-400';
-                placeholder.innerHTML = '<p class="font-bold">Belum ada data penilaian untuk ditampilkan.</p>';
-                wrapper.innerHTML = '';
-                wrapper.appendChild(placeholder);
-            }
+        const container = document.getElementById('charts-container');
+        if (container) {
+            container.innerHTML = '<div class="py-12 text-center text-slate-400"><p class="font-bold">Belum ada data penilaian untuk ditampilkan.</p></div>';
         }
         return;
     }
 
     const scoreLabel = ['', 'BB', 'MB', 'BSH', 'BSB'];
 
-    // ── Multi-week trend chart: one dataset per ASPEK (line chart) ─────────
+    // ── Multi-week trend chart: one dataset per ASPEK (bar chart) ─────────
     const trendEl = document.getElementById('trend-chart');
     if (!trendEl) return;
 
@@ -537,12 +532,9 @@ function initCharts() {
     const lineDatasets = aspKeys.map((code, i) => ({
         label: code,
         data: (trendDatasets[code] || []).map(v => Number(v || 0)),
-        borderColor: aspectColors[i] || '#888',
         backgroundColor: aspectColors[i] || '#888',
-        tension: 0.25,
-        fill: false,
-        pointRadius: 4,
-        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false,
     }));
 
     new Chart(trendEl, {
@@ -553,90 +545,149 @@ function initCharts() {
             maintainAspectRatio: false,
             animation: { duration: 800 },
             plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 10, weight: '700' }, usePointStyle: true, padding: 14 } },
-                tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + (scoreLabel[ctx.raw] || '—') } }
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        font: { size: 11, weight: '600' }, 
+                        usePointStyle: true, 
+                        padding: 12,
+                        boxHeight: 6
+                    },
+                    margin: { top: 16 }
+                },
+                tooltip: { 
+                    callbacks: { 
+                        label: ctx => ' ' + ctx.dataset.label + ': ' + (scoreLabel[ctx.raw] || '—') 
+                    },
+                    padding: 8,
+                    font: { size: 11 }
+                }
             },
             scales: {
-                y: { min: 0, max: 4, ticks: { stepSize: 1, callback: v => scoreLabel[v] || '' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { ticks: { font: { size: 10, weight: '700' }, color: '#64748b' }, grid: { display: false }, stacked: false }
+                y: { 
+                    min: 0, 
+                    max: 4, 
+                    ticks: { 
+                        stepSize: 1, 
+                        callback: v => scoreLabel[v] || '',
+                        font: { size: 10, weight: '600' }
+                    }, 
+                    grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } 
+                },
+                x: { 
+                    ticks: { 
+                        font: { size: 10, weight: '600' }, 
+                        color: '#64748b' 
+                    }, 
+                    grid: { display: false },
+                    stacked: false
+                }
             },
-            // grouped bars styling
             datasets: {
-                bar: { borderRadius: 6, barPercentage: 0.7, categoryPercentage: 0.6 }
+                bar: { 
+                    barPercentage: 0.7, 
+                    categoryPercentage: 0.8 
+                }
             }
         }
     });
 
-    // ── Per-aspect small charts: show the weekly trend for each aspect (line)
+    // ── Per-aspect mini charts: show weekly trend for each aspect (2 columns max) ──
+    const chartContainer = document.getElementById('charts-container');
+    if (!chartContainer) return;
+
     const perAspectContainer = document.createElement('div');
-    perAspectContainer.className = 'mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+    perAspectContainer.className = 'grid gap-4 grid-cols-1 sm:grid-cols-2 auto-rows-max';
 
     aspKeys.forEach((code, idx) => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-4 shadow-sm border border-slate-100';
+        card.className = 'bg-white rounded-2xl p-3 shadow-sm border border-slate-100';
+
         const title = document.createElement('div');
-        title.className = 'flex items-center justify-between mb-3';
-        title.innerHTML = `<strong class="text-sm font-black text-slate-800">${code}</strong><span class="text-[10px] text-slate-500">Per Minggu</span>`;
+        title.className = 'flex items-center justify-between mb-2';
+        title.innerHTML = `<strong class="text-xs font-black text-slate-800">${code}</strong><span class="text-[9px] text-slate-400">Tren Per Minggu</span>`;
+
         const c = document.createElement('canvas');
         c.id = 'chart-' + code;
-        c.style.height = '140px';
+        c.style.height = '100px';
+        c.style.maxHeight = '100px';
+
         card.appendChild(title);
         card.appendChild(c);
         perAspectContainer.appendChild(card);
 
         const weekData = (trendDatasets[code] || []).map(v => Number(v || 0));
+        const hasValues = weekData.some(v => v > 0);
+        const multiplePoints = (weekData.length > 1);
+
+        if (!hasValues) {
+            const no = document.createElement('div');
+            no.className = 'py-6 text-center text-slate-400 text-sm';
+            no.innerText = 'Belum ada data';
+            // remove canvas and show placeholder
+            c.remove();
+            card.appendChild(no);
+            return;
+        }
+
         new Chart(c, {
-            type: 'bar',
-            data: { labels: trendLabels, datasets: [{ label: code, data: weekData, backgroundColor: aspectColors[idx] || '#888', borderRadius: 6 }] },
+            type: multiplePoints ? 'line' : 'bar',
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: code,
+                    data: weekData,
+                    borderColor: aspectColors[idx] || '#888',
+                    backgroundColor: (aspectColors[idx] || '#888') + (multiplePoints ? '15' : '33'),
+                    borderWidth: 2,
+                    fill: multiplePoints,
+                    tension: 0.3,
+                    pointRadius: multiplePoints ? 3 : 5,
+                    pointBackgroundColor: aspectColors[idx] || '#888',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
             options: {
-                responsive: true, maintainAspectRatio: false, animation: { duration: 600 },
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + (scoreLabel[ctx.raw] || '—') } } },
-                scales: { y: { min: 0, max: 4, ticks: { stepSize: 1, callback: v => scoreLabel[v] || '' }, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { ticks: { font: { size: 10, weight: '700' }, color: '#64748b' }, grid: { display: false } } },
-                datasets: { bar: { barPercentage: 0.8, categoryPercentage: 0.7 } }
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 600 },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: { label: ctx => ' ' + (scoreLabel[ctx.raw] || '—') },
+                        font: { size: 11 }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 4,
+                        ticks: {
+                            stepSize: 1,
+                            callback: v => scoreLabel[v] || '',
+                            font: { size: 10 }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.04)' }
+                    },
+                    x: {
+                        display: multiplePoints,
+                        ticks: { font: { size: 9, weight: '600' }, color: '#64748b' },
+                        grid: { display: false }
+                    }
+                },
+                elements: {
+                    point: { radius: multiplePoints ? 3 : 6 },
+                    line: { borderWidth: 2 }
+                },
+                layout: { padding: { top: 4, bottom: 4, left: 6, right: 6 } }
             }
         });
     });
 
-    // Append per-aspect charts below the trend chart
-    trendEl.parentElement.parentElement.appendChild(perAspectContainer);
-
-    // ── Per-week comparison: latest week values for all aspects (bar)
-    const latestValues = aspKeys.map(code => {
-        const arr = (trendDatasets[code] || []).map(v => Number(v || 0));
-        return arr.length ? arr[arr.length - 1] : 0;
-    });
-    const weekWrap = document.createElement('div');
-    weekWrap.className = 'mt-6 bg-white rounded-3xl p-6 shadow-sm border border-slate-100';
-    weekWrap.innerHTML = `<div class="flex items-center justify-between mb-4"><h4 class="font-extrabold text-slate-800 text-sm">Perbandingan Minggu Terakhir</h4><p class="text-xs text-slate-400">Nilai per aspek pada minggu terakhir</p></div><div style="height:180px;"><canvas id="latest-week-chart"></canvas></div>`;
-    trendEl.parentElement.parentElement.appendChild(weekWrap);
-
-    const latestCtx = document.getElementById('latest-week-chart');
-    new Chart(latestCtx, {
-        type: 'bar',
-        data: { labels: aspKeys, datasets: [{ label: 'Minggu Terakhir', data: latestValues, backgroundColor: aspectColors, borderRadius: 6 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 4, ticks: { stepSize: 1, callback: v => scoreLabel[v] || '' }, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { ticks: { font: { size: 10 }, color: '#64748b' } } } }
-    });
-
-    // ── Best improving per week chart (delta) ──────────────────────────────
-    const improvements = aspKeys.map(code => {
-        const arr = (trendDatasets[code] || []).map(v => Number(v || 0));
-        const last = arr.length ? arr[arr.length-1] : 0;
-        const prev = arr.length > 1 ? arr[arr.length-2] : 0;
-        return { code, delta: last - prev };
-    });
-
-    const bestWrap = document.createElement('div');
-    bestWrap.className = 'mt-6 bg-white rounded-3xl p-6 shadow-sm border border-slate-100';
-    bestWrap.innerHTML = `<div class="flex items-center justify-between mb-4"><h4 class="font-extrabold text-slate-800 text-sm">Peningkatan Terbaik Minggu Ini</h4><p class="text-xs text-slate-400">Perbandingan kenaikan skor (terakhir vs minggu sebelumnya)</p></div><div style="height:180px;"><canvas id="best-improve-chart"></canvas></div>`;
-    trendEl.parentElement.parentElement.appendChild(bestWrap);
-
-    const bestCtx = document.getElementById('best-improve-chart');
-    new Chart(bestCtx, {
-        type: 'bar',
-        data: { labels: improvements.map(i => i.code), datasets: [{ label: 'Delta', data: improvements.map(i => i.delta), backgroundColor: aspectColors, borderRadius: 6 }] },
-        options: { responsive: true, maintainAspectRatio: false, animation: { duration: 600 }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + (ctx.raw >= 0 ? '+' + ctx.raw : ctx.raw) } } }, scales: { y: { ticks: { font: { size: 10 }, color: '#64748b' }, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { ticks: { font: { size: 10 }, color: '#64748b' } } } }
-    });
+    chartContainer.appendChild(perAspectContainer);
 }
+
 
 // Auto-init charts on page load if chart data exists
 function bindTabs() {

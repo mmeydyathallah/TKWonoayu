@@ -140,6 +140,10 @@
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.agenda') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">calendar_month</span>
                     <span class="font-bold text-xs">Agenda Sekolah</span>
                 </a>
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('guru.attendance.*') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 scale-[1.02]' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.attendance.index') }}">
+                    <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.attendance.*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_available</span>
+                    <span class="font-bold text-xs">Absensi</span>
+                </a>
                 <div class="my-4 border-t border-slate-100"></div>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('guru.daily') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.daily') }}">
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.daily') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_note</span>
