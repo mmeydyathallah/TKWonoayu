@@ -16,7 +16,9 @@ class AttendanceController extends Controller
             return redirect()->route('wali.dashboard');
         }
 
-        $date = $request->date('date') ?: now()->toDateString();
+        $todayDate = now()->toDateString();
+        $date = $request->date('date')?->toDateString() ?: $todayDate;
+        $isCustomDate = $date !== $todayDate;
         $group = $request->input('group');
 
         $query = Student::with(['parentProfile'])->orderBy('full_name');
@@ -50,6 +52,8 @@ class AttendanceController extends Controller
             'students',
             'attendances',
             'date',
+            'todayDate',
+            'isCustomDate',
             'group',
             'statusCounts',
             'classGroups',

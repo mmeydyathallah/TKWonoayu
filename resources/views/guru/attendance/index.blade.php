@@ -3,6 +3,8 @@
 @php
     $title = 'Absensi Siswa - Portal Guru TK Wonoayu';
     $dateValue = \Carbon\Carbon::parse($date)->format('Y-m-d');
+    $selectedDateLabel = \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY');
+    $todayDateLabel = \Carbon\Carbon::parse($todayDate)->isoFormat('dddd, D MMMM YYYY');
     $statusMeta = [
         'hadir' => ['label' => 'Hadir', 'icon' => 'check_circle', 'checked' => 'peer-checked:bg-emerald-50 peer-checked:text-emerald-700 peer-checked:ring-emerald-200', 'dot' => 'bg-emerald-500'],
         'izin' => ['label' => 'Izin', 'icon' => 'assignment_late', 'checked' => 'peer-checked:bg-blue-50 peer-checked:text-blue-700 peer-checked:ring-blue-200', 'dot' => 'bg-blue-500'],
@@ -24,7 +26,7 @@
             </div>
             <h1 class="font-headline text-3xl md:text-4xl font-black text-slate-900">Absensi Siswa</h1>
             <p class="text-sm text-slate-500 mt-2">
-                Input kehadiran {{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY') }} akan langsung muncul di portal wali murid.
+                Input kehadiran {{ $selectedDateLabel }} akan langsung muncul di portal wali murid.
             </p>
         </div>
 
@@ -33,25 +35,37 @@
                 <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
                 <span id="current-clock">{{ now()->format('H:i:s') }}</span>
             </div>
-            <form method="GET" action="{{ route('guru.attendance.index') }}" class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3 flex flex-col sm:flex-row gap-3">
-                <label class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
-                    <input type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
-                </label>
-                <label class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
-                    <select name="group" class="w-full sm:w-56 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
-                        <option value="">Semua kelompok</option>
-                        @foreach($classGroups as $classGroup)
-                            <option value="{{ $classGroup }}" @selected($group === $classGroup)>{{ $classGroup }}</option>
-                        @endforeach
-                    </select>
-                </label>
-                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
-                    <span class="material-symbols-outlined text-[18px]">filter_alt</span>
-                    Terapkan
-                </button>
-            </form>
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3">
+                <form method="GET" action="{{ route('guru.attendance.index') }}" class="flex flex-col sm:flex-row gap-3">
+                    <label class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
+                        <input type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                    </label>
+                    <label class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
+                        <select name="group" class="w-full sm:w-56 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                            <option value="">Semua kelompok</option>
+                            @foreach($classGroups as $classGroup)
+                                <option value="{{ $classGroup }}" @selected($group === $classGroup)>{{ $classGroup }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                        <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                        Terapkan
+                    </button>
+                    @if($isCustomDate)
+                        <a href="{{ route('guru.attendance.index', array_filter(['group' => $group])) }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-600 hover:border-primary/30 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">today</span>
+                            Hari ini
+                        </a>
+                    @endif
+                </form>
+                <p class="mt-2 flex items-center gap-1.5 px-1 text-[11px] font-bold text-slate-400">
+                    <span class="material-symbols-outlined text-[15px]">{{ $isCustomDate ? 'edit_calendar' : 'today' }}</span>
+                    {{ $isCustomDate ? 'Tanggal manual' : 'Default hari ini' }}: {{ $isCustomDate ? $selectedDateLabel : $todayDateLabel }}
+                </p>
+            </div>
         </div>
     </header>
 
@@ -88,7 +102,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 px-5 py-4">
             <div>
                 <h2 class="font-headline text-lg font-black text-slate-900">Daftar Kehadiran</h2>
-                <p class="text-xs font-bold text-slate-400">{{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY') }} - siswa belum dipilih tidak akan disimpan.</p>
+                <p class="text-xs font-bold text-slate-400">{{ $selectedDateLabel }} - siswa belum dipilih tidak akan disimpan.</p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
