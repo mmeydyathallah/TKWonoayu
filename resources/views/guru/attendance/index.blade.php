@@ -28,25 +28,31 @@
             </p>
         </div>
 
-        <form method="GET" action="{{ route('guru.attendance.index') }}" class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3 flex flex-col sm:flex-row gap-3">
-            <label class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
-                <input type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
-            </label>
-            <label class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
-                <select name="group" class="w-full sm:w-56 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
-                    <option value="">Semua kelompok</option>
-                    @foreach($classGroups as $classGroup)
-                        <option value="{{ $classGroup }}" @selected($group === $classGroup)>{{ $classGroup }}</option>
-                    @endforeach
-                </select>
-            </label>
-            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
-                <span class="material-symbols-outlined text-[18px]">filter_alt</span>
-                Terapkan
-            </button>
-        </form>
+        <div class="flex flex-col items-stretch lg:items-end gap-3">
+            <div class="inline-flex self-start lg:self-end items-center gap-2 rounded-full border border-slate-100 bg-white px-3 py-1.5 text-xs font-black text-slate-600 shadow-sm">
+                <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                <span id="current-clock">{{ now()->format('H:i:s') }}</span>
+            </div>
+            <form method="GET" action="{{ route('guru.attendance.index') }}" class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3 flex flex-col sm:flex-row gap-3">
+                <label class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
+                    <input type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                </label>
+                <label class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
+                    <select name="group" class="w-full sm:w-56 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                        <option value="">Semua kelompok</option>
+                        @foreach($classGroups as $classGroup)
+                            <option value="{{ $classGroup }}" @selected($group === $classGroup)>{{ $classGroup }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                    Terapkan
+                </button>
+            </form>
+        </div>
     </header>
 
     @if(session('success'))
@@ -175,5 +181,19 @@
             });
         });
     });
+
+    const clock = document.getElementById('current-clock');
+    const updateClock = () => {
+        if (!clock) return;
+        clock.textContent = new Intl.DateTimeFormat('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        }).format(new Date()).replace(/\./g, ':');
+    };
+
+    updateClock();
+    setInterval(updateClock, 1000);
 </script>
 @endsection
