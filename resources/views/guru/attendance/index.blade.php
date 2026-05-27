@@ -36,10 +36,10 @@
                 <span id="current-clock">{{ now()->format('H:i:s') }}</span>
             </div>
             <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3">
-                <form method="GET" action="{{ route('guru.attendance.index') }}" class="flex flex-col sm:flex-row gap-3">
+                <form id="attendance-date-filter" method="GET" action="{{ route('guru.attendance.index') }}" class="flex flex-col sm:flex-row gap-3">
                     <label class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
-                        <input type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                        <input id="attendance-date-input" type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
                     </label>
                     <label class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
@@ -96,7 +96,7 @@
 
     <form method="POST" action="{{ route('guru.attendance.store') }}" class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         @csrf
-        <input type="hidden" name="date" value="{{ $dateValue }}">
+        <input id="attendance-submit-date" type="hidden" name="date" value="{{ $dateValue }}">
         <input type="hidden" name="group" value="{{ $group }}">
 
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 px-5 py-4">
@@ -194,6 +194,20 @@
                 input.checked = true;
             });
         });
+    });
+
+    const dateFilterForm = document.getElementById('attendance-date-filter');
+    const dateInput = document.getElementById('attendance-date-input');
+    const submitDateInput = document.getElementById('attendance-submit-date');
+
+    dateInput?.addEventListener('change', () => {
+        if (submitDateInput) {
+            submitDateInput.value = dateInput.value;
+        }
+
+        if (dateFilterForm && dateInput.value) {
+            dateFilterForm.requestSubmit();
+        }
     });
 
     const clock = document.getElementById('current-clock');
