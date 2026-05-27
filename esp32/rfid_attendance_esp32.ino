@@ -25,6 +25,22 @@ String lastUid = "";
 unsigned long lastTapMs = 0;
 const unsigned long TAP_COOLDOWN_MS = 3000;
 
+String jsonGetString(const String& json, const String& key) {
+  String token = "\"" + key + "\":\"";
+  int start = json.indexOf(token);
+  if (start < 0) {
+    return "";
+  }
+
+  start += token.length();
+  int end = json.indexOf("\"", start);
+  if (end < 0) {
+    return "";
+  }
+
+  return json.substring(start, end);
+}
+
 void beep(int times, int onMs, int offMs) {
   for (int i = 0; i < times; i++) {
     digitalWrite(BUZZER_PIN, HIGH);
@@ -160,7 +176,11 @@ void loop() {
     showLCD("Gagal koneksi", "Server/WiFi down");
     beep(3, 80, 80);
   } else if (httpCode == 200) {
-    showLCD("Absensi Berhasil", uidHex.substring(0, 12));
+    String studentName = jsonGetString(response, "student_name");
+    if (studentName.length() == 0) {
+      studentName = "Nama tidak ada";
+    }
+    showLCD("Hadir: " + studentName.substring(0, 9), "UID " + uidHex.substring(0, 8));
     beep(2, 90, 80);
   } else if (httpCode == 404) {
     showLCD("Kartu belum", "terdaftar");
