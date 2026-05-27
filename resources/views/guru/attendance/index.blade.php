@@ -9,6 +9,9 @@
         'sakit' => ['label' => 'Sakit', 'icon' => 'sick', 'checked' => 'peer-checked:bg-amber-50 peer-checked:text-amber-700 peer-checked:ring-amber-200', 'dot' => 'bg-amber-500'],
         'alpa' => ['label' => 'Alpa', 'icon' => 'cancel', 'checked' => 'peer-checked:bg-rose-50 peer-checked:text-rose-700 peer-checked:ring-rose-200', 'dot' => 'bg-rose-500'],
     ];
+    $displayStatusMeta = $statusMeta + [
+        'belum' => ['label' => 'Belum', 'icon' => 'pending_actions', 'dot' => 'bg-slate-300'],
+    ];
 @endphp
 
 @section('content')
@@ -21,7 +24,7 @@
             </div>
             <h1 class="font-headline text-3xl md:text-4xl font-black text-slate-900">Absensi Siswa</h1>
             <p class="text-sm text-slate-500 mt-2">
-                Input kehadiran harian akan langsung muncul di portal wali murid.
+                Input kehadiran {{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY') }} akan langsung muncul di portal wali murid.
             </p>
         </div>
 
@@ -53,13 +56,13 @@
         </div>
     @endif
 
-    <section class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    <section class="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <div class="rounded-2xl bg-white border border-slate-100 p-5 shadow-sm">
             <p class="text-xs font-black uppercase tracking-widest text-slate-400">Tercatat</p>
             <p class="mt-2 text-3xl font-black text-slate-900">{{ $recordedCount }}/{{ $totalStudents }}</p>
             <p class="mt-1 text-xs font-bold text-slate-400">Data pada tanggal ini</p>
         </div>
-        @foreach($statusMeta as $key => $meta)
+        @foreach($displayStatusMeta as $key => $meta)
             <div class="rounded-2xl bg-white border border-slate-100 p-5 shadow-sm">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-black uppercase tracking-widest text-slate-400">{{ $meta['label'] }}</p>
@@ -79,12 +82,21 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 px-5 py-4">
             <div>
                 <h2 class="font-headline text-lg font-black text-slate-900">Daftar Kehadiran</h2>
-                <p class="text-xs font-bold text-slate-400">{{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY') }}</p>
+                <p class="text-xs font-bold text-slate-400">{{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM YYYY') }} - siswa belum dipilih tidak akan disimpan.</p>
             </div>
-            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
-                <span class="material-symbols-outlined text-[18px]">save</span>
-                Simpan Absensi
-            </button>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    @foreach($statusMeta as $key => $meta)
+                        <button type="button" data-set-status="{{ $key }}" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 hover:border-primary/30 hover:text-primary transition-colors">
+                            Semua {{ $meta['label'] }}
+                        </button>
+                    @endforeach
+                </div>
+                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Simpan Absensi
+                </button>
+            </div>
         </div>
 
         @if($students->count())
@@ -101,7 +113,11 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($students as $student)
-                            @php $att = $attendances->get($student->id); @endphp
+                            @php
+                                $att = $attendances->get($student->id);
+                                $rowStatus = $att?->status ?? 'belum';
+                                $rowMeta = $displayStatusMeta[$rowStatus] ?? $displayStatusMeta['belum'];
+                            @endphp
                             <tr class="hover:bg-slate-50/70 transition-colors">
                                 <td class="px-5 py-4 font-black text-slate-400">{{ $loop->iteration }}</td>
                                 <td class="px-5 py-4">
@@ -110,6 +126,10 @@
                                         <div>
                                             <p class="font-black text-slate-800">{{ $student->full_name }}</p>
                                             <p class="text-xs font-bold text-slate-400">{{ $student->nickname ?: $student->student_no }}</p>
+                                            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                                                <span class="h-1.5 w-1.5 rounded-full {{ $rowMeta['dot'] }}"></span>
+                                                {{ $rowMeta['label'] }}
+                                            </span>
                                         </div>
                                     </div>
                                 </td>
@@ -118,7 +138,7 @@
                                     <div class="grid grid-cols-4 gap-2">
                                         @foreach($statusMeta as $key => $meta)
                                             <label class="cursor-pointer">
-                                                <input class="peer sr-only" type="radio" name="attendance[{{ $student->id }}][status]" value="{{ $key }}" @checked(($att?->status ?? 'alpa') === $key)>
+                                                <input class="peer sr-only attendance-status" type="radio" name="attendance[{{ $student->id }}][status]" value="{{ $key }}" @checked($att?->status === $key)>
                                                 <span class="flex items-center justify-center rounded-xl px-3 py-2 text-xs font-black ring-1 ring-slate-200 text-slate-500 peer-checked:ring-2 {{ $meta['checked'] }}">
                                                     {{ $meta['label'] }}
                                                 </span>
@@ -143,4 +163,17 @@
         @endif
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.querySelectorAll('[data-set-status]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const status = button.dataset.setStatus;
+            document.querySelectorAll(`.attendance-status[value="${status}"]`).forEach((input) => {
+                input.checked = true;
+            });
+        });
+    });
+</script>
 @endsection

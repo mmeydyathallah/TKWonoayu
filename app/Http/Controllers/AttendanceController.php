@@ -30,10 +30,11 @@ class AttendanceController extends Controller
             'izin' => 0,
             'sakit' => 0,
             'alpa' => 0,
+            'belum' => 0,
         ];
 
         foreach ($students as $student) {
-            $status = $attendances->get($student->id)?->status ?? 'alpa';
+            $status = $attendances->get($student->id)?->status ?? 'belum';
             $statusCounts[$status] = ($statusCounts[$status] ?? 0) + 1;
         }
 
@@ -68,12 +69,16 @@ class AttendanceController extends Controller
             'date' => 'required|date',
             'group' => 'nullable|string',
             'attendance' => 'required|array',
-            'attendance.*.status' => 'required|in:hadir,izin,sakit,alpa',
+            'attendance.*.status' => 'nullable|in:hadir,izin,sakit,alpa',
             'attendance.*.note' => 'nullable|string',
         ]);
 
         $date = $validated['date'];
         foreach ($validated['attendance'] as $studentId => $data) {
+            if (empty($data['status'])) {
+                continue;
+            }
+
             Attendance::updateOrCreate(
                 ['student_id' => $studentId, 'date' => $date],
                 ['status' => $data['status'], 'note' => $data['note'] ?? null, 'marked_by' => $user->id]
