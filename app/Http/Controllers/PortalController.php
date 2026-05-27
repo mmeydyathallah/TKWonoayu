@@ -195,7 +195,7 @@ class PortalController extends Controller
         return view('guru.students.create');
     }
 
-    public function parentDashboard(): View
+    public function parentDashboard(): View|RedirectResponse
     {
         $user = Auth::user();
         // Redirect Guru if they accidentally access Wali routes

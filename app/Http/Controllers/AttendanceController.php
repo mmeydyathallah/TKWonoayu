@@ -13,7 +13,7 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
         if ($user->role !== 'guru') {
-            abort(403);
+            return redirect()->route('wali.dashboard');
         }
 
         $date = $request->date('date') ?: now()->toDateString();
@@ -62,7 +62,7 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
         if ($user->role !== 'guru') {
-            abort(403);
+            return redirect()->route('wali.dashboard');
         }
 
         $validated = $request->validate([
@@ -96,7 +96,9 @@ class AttendanceController extends Controller
     public function update(Request $request, Attendance $attendance)
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') abort(403);
+        if ($user->role !== 'guru') {
+            return redirect()->route('wali.dashboard');
+        }
 
         $validated = $request->validate([
             'status' => 'required|in:hadir,izin,sakit,alpa',
