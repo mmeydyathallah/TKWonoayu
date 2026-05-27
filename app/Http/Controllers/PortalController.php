@@ -128,6 +128,22 @@ class PortalController extends Controller
     {
         $teacherName = Auth::user()->name;
         $totalStudents = Student::count();
+        $today = now()->toDateString();
+        $todayAttendances = Attendance::query()
+            ->whereDate('date', $today)
+            ->get();
+        $attendanceCounts = [
+            'hadir' => $todayAttendances->where('status', 'hadir')->count(),
+            'izin' => $todayAttendances->where('status', 'izin')->count(),
+            'sakit' => $todayAttendances->where('status', 'sakit')->count(),
+            'alpa' => max($totalStudents - $todayAttendances->whereIn('status', ['hadir', 'izin', 'sakit', 'alpa'])->count(), 0)
+                + $todayAttendances->where('status', 'alpa')->count(),
+        ];
+        $recordedAttendanceCount = $todayAttendances->count();
+        $attendancePercent = $totalStudents > 0
+            ? round(($attendanceCounts['hadir'] / $totalStudents) * 100)
+            : 0;
+
         $upcomingAgendas = SchoolAgenda::query()
             ->where(function($q) {
                 $q->where('event_date', '>=', now()->toDateString())
@@ -137,7 +153,14 @@ class PortalController extends Controller
             ->limit(4)
             ->get();
 
-        return view('guru.dashboard.index', compact('teacherName', 'totalStudents', 'upcomingAgendas'));
+        return view('guru.dashboard.index', compact(
+            'teacherName',
+            'totalStudents',
+            'upcomingAgendas',
+            'attendanceCounts',
+            'recordedAttendanceCount',
+            'attendancePercent'
+        ));
     }
 
     public function studentList(Request $request): View
@@ -202,6 +225,7 @@ class PortalController extends Controller
         // attendance this week (Mon-Fri)
         $attendancePercent = null;
         $weekAttendances = collect();
+        $todayAttendance = null;
         if ($student) {
             $weekStart = now()->startOfWeek();
             $weekEnd = $weekStart->copy()->addDays(4);
@@ -211,9 +235,19 @@ class PortalController extends Controller
             $presentCount = $weekAttendances->where('status', 'hadir')->count();
             $expectedDays = 5;
             $attendancePercent = $expectedDays > 0 ? round($presentCount / $expectedDays * 100) : null;
+            $todayAttendance = $weekAttendances->first(fn($item) => $item->date->isToday());
         }
 
-        return view('wali_murid.dashboard', compact('guardian', 'student', 'latestReport', 'announcement', 'upcomingAgendas', 'attendancePercent', 'weekAttendances'));
+        return view('wali_murid.dashboard', compact(
+            'guardian',
+            'student',
+            'latestReport',
+            'announcement',
+            'upcomingAgendas',
+            'attendancePercent',
+            'weekAttendances',
+            'todayAttendance'
+        ));
     }
 
     public function parentAttendance()

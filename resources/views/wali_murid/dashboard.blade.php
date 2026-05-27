@@ -27,9 +27,13 @@
                     <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
                     Kehadiran Minggu Ini
                 </h2>
-                <p class="text-on-surface-variant text-sm mt-1">Minggu aktif belajar</p>
+                <p class="text-on-surface-variant text-sm mt-1">
+                    Hari ini: <span class="font-bold text-primary">{{ $todayAttendance ? ucfirst($todayAttendance->status) : 'Belum dicatat' }}</span>
+                </p>
             </div>
-            <span class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm">{{ isset($attendancePercent) ? $attendancePercent . '% Hadir' : '—' }}</span>
+            <a href="{{ route('wali.attendance') }}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:scale-[1.02] transition-transform">
+                {{ isset($attendancePercent) ? $attendancePercent . '% Hadir' : '-' }}
+            </a>
         </div>
         <div class="flex justify-between mt-8 relative">
             <div class="absolute top-1/2 left-0 w-full h-1 bg-surface-container-high -z-10 -translate-y-1/2 rounded-full"></div>
@@ -59,6 +63,12 @@
                     <span class="font-label text-sm font-bold">{{ $days[$i] }}</span>
                 </div>
             @endforeach
+        </div>
+        <div class="mt-6 flex justify-end">
+            <a href="{{ route('wali.attendance') }}" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:underline">
+                Lihat riwayat absensi
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </a>
         </div>
     </section>
 

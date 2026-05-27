@@ -53,6 +53,54 @@
         </div>
     </div>
 
+    {{-- ATTENDANCE TODAY --}}
+    @php
+        $attendanceMeta = [
+            'hadir' => ['label' => 'Hadir', 'icon' => 'check_circle', 'class' => 'bg-emerald-50 text-emerald-600'],
+            'izin' => ['label' => 'Izin', 'icon' => 'assignment_late', 'class' => 'bg-blue-50 text-blue-600'],
+            'sakit' => ['label' => 'Sakit', 'icon' => 'sick', 'class' => 'bg-amber-50 text-amber-600'],
+            'alpa' => ['label' => 'Alpa', 'icon' => 'cancel', 'class' => 'bg-rose-50 text-rose-600'],
+        ];
+    @endphp
+    <section class="bg-white rounded-3xl border border-slate-100 ambient-shadow mb-8 overflow-hidden">
+        <div class="px-6 py-5 border-b border-slate-50 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+                <h3 class="font-headline text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">event_available</span>
+                    Absensi Hari Ini
+                </h3>
+                <p class="text-xs font-bold text-slate-400 mt-1">{{ now()->isoFormat('dddd, D MMMM YYYY') }}</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="rounded-2xl bg-primary/5 border border-primary/10 px-5 py-3">
+                    <p class="text-[10px] font-black text-primary uppercase tracking-widest">Kehadiran</p>
+                    <p class="text-2xl font-black text-slate-900 leading-tight">{{ $attendancePercent ?? 0 }}%</p>
+                </div>
+                <a href="{{ route('guru.attendance.index', ['date' => now()->toDateString()]) }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">edit_calendar</span>
+                    Input Absensi
+                </a>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-0 divide-x divide-y lg:divide-y-0 divide-slate-100">
+            <div class="p-5">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tercatat</p>
+                <p class="mt-2 text-3xl font-black text-slate-900">{{ $recordedAttendanceCount ?? 0 }}/{{ $totalStudents ?? 0 }}</p>
+                <p class="mt-1 text-xs font-bold text-slate-400">Siswa hari ini</p>
+            </div>
+            @foreach($attendanceMeta as $key => $meta)
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ $meta['label'] }}</p>
+                        <span class="material-symbols-outlined text-[20px] rounded-xl p-2 {{ $meta['class'] }}">{{ $meta['icon'] }}</span>
+                    </div>
+                    <p class="mt-2 text-3xl font-black text-slate-900">{{ $attendanceCounts[$key] ?? 0 }}</p>
+                    <p class="mt-1 text-xs font-bold text-slate-400">Siswa</p>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
     {{-- BENTO GRID --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
