@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\RfidAttendanceController;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -11,10 +9,6 @@ Route::get('/', [PortalController::class, 'login'])->name('login');
 Route::get('/login', [PortalController::class, 'login'])->name('auth.login');
 Route::post('/login', [PortalController::class, 'handleLogin'])->name('auth.handle');
 Route::post('/logout', [PortalController::class, 'logout'])->name('auth.logout');
-
-Route::post('/api/rfid/attendance', [RfidAttendanceController::class, 'store'])
-    ->withoutMiddleware([ValidateCsrfToken::class])
-    ->name('api.rfid.attendance');
 
 // Redirect routes
 Route::redirect('/guru', '/guru/dashboard');
