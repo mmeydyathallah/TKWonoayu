@@ -83,6 +83,10 @@
             <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.gallery') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">palette</span>
             <span class="text-[10px] font-bold mt-1">Galeri</span>
         </a>
+        <a href="{{ route('wali.attendance') }}" class="flex flex-col items-center justify-center p-2 rounded-full {{ request()->routeIs('wali.attendance') ? 'text-primary' : 'text-on-surface-variant' }}">
+            <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.attendance') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_available</span>
+            <span class="text-[10px] font-bold mt-1">Absensi</span>
+        </a>
         <a href="{{ route('wali.profile') }}" class="flex flex-col items-center justify-center p-2 rounded-full {{ request()->routeIs('wali.profile') ? 'text-primary' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.profile') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">child_care</span>
             <span class="text-[10px] font-bold mt-1">Profil</span>

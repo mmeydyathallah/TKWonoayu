@@ -219,17 +219,19 @@ class PortalController extends Controller
     public function parentAttendance()
     {
         $guardian = Auth::user();
-        $student = Student::where('wali_id', $guardian->id)->first();
+        if ($guardian->role === 'guru') {
+            return redirect()->route('guru.dashboard');
+        }
+
+        $student = $guardian->student;
         if (! $student) {
             return redirect()->route('wali.dashboard')->with('error', 'Siswa terkait tidak ditemukan.');
         }
 
-        // latest paginated attendances
         $attendances = Attendance::where('student_id', $student->id)
             ->orderByDesc('date')
             ->paginate(20);
 
-        // compute this week's percent
         $weekStart = now()->startOfWeek();
         $weekEnd = $weekStart->copy()->addDays(4);
         $weekAttendances = Attendance::where('student_id', $student->id)
@@ -238,8 +240,21 @@ class PortalController extends Controller
         $presentCount = $weekAttendances->where('status', 'hadir')->count();
         $expectedDays = 5;
         $attendancePercent = $expectedDays > 0 ? round($presentCount / $expectedDays * 100) : null;
+        $statusCounts = [
+            'hadir' => $attendances->getCollection()->where('status', 'hadir')->count(),
+            'izin' => $attendances->getCollection()->where('status', 'izin')->count(),
+            'sakit' => $attendances->getCollection()->where('status', 'sakit')->count(),
+            'alpa' => $attendances->getCollection()->where('status', 'alpa')->count(),
+        ];
 
-        return view('wali_murid.attendance.index', compact('guardian', 'student', 'attendances', 'attendancePercent', 'weekAttendances'));
+        return view('wali_murid.attendance.index', compact(
+            'guardian',
+            'student',
+            'attendances',
+            'attendancePercent',
+            'weekAttendances',
+            'statusCounts'
+        ));
     }
 
     public function studentProfile(): View

@@ -40,7 +40,7 @@
             @foreach(range(0,4) as $i)
                 @php
                     $d = $weekStart->copy()->addDays($i);
-                    $att = $weekAttendances->firstWhere('date', $d->toDateString());
+                    $att = $weekAttendances->first(fn($item) => $item->date->toDateString() === $d->toDateString());
                 @endphp
                 <div class="flex flex-col items-center gap-2">
                     @if($att && $att->status === 'hadir')
@@ -259,6 +259,12 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">photo_library</span>
                 </div>
                 <span class="font-bold text-sm text-on-surface">Galeri Kegiatan</span>
+            </a>
+            <a class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/15 flex flex-col items-center text-center hover:scale-[1.02] transition-transform" href="{{ route('wali.attendance') }}">
+                <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_available</span>
+                </div>
+                <span class="font-bold text-sm text-on-surface">Absensi Anak</span>
             </a>
             <a class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/15 flex flex-col items-center text-center hover:scale-[1.02] transition-transform" href="{{ route('wali.profile') }}">
                 <div class="w-12 h-12 rounded-full bg-tertiary-container/60 text-tertiary flex items-center justify-center mb-3">

@@ -25,8 +25,36 @@ class AttendanceController extends Controller
         $students = $query->get();
 
         $attendances = Attendance::where('date', $date)->get()->keyBy('student_id');
+        $statusCounts = [
+            'hadir' => 0,
+            'izin' => 0,
+            'sakit' => 0,
+            'alpa' => 0,
+        ];
 
-        return view('guru.attendance.index', compact('students', 'attendances', 'date', 'group'));
+        foreach ($students as $student) {
+            $status = $attendances->get($student->id)?->status ?? 'alpa';
+            $statusCounts[$status] = ($statusCounts[$status] ?? 0) + 1;
+        }
+
+        $classGroups = Student::query()
+            ->select('class_group')
+            ->distinct()
+            ->orderBy('class_group')
+            ->pluck('class_group');
+        $recordedCount = $attendances->only($students->pluck('id')->all())->count();
+        $totalStudents = $students->count();
+
+        return view('guru.attendance.index', compact(
+            'students',
+            'attendances',
+            'date',
+            'group',
+            'statusCounts',
+            'classGroups',
+            'recordedCount',
+            'totalStudents'
+        ));
     }
 
     public function store(Request $request)
@@ -38,6 +66,7 @@ class AttendanceController extends Controller
 
         $validated = $request->validate([
             'date' => 'required|date',
+            'group' => 'nullable|string',
             'attendance' => 'required|array',
             'attendance.*.status' => 'required|in:hadir,izin,sakit,alpa',
             'attendance.*.note' => 'nullable|string',
@@ -51,7 +80,12 @@ class AttendanceController extends Controller
             );
         }
 
-        return back()->with('success', 'Absensi berhasil disimpan.');
+        return redirect()
+            ->route('guru.attendance.index', array_filter([
+                'date' => $date,
+                'group' => $validated['group'] ?? null,
+            ]))
+            ->with('success', 'Absensi berhasil disimpan.');
     }
 
     public function update(Request $request, Attendance $attendance)

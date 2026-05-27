@@ -32,6 +32,11 @@
             <span class="font-medium text-sm">Agenda Sekolah</span>
         </a>
 
+        <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('wali.attendance') ? 'bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 scale-105' : 'text-on-surface-variant hover:bg-surface-container-high rounded-full' }} transition-all duration-300" href="{{ route('wali.attendance') }}">
+            <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.attendance') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_available</span>
+            <span class="font-medium text-sm">Absensi Anak</span>
+        </a>
+
         <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('wali.profile') ? 'bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 scale-105' : 'text-on-surface-variant hover:bg-surface-container-high rounded-full' }} transition-all duration-300" href="{{ route('wali.profile') }}">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.profile') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">child_care</span>
             <span class="font-medium text-sm">Profil Anak</span>
