@@ -61,6 +61,14 @@
                     <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nisn" value="{{ $student->nisn }}" type="text"/>
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kode RFID</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">nfc</span>
+                        <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT pl-12 pr-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm uppercase" name="rfid_code" value="{{ old('rfid_code', $student->rfid_code) }}" placeholder="Contoh: 04A1B2C3D4" type="text"/>
+                    </div>
+                    <p class="text-[10px] text-on-surface-variant/70 ml-1">Isi UID kartu dari alat PN532. Spasi, titik dua, dan strip akan dinormalisasi otomatis.</p>
+                </div>
+                <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kelompok (Group)</label>
                     <div class="relative">
                         <select class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 appearance-none outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm cursor-pointer" name="class_group" required="">

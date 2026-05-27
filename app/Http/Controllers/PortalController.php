@@ -14,12 +14,14 @@ use App\Models\Student;
 use App\Models\SchoolAgenda;
 use App\Models\User;
 use App\Models\Attendance;
+use App\Support\RfidCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PortalController extends Controller
@@ -180,6 +182,7 @@ class PortalController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
                   ->orWhere('student_no', 'like', "%{$search}%")
+                  ->orWhere('rfid_code', 'like', "%{$search}%")
                   ->orWhere('nik', 'like', "%{$search}%")
                   ->orWhere('nisn', 'like', "%{$search}%");
             });
@@ -755,8 +758,13 @@ class PortalController extends Controller
             return back()->with('error', 'Tabel belum siap. Jalankan migrate terlebih dahulu.');
         }
 
+        $request->merge([
+            'rfid_code' => RfidCode::normalize($request->input('rfid_code')),
+        ]);
+
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50'],
+            'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -773,6 +781,7 @@ class PortalController extends Controller
 
         $student = Student::query()->create([
             'student_no' => $validated['student_no'],
+            'rfid_code' => $validated['rfid_code'] ?? null,
             'full_name' => $validated['full_name'],
             'class_group' => $validated['class_group'],
             'school_year' => $validated['school_year'],
@@ -829,8 +838,13 @@ class PortalController extends Controller
 
     public function updateStudent(Request $request, Student $student): RedirectResponse
     {
+        $request->merge([
+            'rfid_code' => RfidCode::normalize($request->input('rfid_code')),
+        ]);
+
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50'],
+            'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -845,6 +859,7 @@ class PortalController extends Controller
 
         $student->update([
             'student_no' => $validated['student_no'],
+            'rfid_code' => $validated['rfid_code'] ?? null,
             'full_name' => $validated['full_name'],
             'class_group' => $validated['class_group'],
             'school_year' => $validated['school_year'],

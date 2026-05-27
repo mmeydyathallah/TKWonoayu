@@ -49,7 +49,7 @@
     <div class="mb-10 flex flex-col lg:flex-row gap-6 items-center justify-between">
         <form action="{{ route('guru.students.index') }}" method="GET" class="relative w-full lg:w-[400px] group">
             <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-            <input name="search" value="{{ request('search') }}" class="w-full bg-white dark:bg-slate-800 text-sm rounded-2xl pl-12 pr-5 py-4 outline-none focus:ring-4 focus:ring-primary/10 border border-slate-100 focus:border-primary/30 transition-all font-body text-slate-700 ambient-shadow" placeholder="Cari nama, NISN, atau NIK..." type="text" onchange="this.form.submit()"/>
+            <input name="search" value="{{ request('search') }}" class="w-full bg-white dark:bg-slate-800 text-sm rounded-2xl pl-12 pr-5 py-4 outline-none focus:ring-4 focus:ring-primary/10 border border-slate-100 focus:border-primary/30 transition-all font-body text-slate-700 ambient-shadow" placeholder="Cari nama, NISN, NIK, atau RFID..." type="text" onchange="this.form.submit()"/>
             @if(request('group'))
                 <input type="hidden" name="group" value="{{ request('group') }}">
             @endif
@@ -116,6 +116,10 @@
                                     <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
                                         <span class="material-symbols-outlined text-[16px] text-primary">badge</span>
                                         <span>Induk: {{ $student->student_no }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[10px] text-slate-400 font-bold tracking-tight">
+                                        <span class="material-symbols-outlined text-[16px]">nfc</span>
+                                        <span>RFID: {{ $student->rfid_code ?? '-' }}</span>
                                     </div>
                                     <div class="flex items-center gap-2 text-[10px] text-slate-400 font-bold tracking-tight">
                                         <span class="material-symbols-outlined text-[16px]">fingerprint</span>

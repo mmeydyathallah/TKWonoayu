@@ -16,6 +16,7 @@ class Student extends Model
      */
     protected $fillable = [
         'student_no',
+        'rfid_code',
         'nisn',
         'class_group',
         'school_year',
