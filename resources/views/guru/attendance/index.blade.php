@@ -127,6 +127,8 @@
                             <th class="px-5 py-4 w-12">No</th>
                             <th class="px-5 py-4">Siswa</th>
                             <th class="px-5 py-4 w-52">Kelompok</th>
+                            <th class="px-5 py-4 w-40">Masuk</th>
+                            <th class="px-5 py-4 w-40">Pulang</th>
                             <th class="px-5 py-4 w-72">Status</th>
                             <th class="px-5 py-4">Catatan</th>
                         </tr>
@@ -154,6 +156,18 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-4 font-bold text-slate-500">{{ $student->class_group }}</td>
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex items-center gap-1 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-600">
+                                        <span class="material-symbols-outlined text-[15px]">login</span>
+                                        {{ $att?->check_in_at?->format('H:i') ?? '-' }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex items-center gap-1 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-600">
+                                        <span class="material-symbols-outlined text-[15px]">logout</span>
+                                        {{ $att?->check_out_at?->format('H:i') ?? '-' }}
+                                    </span>
+                                </td>
                                 <td class="px-5 py-4">
                                     <div class="grid grid-cols-4 gap-2">
                                         @foreach($statusMeta as $key => $meta)

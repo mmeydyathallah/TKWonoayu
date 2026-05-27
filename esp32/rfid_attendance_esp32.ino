@@ -177,10 +177,19 @@ void loop() {
     beep(3, 80, 80);
   } else if (httpCode == 200) {
     String studentName = jsonGetString(response, "student_name");
+    String eventType = jsonGetString(response, "event_type");
     if (studentName.length() == 0) {
       studentName = "Nama tidak ada";
     }
-    showLCD("Hadir: " + studentName.substring(0, 9), "UID " + uidHex.substring(0, 8));
+    String eventLabel = "HADIR";
+    if (eventType == "masuk") {
+      eventLabel = "MASUK";
+    } else if (eventType == "pulang") {
+      eventLabel = "PULANG";
+    } else if (eventType == "sudah_tercatat") {
+      eventLabel = "SUDAH ADA";
+    }
+    showLCD(eventLabel + ": " + studentName.substring(0, 8), "UID " + uidHex.substring(0, 8));
     beep(2, 90, 80);
   } else if (httpCode == 404) {
     showLCD("Kartu belum", "terdaftar");

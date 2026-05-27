@@ -95,6 +95,8 @@
                         <tr class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
                             <th class="px-5 py-4">Tanggal</th>
                             <th class="px-5 py-4">Status</th>
+                            <th class="px-5 py-4">Masuk</th>
+                            <th class="px-5 py-4">Pulang</th>
                             <th class="px-5 py-4">Catatan Guru</th>
                         </tr>
                     </thead>
@@ -109,6 +111,8 @@
                                         {{ $meta['label'] }}
                                     </span>
                                 </td>
+                                <td class="px-5 py-4 font-black text-on-surface-variant">{{ $attendance->check_in_at?->format('H:i') ?? '-' }}</td>
+                                <td class="px-5 py-4 font-black text-on-surface-variant">{{ $attendance->check_out_at?->format('H:i') ?? '-' }}</td>
                                 <td class="px-5 py-4 font-bold text-on-surface-variant">{{ $attendance->note ?: '-' }}</td>
                             </tr>
                         @endforeach
