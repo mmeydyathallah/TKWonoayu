@@ -1,6 +1,14 @@
 @extends('layouts.parent')
 
-@php $title = 'Beranda - Portal Wali Murid TK Wonoayu'; @endphp
+@php
+    $title = 'Beranda - Portal Wali Murid TK Wonoayu';
+    $attendanceStatusMeta = [
+        'hadir' => ['label' => 'Hadir', 'icon' => 'check_circle', 'class' => 'bg-secondary text-white shadow-md'],
+        'izin' => ['label' => 'Izin', 'icon' => 'assignment_late', 'class' => 'bg-blue-500 text-white shadow-md'],
+        'sakit' => ['label' => 'Sakit', 'icon' => 'sick', 'class' => 'bg-amber-400 text-white shadow-md'],
+        'alpa' => ['label' => 'Alpa', 'icon' => 'cancel', 'class' => 'bg-rose-500 text-white shadow-md'],
+    ];
+@endphp
 
 @section('content')
 {{-- Hero Section --}}
@@ -28,14 +36,14 @@
                     Kehadiran Minggu Ini
                 </h2>
                 <p class="text-on-surface-variant text-sm mt-1">
-                    Hari ini: <span class="font-bold text-primary">{{ $todayAttendance ? ucfirst($todayAttendance->status) : 'Belum dicatat' }}</span>
+                    Hari ini: <span class="font-bold text-primary">{{ $todayAttendance ? ($attendanceStatusMeta[$todayAttendance->status]['label'] ?? ucfirst($todayAttendance->status)) : 'Belum dicatat' }}</span>
                 </p>
             </div>
             <a href="{{ route('wali.attendance') }}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:scale-[1.02] transition-transform">
                 {{ isset($attendancePercent) ? $attendancePercent . '% Hadir' : '-' }}
             </a>
         </div>
-        <div class="flex justify-between mt-8 relative">
+        <div class="grid grid-cols-5 gap-2 mt-8 relative">
             <div class="absolute top-1/2 left-0 w-full h-1 bg-surface-container-high -z-10 -translate-y-1/2 rounded-full"></div>
             @php
                 $weekStart = now()->startOfWeek();
@@ -45,15 +53,12 @@
                 @php
                     $d = $weekStart->copy()->addDays($i);
                     $att = $weekAttendances->first(fn($item) => $item->date->toDateString() === $d->toDateString());
+                    $meta = $att ? ($attendanceStatusMeta[$att->status] ?? null) : null;
                 @endphp
                 <div class="flex flex-col items-center gap-2">
-                    @if($att && $att->status === 'hadir')
-                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center shadow-md">
-                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
-                        </div>
-                    @elseif($att && in_array($att->status, ['izin','sakit']))
-                        <div class="w-10 h-10 rounded-full bg-amber-400 text-white flex items-center justify-center shadow-md">
-                            <span class="material-symbols-outlined text-sm">help</span>
+                    @if($meta)
+                        <div class="w-10 h-10 rounded-full {{ $meta['class'] }} flex items-center justify-center">
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">{{ $meta['icon'] }}</span>
                         </div>
                     @else
                         <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center border-2 border-dashed border-outline-variant shadow-sm">
@@ -61,6 +66,7 @@
                         </div>
                     @endif
                     <span class="font-label text-sm font-bold">{{ $days[$i] }}</span>
+                    <span class="text-[10px] font-bold text-on-surface-variant">{{ $meta['label'] ?? 'Belum' }}</span>
                 </div>
             @endforeach
         </div>
