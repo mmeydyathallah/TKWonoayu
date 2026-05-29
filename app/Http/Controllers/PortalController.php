@@ -767,13 +767,15 @@ class PortalController extends Controller
             'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
             'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')],
+            'nik' => ['nullable', 'string', 'max:32', Rule::unique('students', 'nik')],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:50'],
+            'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')],
             'avatar' => ['nullable', 'image', 'max:2048'], // Max 2MB
-        ]);
+        ], $this->studentValidationMessages());
 
         $avatarUrl = null;
         if ($request->hasFile('avatar')) {
@@ -804,7 +806,7 @@ class PortalController extends Controller
         } catch (QueryException $e) {
             return back()
                 ->withInput()
-                ->withErrors(['student_no' => 'Data duplikat terdeteksi. Periksa No Induk, NISN, atau Kode RFID.']);
+                ->withErrors($this->duplicateStudentErrors($e));
         }
 
 
@@ -854,12 +856,14 @@ class PortalController extends Controller
             'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')->ignore($student->id)],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
             'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')->ignore($student->id)],
+            'nik' => ['nullable', 'string', 'max:32', Rule::unique('students', 'nik')->ignore($student->id)],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
+            'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')->ignore($student->user_id)],
             'avatar' => ['nullable', 'image', 'max:2048'],
-        ]);
+        ], $this->studentValidationMessages());
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -889,7 +893,7 @@ class PortalController extends Controller
         } catch (QueryException $e) {
             return back()
                 ->withInput()
-                ->withErrors(['student_no' => 'Data duplikat terdeteksi. Periksa No Induk, NISN, atau Kode RFID.']);
+                ->withErrors($this->duplicateStudentErrors($e));
         }
 
         $student->parentProfile()->update([
@@ -1047,6 +1051,49 @@ class PortalController extends Controller
             ->get();
 
         return view('wali_murid.agenda.index', compact('agendas', 'date', 'month', 'year'));
+    }
+
+    private function studentValidationMessages(): array
+    {
+        return [
+            'student_no.unique' => 'No Induk sudah dipakai oleh siswa lain.',
+            'nisn.unique' => 'NISN sudah dipakai oleh siswa lain.',
+            'nik.unique' => 'NIK anak sudah dipakai oleh siswa lain.',
+            'rfid_code.unique' => 'Kode RFID sudah dipakai oleh siswa lain.',
+            'parent_email.unique' => 'Username / Email wali murid sudah dipakai oleh akun lain.',
+            'student_no.required' => 'No Induk wajib diisi.',
+            'full_name.required' => 'Nama lengkap wajib diisi.',
+            'class_group.required' => 'Kelompok wajib dipilih.',
+            'school_year.required' => 'Tahun pelajaran wajib diisi.',
+            'guardian_name.required' => 'Nama wali murid wajib diisi.',
+        ];
+    }
+
+    private function duplicateStudentErrors(QueryException $e): array
+    {
+        $message = $e->getMessage();
+
+        if (str_contains($message, 'students_student_no_unique')) {
+            return ['student_no' => 'No Induk sudah dipakai oleh siswa lain.'];
+        }
+
+        if (str_contains($message, 'students_nisn_unique')) {
+            return ['nisn' => 'NISN sudah dipakai oleh siswa lain.'];
+        }
+
+        if (str_contains($message, 'students_nik_unique')) {
+            return ['nik' => 'NIK anak sudah dipakai oleh siswa lain.'];
+        }
+
+        if (str_contains($message, 'students_rfid_code_unique')) {
+            return ['rfid_code' => 'Kode RFID sudah dipakai oleh siswa lain.'];
+        }
+
+        if (str_contains($message, 'users_email_unique')) {
+            return ['parent_email' => 'Username / Email wali murid sudah dipakai oleh akun lain.'];
+        }
+
+        return ['student_no' => 'Data duplikat terdeteksi. Periksa No Induk, NISN, Kode RFID, atau akun wali murid.'];
     }
 
     private function tableReady(array $tables): bool

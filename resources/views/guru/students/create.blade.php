@@ -58,6 +58,19 @@
         {{ session('error') }}
     </div>
     @endif
+    @if ($errors->any())
+    <div class="mb-6 rounded-xl bg-rose-50 border border-rose-100 px-5 py-4 text-sm font-semibold text-rose-700">
+        <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+            <span>Data belum bisa disimpan.</span>
+        </div>
+        <ul class="list-disc pl-6 space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <form action="{{ route('guru.students.store') }}" class="space-y-8 md:space-y-12" method="post" enctype="multipart/form-data">
         @csrf
         <!-- Section 1: Basic Info -->
@@ -73,11 +86,13 @@
                 <!-- Input Field Component -->
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">No Induk</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="student_no" placeholder="Contoh: 12345" required="" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="student_no" value="{{ old('student_no') }}" placeholder="Contoh: 12345" required="" type="text"/>
+                    @error('student_no')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">NISN</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nisn" placeholder="Contoh: 0123456789" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nisn" value="{{ old('nisn') }}" placeholder="Contoh: 0123456789" type="text"/>
+                    @error('nisn')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kode RFID</label>
@@ -86,6 +101,7 @@
                         <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT pl-12 pr-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm uppercase" name="rfid_code" value="{{ old('rfid_code') }}" placeholder="Contoh: 04A1B2C3D4" type="text"/>
                     </div>
                     <p class="text-[10px] text-on-surface-variant/70 ml-1">Isi UID kartu dari alat PN532. Spasi, titik dua, dan strip akan dinormalisasi otomatis.</p>
+                    @error('rfid_code')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kelompok (Group)</label>
@@ -158,7 +174,8 @@
                 </div>
                 <div class="space-y-2 md:col-span-6">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">NIK (Nomor Induk Kependudukan)</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nik" placeholder="16 digit NIK" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nik" value="{{ old('nik') }}" placeholder="16 digit NIK" type="text"/>
+                    @error('nik')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="space-y-2 md:col-span-3">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Tempat Lahir</label>
@@ -296,10 +313,12 @@
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
                             <input class="w-full bg-white text-on-surface rounded-DEFAULT px-12 py-3 outline-none transition-all ghost-border focus:border-emerald-500 border-transparent shadow-sm" 
                                    name="parent_email" 
+                                   value="{{ old('parent_email') }}"
                                    placeholder="Contoh: wali.12345" 
                                    type="text"/>
                         </div>
                         <p class="text-[10px] text-slate-400 font-medium ml-1 italic">* Digunakan oleh wali murid untuk login.</p>
+                        @error('parent_email')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="space-y-2">
