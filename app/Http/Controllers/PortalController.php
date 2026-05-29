@@ -15,6 +15,7 @@ use App\Models\SchoolAgenda;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Support\RfidCode;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -765,6 +766,7 @@ class PortalController extends Controller
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
+            'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -779,25 +781,31 @@ class PortalController extends Controller
             $avatarUrl = '/storage/' . $path;
         }
 
-        $student = Student::query()->create([
-            'student_no' => $validated['student_no'],
-            'rfid_code' => $validated['rfid_code'] ?? null,
-            'full_name' => $validated['full_name'],
-            'class_group' => $validated['class_group'],
-            'school_year' => $validated['school_year'],
-            'nickname' => $request->string('nickname')->value(),
-            'nisn' => $request->string('nisn')->value(),
-            'nik' => $request->string('nik')->value(),
-            'birth_place' => $request->string('birth_place')->value(),
-            'birth_date' => $request->filled('birth_date') ? $request->date('birth_date') : null,
-            'gender' => $request->string('gender')->value(),
-            'religion' => $request->string('religion')->value(),
-            'address' => $request->string('address')->value(),
-            'phone_number' => $request->string('phone_number')->value(),
-            'sibling_order' => $request->input('sibling_order'),
-            'siblings_total' => $request->input('siblings_total'),
-            'avatar_url' => $avatarUrl,
-        ]);
+        try {
+            $student = Student::query()->create([
+                'student_no' => $validated['student_no'],
+                'rfid_code' => $validated['rfid_code'] ?? null,
+                'full_name' => $validated['full_name'],
+                'class_group' => $validated['class_group'],
+                'school_year' => $validated['school_year'],
+                'nickname' => $request->string('nickname')->value(),
+                'nisn' => $request->string('nisn')->value(),
+                'nik' => $request->string('nik')->value(),
+                'birth_place' => $request->string('birth_place')->value(),
+                'birth_date' => $request->filled('birth_date') ? $request->date('birth_date') : null,
+                'gender' => $request->string('gender')->value(),
+                'religion' => $request->string('religion')->value(),
+                'address' => $request->string('address')->value(),
+                'phone_number' => $request->string('phone_number')->value(),
+                'sibling_order' => $request->input('sibling_order'),
+                'siblings_total' => $request->input('siblings_total'),
+                'avatar_url' => $avatarUrl,
+            ]);
+        } catch (QueryException $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['student_no' => 'Data duplikat terdeteksi. Periksa No Induk, NISN, atau Kode RFID.']);
+        }
 
 
         ParentProfile::query()->create([
@@ -845,6 +853,7 @@ class PortalController extends Controller
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')->ignore($student->id)],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
+            'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')->ignore($student->id)],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -857,25 +866,31 @@ class PortalController extends Controller
             $student->avatar_url = '/storage/' . $path;
         }
 
-        $student->update([
-            'student_no' => $validated['student_no'],
-            'rfid_code' => $validated['rfid_code'] ?? null,
-            'full_name' => $validated['full_name'],
-            'class_group' => $validated['class_group'],
-            'school_year' => $validated['school_year'],
-            'nickname' => $request->string('nickname')->value(),
-            'nisn' => $request->string('nisn')->value(),
-            'nik' => $request->string('nik')->value(),
-            'birth_place' => $request->string('birth_place')->value(),
-            'birth_date' => $request->filled('birth_date') ? $request->date('birth_date') : null,
-            'gender' => $request->string('gender')->value(),
-            'religion' => $request->string('religion')->value(),
-            'address' => $request->string('address')->value(),
-            'phone_number' => $request->string('phone_number')->value(),
-            'sibling_order' => $request->input('sibling_order'),
-            'siblings_total' => $request->input('siblings_total'),
-            'avatar_url' => $student->avatar_url,
-        ]);
+        try {
+            $student->update([
+                'student_no' => $validated['student_no'],
+                'rfid_code' => $validated['rfid_code'] ?? null,
+                'full_name' => $validated['full_name'],
+                'class_group' => $validated['class_group'],
+                'school_year' => $validated['school_year'],
+                'nickname' => $request->string('nickname')->value(),
+                'nisn' => $request->string('nisn')->value(),
+                'nik' => $request->string('nik')->value(),
+                'birth_place' => $request->string('birth_place')->value(),
+                'birth_date' => $request->filled('birth_date') ? $request->date('birth_date') : null,
+                'gender' => $request->string('gender')->value(),
+                'religion' => $request->string('religion')->value(),
+                'address' => $request->string('address')->value(),
+                'phone_number' => $request->string('phone_number')->value(),
+                'sibling_order' => $request->input('sibling_order'),
+                'siblings_total' => $request->input('siblings_total'),
+                'avatar_url' => $student->avatar_url,
+            ]);
+        } catch (QueryException $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['student_no' => 'Data duplikat terdeteksi. Periksa No Induk, NISN, atau Kode RFID.']);
+        }
 
         $student->parentProfile()->update([
             'guardian_name' => $validated['guardian_name'],
