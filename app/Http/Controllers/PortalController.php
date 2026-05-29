@@ -763,7 +763,7 @@ class PortalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'student_no' => ['required', 'string', 'max:50'],
+            'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
@@ -843,7 +843,7 @@ class PortalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'student_no' => ['required', 'string', 'max:50'],
+            'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')->ignore($student->id)],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
