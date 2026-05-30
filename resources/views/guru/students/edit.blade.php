@@ -52,9 +52,32 @@
     </div>
     @endif
 
-    <form action="{{ route('guru.students.update', $student) }}" class="space-y-8 md:space-y-12" method="post" enctype="multipart/form-data">
+    <form id="studentEditForm" action="{{ route('guru.students.update', $student) }}" class="space-y-8 md:space-y-12" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        @if(session('duplicate_confirmation_notices') && count(session('duplicate_confirmation_notices')))
+        <div class="rounded-xl bg-amber-50 border border-amber-200 px-5 py-4 text-sm text-amber-900">
+            <div class="flex items-center gap-2 mb-2 font-bold">
+                <span class="material-symbols-outlined text-[18px]">warning</span>
+                <span>Ditemukan data yang sama.</span>
+            </div>
+            <p class="mb-3 font-medium">Periksa dulu data berikut. Jika memang benar, klik Tetap Simpan.</p>
+            <ul class="list-disc pl-6 space-y-1 mb-4">
+                @foreach(session('duplicate_confirmation_notices') as $notice)
+                    <li>{{ $notice }}</li>
+                @endforeach
+            </ul>
+            <div class="flex flex-wrap gap-3">
+                <button class="px-5 py-2 rounded-full bg-amber-600 text-white font-bold hover:bg-amber-700 transition-colors" type="submit" name="confirm_duplicate_save" value="1">
+                    Tetap Simpan
+                </button>
+                <a href="#studentEditForm" class="px-5 py-2 rounded-full border border-amber-300 text-amber-800 font-bold hover:bg-amber-100 transition-colors">
+                    Tidak, Periksa Lagi
+                </a>
+            </div>
+            <p class="mt-3 text-xs text-amber-700">Jika mengunggah foto atau mengisi password baru, pilih/isi ulang sebelum klik Tetap Simpan.</p>
+        </div>
+        @endif
 
         <!-- Section 1: Basic Info -->
         <section class="bg-surface-container-low rounded-[2rem] p-6 md:p-8 ghost-border ambient-shadow relative overflow-hidden">
@@ -90,7 +113,7 @@
                     <div class="relative">
                         <select class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 appearance-none outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm cursor-pointer" name="class_group" required="">
                             @foreach(['A1', 'A2', 'B1', 'B2'] as $grp)
-                                <option value="{{ $grp }}" {{ $student->class_group == $grp ? 'selected' : '' }}>Kelompok {{ $grp }}</option>
+                                <option value="{{ $grp }}" {{ old('class_group', $student->class_group) == $grp ? 'selected' : '' }}>Kelompok {{ $grp }}</option>
                             @endforeach
                         </select>
                         <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
@@ -98,7 +121,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Tahun Pelajaran</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="school_year" value="{{ $student->school_year }}" required="" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="school_year" value="{{ old('school_year', $student->school_year) }}" required="" type="text"/>
                 </div>
             </div>
         </section>
@@ -151,11 +174,11 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                 <div class="space-y-2 md:col-span-8">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nama Lengkap</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="full_name" value="{{ $student->full_name }}" required="" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="full_name" value="{{ old('full_name', $student->full_name) }}" required="" type="text"/>
                 </div>
                 <div class="space-y-2 md:col-span-4">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nama Panggilan</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nickname" value="{{ $student->nickname }}" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="nickname" value="{{ old('nickname', $student->nickname) }}" type="text"/>
                 </div>
                 <div class="space-y-2 md:col-span-6">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">NIK (Nomor Induk Kependudukan)</label>
@@ -164,21 +187,21 @@
                 </div>
                 <div class="space-y-2 md:col-span-3">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Tempat Lahir</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="birth_place" value="{{ $student->birth_place }}" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="birth_place" value="{{ old('birth_place', $student->birth_place) }}" type="text"/>
                 </div>
                 <div class="space-y-2 md:col-span-3">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Tanggal Lahir</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="birth_date" value="{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}" type="date"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="birth_date" value="{{ old('birth_date', $student->birth_date ? $student->birth_date->format('Y-m-d') : '') }}" type="date"/>
                 </div>
                 <div class="space-y-2 md:col-span-4">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Jenis Kelamin</label>
                     <div class="flex gap-4 mt-2">
                         <label class="flex items-center gap-2 cursor-pointer group">
-                            <input class="w-5 h-5 text-primary border-outline-variant focus:ring-primary/20 rounded-full cursor-pointer" name="gender" type="radio" value="Laki-laki" {{ $student->gender == 'Laki-laki' ? 'checked' : '' }}/>
+                            <input class="w-5 h-5 text-primary border-outline-variant focus:ring-primary/20 rounded-full cursor-pointer" name="gender" type="radio" value="Laki-laki" {{ old('gender', $student->gender) == 'Laki-laki' ? 'checked' : '' }}/>
                             <span class="text-on-surface font-medium group-hover:text-primary transition-colors">Laki-laki</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer group">
-                            <input class="w-5 h-5 text-primary border-outline-variant focus:ring-primary/20 rounded-full cursor-pointer" name="gender" type="radio" value="Perempuan" {{ $student->gender == 'Perempuan' ? 'checked' : '' }}/>
+                            <input class="w-5 h-5 text-primary border-outline-variant focus:ring-primary/20 rounded-full cursor-pointer" name="gender" type="radio" value="Perempuan" {{ old('gender', $student->gender) == 'Perempuan' ? 'checked' : '' }}/>
                             <span class="text-on-surface font-medium group-hover:text-primary transition-colors">Perempuan</span>
                         </label>
                     </div>
@@ -188,7 +211,7 @@
                     <div class="relative">
                         <select class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 appearance-none outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm cursor-pointer" name="religion">
                             @foreach(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'] as $rel)
-                                <option value="{{ $rel }}" {{ $student->religion == $rel ? 'selected' : '' }}>{{ $rel }}</option>
+                                <option value="{{ $rel }}" {{ old('religion', $student->religion) == $rel ? 'selected' : '' }}>{{ $rel }}</option>
                             @endforeach
                         </select>
                         <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
@@ -197,20 +220,20 @@
                 <div class="space-y-2 md:col-span-4">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Info Saudara (Anak Ke)</label>
                     <div class="flex items-center gap-2">
-                        <input class="w-20 bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-3 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm text-center" name="sibling_order" value="{{ $student->sibling_order }}" placeholder="Ke" type="number"/>
+                        <input class="w-20 bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-3 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm text-center" name="sibling_order" value="{{ old('sibling_order', $student->sibling_order) }}" placeholder="Ke" type="number"/>
                         <span class="text-on-surface-variant font-medium">dari</span>
-                        <input class="w-20 bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-3 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm text-center" name="siblings_total" value="{{ $student->siblings_total }}" placeholder="Total" type="number"/>
+                        <input class="w-20 bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-3 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm text-center" name="siblings_total" value="{{ old('siblings_total', $student->siblings_total) }}" placeholder="Total" type="number"/>
                         <span class="text-on-surface-variant font-medium">bersaudara</span>
                     </div>
                 </div>
 
                 <div class="md:col-span-12 space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Alamat Lengkap</label>
-                    <textarea class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-xl px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="address" rows="3" placeholder="Alamat rumah lengkap">{{ $student->address }}</textarea>
+                    <textarea class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-xl px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="address" rows="3" placeholder="Alamat rumah lengkap">{{ old('address', $student->address) }}</textarea>
                 </div>
                 <div class="md:col-span-12 space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nomor Telepon (WhatsApp)</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="phone_number" value="{{ $student->phone_number }}" placeholder="Contoh: 08123456789" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="phone_number" value="{{ old('phone_number', $student->phone_number) }}" placeholder="Contoh: 08123456789" type="text"/>
                 </div>
             </div>
         </section>
@@ -226,11 +249,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nama Wali Murid</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="guardian_name" value="{{ $student->parentProfile?->guardian_name }}" required="" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="guardian_name" value="{{ old('guardian_name', $student->parentProfile?->guardian_name) }}" required="" type="text"/>
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nomor HP Wali</label>
-                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="guardian_phone" value="{{ $student->parentProfile?->guardian_phone }}" type="text"/>
+                    <input class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm" name="guardian_phone" value="{{ old('guardian_phone', $student->parentProfile?->guardian_phone) }}" type="text"/>
                 </div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -243,15 +266,15 @@
                     <div class="space-y-5">
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nama Lengkap</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_name" value="{{ $student->parentProfile?->father_name }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_name" value="{{ old('father_name', $student->parentProfile?->father_name) }}" type="text"/>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">NIK</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_nik" value="{{ $student->parentProfile?->father_nik }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_nik" value="{{ old('father_nik', $student->parentProfile?->father_nik) }}" type="text"/>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Pekerjaan</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_job" value="{{ $student->parentProfile?->father_job }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="father_job" value="{{ old('father_job', $student->parentProfile?->father_job) }}" type="text"/>
                         </div>
                     </div>
                 </div>
@@ -264,15 +287,15 @@
                     <div class="space-y-5">
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Nama Lengkap</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_name" value="{{ $student->parentProfile?->mother_name }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_name" value="{{ old('mother_name', $student->parentProfile?->mother_name) }}" type="text"/>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">NIK</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_nik" value="{{ $student->parentProfile?->mother_nik }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_nik" value="{{ old('mother_nik', $student->parentProfile?->mother_nik) }}" type="text"/>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Pekerjaan</label>
-                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_job" value="{{ $student->parentProfile?->mother_job }}" type="text"/>
+                            <input class="w-full bg-surface-container focus:bg-white text-on-surface rounded-DEFAULT px-4 py-2.5 outline-none transition-all ghost-border focus:border-primary border-transparent" name="mother_job" value="{{ old('mother_job', $student->parentProfile?->mother_job) }}" type="text"/>
                         </div>
                     </div>
                 </div>

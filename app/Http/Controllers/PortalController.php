@@ -781,6 +781,12 @@ class PortalController extends Controller
             $this->parentAccountDuplicateNotices($request)
         );
 
+        if ($duplicateNotices && ! $request->boolean('confirm_duplicate_save')) {
+            return back()
+                ->withInput()
+                ->with('duplicate_confirmation_notices', $duplicateNotices);
+        }
+
         $avatarUrl = null;
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -885,6 +891,12 @@ class PortalController extends Controller
             $this->studentIdentityDuplicateNotices($request, $student->id),
             $this->parentAccountDuplicateNotices($request, $student->user_id)
         );
+
+        if ($duplicateNotices && ! $request->boolean('confirm_duplicate_save')) {
+            return back()
+                ->withInput()
+                ->with('duplicate_confirmation_notices', $duplicateNotices);
+        }
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
