@@ -45,6 +45,23 @@
     </div>
     @endif
 
+    @if(session('duplicate_identity_notices') && count(session('duplicate_identity_notices')))
+    <div class="mb-8 rounded-2xl border border-amber-100 bg-amber-50 px-6 py-4 text-amber-800">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined">info</span>
+            <div>
+                <p class="text-sm font-black">Data tersimpan, tetapi ada identitas anak yang sama.</p>
+                <p class="text-xs font-bold text-amber-700">Periksa kembali agar tidak terjadi duplikasi tidak sengaja.</p>
+            </div>
+        </div>
+        <ul class="mt-3 list-disc space-y-1 pl-10 text-sm font-bold">
+            @foreach(session('duplicate_identity_notices') as $notice)
+                <li>{{ $notice }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <!-- Search & Filter Area -->
     <div class="mb-10 flex flex-col lg:flex-row gap-6 items-center justify-between">
         <form action="{{ route('guru.students.index') }}" method="GET" class="relative w-full lg:w-[400px] group">

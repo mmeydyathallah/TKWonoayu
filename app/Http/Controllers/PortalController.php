@@ -764,10 +764,10 @@ class PortalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')],
+            'student_no' => ['required', 'string', 'max:50'],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
-            'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')],
-            'nik' => ['nullable', 'string', 'max:32', Rule::unique('students', 'nik')],
+            'nisn' => ['nullable', 'string', 'max:50'],
+            'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -776,6 +776,8 @@ class PortalController extends Controller
             'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')],
             'avatar' => ['nullable', 'image', 'max:2048'], // Max 2MB
         ], $this->studentValidationMessages());
+
+        $duplicateNotices = $this->studentIdentityDuplicateNotices($request);
 
         $avatarUrl = null;
         if ($request->hasFile('avatar')) {
@@ -837,7 +839,10 @@ class PortalController extends Controller
             $student->update(['user_id' => $user->id]);
         }
 
-        return redirect()->route('guru.students.index')->with('success', 'Data siswa berhasil ditambahkan.');
+        return redirect()
+            ->route('guru.students.index')
+            ->with('success', 'Data siswa berhasil ditambahkan.')
+            ->with('duplicate_identity_notices', $duplicateNotices);
     }
 
     public function editStudent(Student $student): View
@@ -853,10 +858,10 @@ class PortalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'student_no' => ['required', 'string', 'max:50', Rule::unique('students', 'student_no')->ignore($student->id)],
+            'student_no' => ['required', 'string', 'max:50'],
             'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
-            'nisn' => ['nullable', 'string', 'max:50', Rule::unique('students', 'nisn')->ignore($student->id)],
-            'nik' => ['nullable', 'string', 'max:32', Rule::unique('students', 'nik')->ignore($student->id)],
+            'nisn' => ['nullable', 'string', 'max:50'],
+            'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
@@ -864,6 +869,8 @@ class PortalController extends Controller
             'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')->ignore($student->user_id)],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ], $this->studentValidationMessages());
+
+        $duplicateNotices = $this->studentIdentityDuplicateNotices($request, $student->id);
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -932,7 +939,10 @@ class PortalController extends Controller
             }
         }
 
-        return redirect()->route('guru.students.index')->with('success', 'Data siswa berhasil diperbarui.');
+        return redirect()
+            ->route('guru.students.index')
+            ->with('success', 'Data siswa berhasil diperbarui.')
+            ->with('duplicate_identity_notices', $duplicateNotices);
     }
 
     public function destroyStudent(Student $student): RedirectResponse
@@ -1067,6 +1077,35 @@ class PortalController extends Controller
             'school_year.required' => 'Tahun pelajaran wajib diisi.',
             'guardian_name.required' => 'Nama wali murid wajib diisi.',
         ];
+    }
+
+    private function studentIdentityDuplicateNotices(Request $request, ?int $ignoreStudentId = null): array
+    {
+        $identityFields = [
+            'student_no' => 'No Induk',
+            'nisn' => 'NISN',
+            'nik' => 'NIK anak',
+        ];
+        $notices = [];
+
+        foreach ($identityFields as $field => $label) {
+            $value = trim((string) $request->input($field));
+            if ($value === '') {
+                continue;
+            }
+
+            $matches = Student::query()
+                ->where($field, $value)
+                ->when($ignoreStudentId, fn ($query) => $query->whereKeyNot($ignoreStudentId))
+                ->limit(3)
+                ->get(['id', 'full_name', 'class_group']);
+
+            foreach ($matches as $match) {
+                $notices[] = "{$label} {$value} sama dengan identitas anak {$match->full_name} ({$match->class_group}).";
+            }
+        }
+
+        return $notices;
     }
 
     private function duplicateStudentErrors(QueryException $e): array
