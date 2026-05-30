@@ -1,8 +1,8 @@
 <nav class="bg-surface-container-low text-primary flex flex-col h-screen py-8 gap-2 w-64 fixed left-0 top-0 rounded-r-xl shadow-2xl shadow-primary-dim/10 hidden md:flex z-40">
     <div class="px-6 mb-8">
         <div class="flex items-center gap-3 mb-1">
-            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md">
-                <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">school</span>
+            <div class="w-10 h-10 rounded-xl bg-white/90 flex items-center justify-center p-1.5 shadow-md shadow-primary/25">
+                <x-school-logo class="h-8 w-8" />
             </div>
             <div>
                 <h1 class="font-headline text-base font-extrabold text-on-primary-container leading-tight">Wali Murid</h1>

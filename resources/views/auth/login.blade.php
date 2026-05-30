@@ -3,6 +3,8 @@
 <html class="dark" lang="id"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="theme-color" content="#020617"/>
+<link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
 <title>Login - TK Wonoayu Madiun</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -115,8 +117,8 @@
 <!-- Left Side: Graphic / Branding -->
 <div class="hidden lg:flex flex-col justify-center items-start space-y-8 pr-12">
 <div class="flex items-center gap-4">
-<div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg">
-<span class="material-symbols-outlined text-on-primary text-3xl" data-icon="school">school</span>
+<div class="w-16 h-16 rounded-2xl bg-white/90 flex items-center justify-center shadow-lg shadow-primary/20 p-2">
+<x-school-logo class="h-12 w-12" />
 </div>
 <h1 class="font-headline text-3xl font-extrabold text-primary">TK Wonoayu <span class="block text-xl font-medium text-on-surface-variant">Madiun</span></h1>
 </div>
@@ -135,8 +137,8 @@
 <div class="w-full max-w-md mx-auto">
 <!-- Mobile Logo -->
 <div class="lg:hidden flex flex-col items-center gap-3 mb-8 text-center">
-<div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-md">
-<span class="material-symbols-outlined text-on-primary text-3xl" data-icon="school">school</span>
+<div class="w-16 h-16 rounded-2xl bg-white/90 flex items-center justify-center shadow-md shadow-primary/20 p-2">
+<x-school-logo class="h-12 w-12" />
 </div>
 <h1 class="font-headline text-2xl font-extrabold text-primary">TK Wonoayu</h1>
 </div>

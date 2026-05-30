@@ -1,8 +1,8 @@
 <nav class="bg-surface-container-low text-primary flex flex-col h-screen py-8 gap-2 w-64 fixed left-0 top-0 rounded-r-3xl shadow-2xl shadow-primary-dim/10 hidden md:flex z-40 border-r border-slate-100">
     <div class="px-8 mb-8">
         <div class="flex items-center gap-3 mb-1">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                <span class="material-symbols-outlined text-[18px]">school</span>
+            <div class="w-10 h-10 rounded-xl bg-white/90 flex items-center justify-center p-1.5 shadow-lg shadow-primary/25">
+                <x-school-logo class="h-8 w-8" />
             </div>
             <h1 class="font-headline text-base font-extrabold text-slate-900">Portal Guru</h1>
         </div>

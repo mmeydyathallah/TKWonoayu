@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="theme-color" content="#020617"/>
+    <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
     <title>{{ $title ?? 'TK Wonoayu - Portal Wali Murid' }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -56,7 +58,12 @@
     <main class="relative z-10 md:ml-64 pt-0 min-h-screen">
         {{-- Top App Bar (Mobile) --}}
         <header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/70 backdrop-blur-xl rounded-b-[2rem] shadow-[0_4px_20px_rgba(0,96,173,0.08)]">
-            <div class="text-lg font-black text-primary font-headline tracking-tight">Wonoayu Portal</div>
+            <div class="flex items-center gap-2">
+                <div class="h-9 w-9 rounded-xl bg-white/90 p-1.5 flex items-center justify-center">
+                    <x-school-logo class="h-7 w-7" />
+                </div>
+                <div class="text-lg font-black text-primary font-headline tracking-tight">Wonoayu Portal</div>
+            </div>
             <div class="flex gap-3 items-center">
                 <span class="material-symbols-outlined text-primary">notifications</span>
                 <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">

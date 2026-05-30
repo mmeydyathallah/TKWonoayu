@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="theme-color" content="#020617"/>
+    <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
     <title>{{ $title ?? 'TK Wonoayu Madiun - Teacher Portal' }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -104,7 +106,9 @@
         {{-- Top App Bar (Mobile Only) --}}
         <header class="md:hidden flex justify-between items-center mb-8 bg-surface-container-lowest p-4 rounded-xl shadow-sm">
             <div class="flex items-center gap-3">
-                <img alt="Logo Sekolah" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7VsWfaaVAEK4paxm7k8eaP_T_vzlI9U4TkPt07267dtEhHjwynIqIU7KrURZQfkfbUCECfxItuNGiUyfE21DiiDdwy0F6Vufr-ky2m_R2JpU2UEXFcD83QOiz7XK_pnI-pCKyWbmPe-o6z9apJKwTtuFKMQqqL8kdHIDzxyl5kB7rDuXilyxPyQJQ44I5JHTVDFYgUlxR97il9A60IAnhKWGgF6Rs239zkfgf9P0FbweqKNQ3SRtVJg91d1gi6VQ4a_BWQooPwRy"/>
+                <div class="w-9 h-9 rounded-xl bg-white/90 p-1.5 flex items-center justify-center">
+                    <x-school-logo class="h-7 w-7" />
+                </div>
                 <h1 class="font-headline font-bold text-primary">TK Wonoayu</h1>
             </div>
             <button id="mobileMenuOpenBtn" type="button" class="text-on-surface" aria-label="Buka menu">
@@ -117,8 +121,8 @@
         <aside id="mobileMenu" class="md:hidden fixed inset-y-0 left-0 z-50 w-72 max-w-[85%] bg-surface-container-lowest shadow-2xl transform -translate-x-full transition-transform duration-300 overflow-y-auto">
             <div class="flex items-center justify-between px-4 py-4 border-b border-slate-200">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white shadow">
-                        <span class="material-symbols-outlined text-[18px]">school</span>
+                    <div class="w-10 h-10 rounded-xl bg-white/90 flex items-center justify-center p-1.5 shadow">
+                        <x-school-logo class="h-8 w-8" />
                     </div>
                     <div>
                         <p class="font-headline text-base font-bold text-slate-900">Portal Guru</p>
