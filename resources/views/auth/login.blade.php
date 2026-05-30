@@ -102,6 +102,7 @@
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center relative overflow-hidden">
+<x-portal-dark-theme />
 <x-portal-video-background />
 <!-- Decorative Background Elements -->
 <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">

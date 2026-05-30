@@ -94,7 +94,7 @@
     @yield('styles')
 </head>
 <body class="bg-surface text-on-surface flex min-h-screen">
-    <x-portal-video-background />
+    <x-portal-dark-theme />
 
     {{-- SideNavBar --}}
     <x-sidebar-teacher />

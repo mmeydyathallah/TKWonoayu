@@ -47,7 +47,7 @@
     @yield('styles')
 </head>
 <body class="bg-surface text-on-surface antialiased min-h-screen">
-    <x-portal-video-background />
+    <x-portal-dark-theme />
 
     {{-- Sidebar Component --}}
     <x-sidebar-parent />
