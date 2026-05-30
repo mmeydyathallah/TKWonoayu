@@ -72,20 +72,24 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'group' => 'nullable|string',
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'required|integer|exists:students,id',
             'attendance' => 'required|array',
             'attendance.*.status' => 'nullable|in:hadir,izin,sakit,alpa',
             'attendance.*.note' => 'nullable|string',
         ]);
 
         $date = $validated['date'];
-        foreach ($validated['attendance'] as $studentId => $data) {
-            if (empty($data['status'])) {
-                continue;
-            }
+        foreach ($validated['student_ids'] as $studentId) {
+            $data = $validated['attendance'][$studentId] ?? [];
 
             Attendance::updateOrCreate(
                 ['student_id' => $studentId, 'date' => $date],
-                ['status' => $data['status'], 'note' => $data['note'] ?? null, 'marked_by' => $user->id]
+                [
+                    'status' => $data['status'] ?? 'alpa',
+                    'note' => $data['note'] ?? null,
+                    'marked_by' => $user->id,
+                ]
             );
         }
 

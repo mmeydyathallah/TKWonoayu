@@ -102,7 +102,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 px-5 py-4">
             <div>
                 <h2 class="font-headline text-lg font-black text-slate-900">Daftar Kehadiran</h2>
-                <p class="text-xs font-bold text-slate-400">{{ $selectedDateLabel }} - siswa belum dipilih tidak akan disimpan.</p>
+                <p class="text-xs font-bold text-slate-400">{{ $selectedDateLabel }} - siswa belum dipilih akan disimpan sebagai Alpa.</p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -141,7 +141,10 @@
                                 $rowMeta = $displayStatusMeta[$rowStatus] ?? $displayStatusMeta['belum'];
                             @endphp
                             <tr class="hover:bg-slate-50/70 transition-colors">
-                                <td class="px-5 py-4 font-black text-slate-400">{{ $loop->iteration }}</td>
+                                <td class="px-5 py-4 font-black text-slate-400">
+                                    <input type="hidden" name="student_ids[]" value="{{ $student->id }}">
+                                    {{ $loop->iteration }}
+                                </td>
                                 <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=e0efff&color=0060ad&bold=true&size=64' }}" class="h-11 w-11 rounded-xl object-cover ring-1 ring-slate-100" alt="{{ $student->full_name }}">
