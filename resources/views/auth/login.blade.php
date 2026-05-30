@@ -102,6 +102,7 @@
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center relative overflow-hidden">
+<x-portal-video-background />
 <!-- Decorative Background Elements -->
 <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
 <div class="absolute -top-32 -right-32 w-96 h-96 bg-tertiary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
@@ -239,4 +240,3 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body></html>
-

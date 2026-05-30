@@ -47,12 +47,13 @@
     @yield('styles')
 </head>
 <body class="bg-surface text-on-surface antialiased min-h-screen">
+    <x-portal-video-background />
 
     {{-- Sidebar Component --}}
     <x-sidebar-parent />
 
     {{-- Main Content Area --}}
-    <main class="md:ml-64 pt-0 min-h-screen">
+    <main class="relative z-10 md:ml-64 pt-0 min-h-screen">
         {{-- Top App Bar (Mobile) --}}
         <header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/70 backdrop-blur-xl rounded-b-[2rem] shadow-[0_4px_20px_rgba(0,96,173,0.08)]">
             <div class="text-lg font-black text-primary font-headline tracking-tight">Wonoayu Portal</div>

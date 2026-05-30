@@ -94,11 +94,13 @@
     @yield('styles')
 </head>
 <body class="bg-surface text-on-surface flex min-h-screen">
+    <x-portal-video-background />
+
     {{-- SideNavBar --}}
     <x-sidebar-teacher />
 
     {{-- Main Content Area --}}
-    <main class="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
+    <main class="relative z-10 flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
         {{-- Top App Bar (Mobile Only) --}}
         <header class="md:hidden flex justify-between items-center mb-8 bg-surface-container-lowest p-4 rounded-xl shadow-sm">
             <div class="flex items-center gap-3">
