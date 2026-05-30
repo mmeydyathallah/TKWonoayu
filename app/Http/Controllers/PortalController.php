@@ -22,7 +22,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PortalController extends Controller
@@ -765,7 +764,7 @@ class PortalController extends Controller
 
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50'],
-            'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')],
+            'rfid_code' => ['nullable', 'string', 'max:64'],
             'nisn' => ['nullable', 'string', 'max:50'],
             'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
@@ -773,11 +772,14 @@ class PortalController extends Controller
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:50'],
-            'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')],
+            'parent_email' => ['nullable', 'string', 'max:255'],
             'avatar' => ['nullable', 'image', 'max:2048'], // Max 2MB
         ], $this->studentValidationMessages());
 
-        $duplicateNotices = $this->studentIdentityDuplicateNotices($request);
+        $duplicateNotices = array_merge(
+            $this->studentIdentityDuplicateNotices($request),
+            $this->parentAccountDuplicateNotices($request)
+        );
 
         $avatarUrl = null;
         if ($request->hasFile('avatar')) {
@@ -829,14 +831,23 @@ class PortalController extends Controller
             $email = $request->string('parent_email')->value();
             $password = $request->string('parent_password')->value();
 
-            $user = User::create([
-                'name' => 'Wali ' . $student->full_name,
-                'email' => $email,
-                'password' => Hash::make($password ?: 'password123'),
-                'role' => 'wali_murid',
-            ]);
+            $existingUser = User::query()->where('email', $email)->first();
+            $user = null;
 
-            $student->update(['user_id' => $user->id]);
+            if ($existingUser?->role === 'wali_murid') {
+                $user = $existingUser;
+            } elseif (! $existingUser) {
+                $user = User::create([
+                    'name' => 'Wali ' . $student->full_name,
+                    'email' => $email,
+                    'password' => Hash::make($password ?: 'password123'),
+                    'role' => 'wali_murid',
+                ]);
+            }
+
+            if ($user) {
+                $student->update(['user_id' => $user->id]);
+            }
         }
 
         return redirect()
@@ -859,18 +870,21 @@ class PortalController extends Controller
 
         $validated = $request->validate([
             'student_no' => ['required', 'string', 'max:50'],
-            'rfid_code' => ['nullable', 'string', 'max:64', Rule::unique('students', 'rfid_code')->ignore($student->id)],
+            'rfid_code' => ['nullable', 'string', 'max:64'],
             'nisn' => ['nullable', 'string', 'max:50'],
             'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
             'class_group' => ['required', 'string', 'max:100'],
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
-            'parent_email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')->ignore($student->user_id)],
+            'parent_email' => ['nullable', 'string', 'max:255'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ], $this->studentValidationMessages());
 
-        $duplicateNotices = $this->studentIdentityDuplicateNotices($request, $student->id);
+        $duplicateNotices = array_merge(
+            $this->studentIdentityDuplicateNotices($request, $student->id),
+            $this->parentAccountDuplicateNotices($request, $student->user_id)
+        );
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -919,14 +933,33 @@ class PortalController extends Controller
             $email = $request->string('parent_email')->value();
             $password = $request->string('parent_password')->value();
 
-            if ($student->user_id) {
+            $existingUser = User::query()
+                ->where('email', $email)
+                ->when($student->user_id, fn ($query) => $query->whereKeyNot($student->user_id))
+                ->first();
+
+            if ($existingUser && $existingUser->role === 'wali_murid') {
+                $student->update(['user_id' => $existingUser->id]);
+            } elseif ($existingUser) {
+                $student->update(['user_id' => null]);
+            } elseif ($student->user_id) {
                 // Update existing user
                 $user = User::find($student->user_id);
-                $userData = ['email' => $email, 'name' => 'Wali ' . $student->full_name];
-                if ($password) {
-                    $userData['password'] = Hash::make($password);
+                if ($user) {
+                    $userData = ['email' => $email, 'name' => 'Wali ' . $student->full_name];
+                    if ($password) {
+                        $userData['password'] = Hash::make($password);
+                    }
+                    $user->update($userData);
+                } else {
+                    $user = User::create([
+                        'name' => 'Wali ' . $student->full_name,
+                        'email' => $email,
+                        'password' => Hash::make($password ?: 'password123'),
+                        'role' => 'wali_murid',
+                    ]);
+                    $student->update(['user_id' => $user->id]);
                 }
-                $user->update($userData);
             } else {
                 // Create new user
                 $user = User::create([
@@ -1083,6 +1116,7 @@ class PortalController extends Controller
     {
         $identityFields = [
             'student_no' => 'No Induk',
+            'rfid_code' => 'Kode RFID',
             'nisn' => 'NISN',
             'nik' => 'NIK anak',
         ];
@@ -1106,6 +1140,29 @@ class PortalController extends Controller
         }
 
         return $notices;
+    }
+
+    private function parentAccountDuplicateNotices(Request $request, ?int $ignoreUserId = null): array
+    {
+        $email = trim((string) $request->input('parent_email'));
+        if ($email === '') {
+            return [];
+        }
+
+        $user = User::query()
+            ->where('email', $email)
+            ->when($ignoreUserId, fn ($query) => $query->whereKeyNot($ignoreUserId))
+            ->first(['id', 'name', 'email', 'role']);
+
+        if (! $user) {
+            return [];
+        }
+
+        if ($user->role === 'wali_murid') {
+            return ["Username / Email wali {$email} sudah dipakai oleh akun {$user->name}, data tetap disimpan dan siswa dihubungkan ke akun tersebut."];
+        }
+
+        return ["Username / Email wali {$email} sudah dipakai oleh akun {$user->name}, data siswa tetap disimpan tetapi tidak dihubungkan ke akun tersebut."];
     }
 
     private function duplicateStudentErrors(QueryException $e): array

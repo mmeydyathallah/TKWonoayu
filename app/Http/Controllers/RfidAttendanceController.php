@@ -48,11 +48,11 @@ class RfidAttendanceController extends Controller
             ], 422);
         }
 
-        $student = Student::query()
+        $students = Student::query()
             ->where('rfid_code', $rfidCode)
-            ->first();
+            ->get(['id', 'full_name', 'class_group', 'rfid_code']);
 
-        if (! $student) {
+        if ($students->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kartu RFID belum terdaftar pada biodata siswa.',
@@ -62,6 +62,22 @@ class RfidAttendanceController extends Controller
             ], 404);
         }
 
+        if ($students->count() > 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kode RFID dipakai oleh lebih dari satu siswa. Perbaiki biodata siswa agar alat tidak salah mencatat absensi.',
+                'data' => [
+                    'rfid_code' => $rfidCode,
+                    'students' => $students->map(fn (Student $student) => [
+                        'student_id' => $student->id,
+                        'student_name' => $student->full_name,
+                        'class_group' => $student->class_group,
+                    ])->values(),
+                ],
+            ], 409);
+        }
+
+        $student = $students->first();
         $today = now()->toDateString();
         $attendance = Attendance::query()->firstOrNew([
             'student_id' => $student->id,
