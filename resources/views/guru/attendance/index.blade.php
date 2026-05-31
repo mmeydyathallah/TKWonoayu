@@ -31,11 +31,11 @@
         </div>
 
         <div class="flex flex-col items-stretch lg:items-end gap-3">
-            <div class="inline-flex self-start lg:self-end items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3 py-1.5 text-xs font-black text-on-surface-variant shadow-sm">
+            <div class="inline-flex self-start lg:self-end items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-black text-primary shadow-sm">
                 <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
                 <span id="current-clock">{{ now()->format('H:i:s') }}</span>
             </div>
-            <div class="card bg-base-100 border border-base-300 shadow-sm rounded-2xl p-3">
+            <div class="card bg-base-200 border border-primary/20 shadow-sm rounded-2xl p-3">
                 <form id="attendance-date-filter" method="GET" action="{{ route('guru.attendance.index') }}" class="flex flex-col sm:flex-row gap-3">
                     <label class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-on-surface-variant">calendar_today</span>
@@ -77,13 +77,13 @@
     @endif
 
     <section class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-        <div class="stat rounded-2xl bg-base-100 border border-base-300 p-5 shadow-sm">
+        <div class="stat rounded-2xl bg-base-200 border border-primary/20 p-5 shadow-sm">
             <p class="text-xs font-black uppercase tracking-widest text-on-surface-variant">Tercatat</p>
             <p class="mt-2 text-3xl font-black text-on-surface">{{ $recordedCount }}/{{ $totalStudents }}</p>
             <p class="mt-1 text-xs font-bold text-on-surface-variant">Data pada tanggal ini</p>
         </div>
         @foreach($displayStatusMeta as $key => $meta)
-            <div class="stat rounded-2xl bg-base-100 border border-base-300 p-5 shadow-sm">
+            <div class="stat rounded-2xl bg-base-200 border border-primary/20 p-5 shadow-sm">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-black uppercase tracking-widest text-on-surface-variant">{{ $meta['label'] }}</p>
                     <span class="h-3 w-3 rounded-full {{ $meta['dot'] }}"></span>
@@ -94,12 +94,12 @@
         @endforeach
     </section>
 
-    <form method="POST" action="{{ route('guru.attendance.store') }}" class="card bg-base-100 rounded-2xl border border-base-300 shadow-sm overflow-hidden">
+    <form method="POST" action="{{ route('guru.attendance.store') }}" class="card bg-base-100 rounded-2xl border border-primary/20 shadow-sm overflow-hidden">
         @csrf
         <input id="attendance-submit-date" type="hidden" name="date" value="{{ $dateValue }}">
         <input type="hidden" name="group" value="{{ $group }}">
 
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-base-300 px-5 py-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-primary/15 bg-base-200/70 px-5 py-4">
             <div>
                 <h2 class="font-headline text-lg font-black text-on-surface">Daftar Kehadiran</h2>
                 <p class="text-xs font-bold text-on-surface-variant">{{ $selectedDateLabel }} - siswa belum dipilih akan disimpan sebagai Alpa.</p>
@@ -122,7 +122,7 @@
         @if($students->count())
             <div class="overflow-x-auto">
                 <table class="table table-zebra w-full min-w-[860px] text-sm">
-                    <thead class="bg-base-200 text-left">
+                    <thead class="bg-primary/10 text-left">
                         <tr class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
                             <th class="px-5 py-4 w-12">No</th>
                             <th class="px-5 py-4">Siswa</th>
@@ -133,14 +133,14 @@
                             <th class="px-5 py-4">Catatan</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-base-300">
+                    <tbody class="divide-y divide-primary/10">
                         @foreach($students as $student)
                             @php
                                 $att = $attendances->get($student->id);
                                 $rowStatus = $att?->status ?? 'belum';
                                 $rowMeta = $displayStatusMeta[$rowStatus] ?? $displayStatusMeta['belum'];
                             @endphp
-                            <tr class="hover:bg-base-200/70 transition-colors">
+                            <tr class="hover:bg-primary/5 transition-colors">
                                 <td class="px-5 py-4 font-black text-on-surface-variant">
                                     <input type="hidden" name="student_ids[]" value="{{ $student->id }}">
                                     {{ $loop->iteration }}
