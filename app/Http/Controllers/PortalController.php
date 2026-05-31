@@ -16,6 +16,7 @@ use App\Models\SchoolAgenda;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Support\AttendanceSchedule;
+use App\Support\PhoneNumber;
 use App\Support\RfidCode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
@@ -335,6 +336,43 @@ class PortalController extends Controller
             'attendancePercent',
             'weekAttendances',
             'statusCounts'
+        ));
+    }
+
+    public function parentTelegram(): View|RedirectResponse
+    {
+        $guardian = Auth::user();
+        if ($guardian->role === 'guru') {
+            return redirect()->route('guru.dashboard');
+        }
+
+        $student = $guardian->student?->load('parentProfile');
+        if (! $student) {
+            return redirect()->route('wali.dashboard')->with('error', 'Siswa terkait tidak ditemukan.');
+        }
+
+        $guardianPhoneNormalized = PhoneNumber::normalize($student->parentProfile?->guardian_phone);
+        $telegramChat = null;
+
+        if ($guardianPhoneNormalized) {
+            $telegramChat = GuardianTelegramChat::query()
+                ->where('phone_number_normalized', $guardianPhoneNormalized)
+                ->first();
+        }
+
+        $isConnected = (bool) $telegramChat;
+        $selectedStudent = $telegramChat?->selectedStudent;
+        $isSelectedForThisStudent = $telegramChat
+            ? ($telegramChat->selected_student_id === null || (int) $telegramChat->selected_student_id === (int) $student->id)
+            : false;
+
+        return view('wali_murid.telegram.index', compact(
+            'student',
+            'guardianPhoneNormalized',
+            'telegramChat',
+            'isConnected',
+            'selectedStudent',
+            'isSelectedForThisStudent'
         ));
     }
 

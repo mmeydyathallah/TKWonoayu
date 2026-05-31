@@ -436,6 +436,13 @@ function switchTab(tab) {
     document.addEventListener('DOMContentLoaded', () => switchTab('absensi'));
 @endif
 
+document.addEventListener('DOMContentLoaded', () => {
+    const tab = new URLSearchParams(window.location.search).get('tab');
+    if (['profil', 'password', 'absensi', 'telegram', 'info'].includes(tab)) {
+        switchTab(tab);
+    }
+});
+
 // Password strength meter
 const pwdInput = document.querySelector('input[name="password"]');
 if (pwdInput) {

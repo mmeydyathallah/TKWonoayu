@@ -78,7 +78,7 @@
     </main>
 
     {{-- Bottom Nav (Mobile) --}}
-    <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-white rounded-t-[2.5rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
+    <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 grid grid-cols-6 items-center px-3 py-3 bg-white rounded-t-[2.5rem] pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
         <a href="{{ route('wali.dashboard') }}" class="flex flex-col items-center justify-center p-2 rounded-full {{ request()->routeIs('wali.dashboard') ? 'text-primary' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.dashboard') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">home</span>
             <span class="text-[10px] font-bold mt-1">Beranda</span>
@@ -98,6 +98,10 @@
         <a href="{{ route('wali.profile') }}" class="flex flex-col items-center justify-center p-2 rounded-full {{ request()->routeIs('wali.profile') ? 'text-primary' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.profile') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">child_care</span>
             <span class="text-[10px] font-bold mt-1">Profil</span>
+        </a>
+        <a href="{{ route('wali.telegram') }}" class="flex flex-col items-center justify-center p-2 rounded-full {{ request()->routeIs('wali.telegram') ? 'text-primary' : 'text-on-surface-variant' }}">
+            <span class="material-symbols-outlined" style="{{ request()->routeIs('wali.telegram') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">send</span>
+            <span class="text-[10px] font-bold mt-1">Telegram</span>
         </a>
     </nav>
 

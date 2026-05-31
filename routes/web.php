@@ -62,6 +62,7 @@ Route::prefix('wali')->name('wali.')->middleware('auth')->group(function (): voi
     // Parent attendance
     Route::get('/absensi', [PortalController::class, 'parentAttendance'])->name('attendance');
     Route::get('/agenda', [PortalController::class, 'parentAgenda'])->name('agenda');
+    Route::get('/telegram', [PortalController::class, 'parentTelegram'])->name('telegram');
 });
 
 Route::view('/stitch/welcome', 'welcome')->name('stitch.welcome');

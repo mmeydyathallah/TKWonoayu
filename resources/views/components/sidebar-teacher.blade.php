@@ -69,6 +69,10 @@
                 <span class="material-symbols-outlined text-[18px]">settings</span>
                 Pengaturan
             </a>
+            <a class="flex items-center gap-3 px-4 py-2 {{ request()->routeIs('guru.settings') && request()->query('tab') === 'telegram' ? 'text-primary font-black' : 'text-slate-400 hover:text-slate-900' }} transition-colors text-xs font-bold" href="{{ route('guru.settings', ['tab' => 'telegram']) }}">
+                <span class="material-symbols-outlined text-[18px]">send</span>
+                Telegram
+            </a>
             <form action="{{ route('auth.logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-slate-400 hover:text-rose-600 transition-colors text-xs font-bold">
