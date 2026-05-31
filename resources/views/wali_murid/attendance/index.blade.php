@@ -21,14 +21,14 @@
             <h1 class="text-3xl md:text-4xl font-headline font-black text-on-surface">Kehadiran {{ $student->nickname ?? $student->full_name }}</h1>
             <p class="text-sm text-on-surface-variant mt-2">Riwayat absensi yang dicatat guru akan tampil di halaman ini.</p>
         </div>
-        <a href="{{ route('wali.dashboard') }}" class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-primary shadow-sm border border-outline-variant/15">
+        <a href="{{ route('wali.dashboard') }}" class="btn btn-outline rounded-full text-sm font-black">
             <span class="material-symbols-outlined text-[18px]">arrow_back</span>
             Beranda
         </a>
     </header>
 
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-5 rounded-xl bg-gradient-to-br from-primary to-primary-container p-6 text-white shadow-[0_12px_35px_rgba(0,96,173,0.18)]">
+        <div class="card lg:col-span-5 rounded-xl bg-gradient-to-br from-primary to-primary-container p-6 text-white shadow-[0_12px_35px_rgba(0,96,173,0.18)]">
             <p class="text-sm font-bold text-white/75">Persentase minggu ini</p>
             <div class="mt-4 flex items-end gap-3">
                 <span class="text-6xl font-black leading-none">{{ $attendancePercent ?? 0 }}</span>
@@ -37,7 +37,7 @@
             <p class="mt-4 text-sm font-bold text-white/80">Dihitung dari Senin sampai Jumat pada minggu aktif belajar.</p>
         </div>
 
-        <div class="lg:col-span-7 rounded-xl bg-white border border-outline-variant/15 p-6 shadow-sm">
+        <div class="card lg:col-span-7 rounded-xl bg-base-100 border border-base-300 p-6 shadow-sm">
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <h2 class="font-headline text-lg font-black text-on-surface">Minggu Ini</h2>
@@ -69,7 +69,7 @@
 
     <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
         @foreach($statusMeta as $key => $meta)
-            <div class="rounded-xl bg-white border border-outline-variant/15 p-5 shadow-sm">
+            <div class="stat rounded-xl bg-base-100 border border-base-300 p-5 shadow-sm">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-black uppercase tracking-widest text-on-surface-variant">{{ $meta['label'] }}</span>
                     <span class="material-symbols-outlined text-[20px] {{ $meta['iconText'] }}">{{ $meta['icon'] }}</span>
@@ -80,7 +80,7 @@
         @endforeach
     </section>
 
-    <section class="rounded-xl bg-white border border-outline-variant/15 shadow-sm overflow-hidden">
+    <section class="card rounded-xl bg-base-100 border border-base-300 shadow-sm overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/15">
             <div>
                 <h2 class="font-headline text-lg font-black text-on-surface">Riwayat Absensi</h2>
@@ -90,7 +90,7 @@
 
         @if($attendances->count())
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[640px] text-sm">
+                <table class="table table-zebra w-full min-w-[640px] text-sm">
                     <thead class="bg-surface-container-low text-left">
                         <tr class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
                             <th class="px-5 py-4">Tanggal</th>
@@ -106,7 +106,7 @@
                             <tr>
                                 <td class="px-5 py-4 font-black text-on-surface">{{ $attendance->date->isoFormat('dddd, D MMMM YYYY') }}</td>
                                 <td class="px-5 py-4">
-                                    <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black {{ $meta['class'] }}">
+                                    <span class="badge badge-lg px-3 py-1.5 text-xs font-black {{ $meta['class'] }}">
                                         <span class="material-symbols-outlined text-[16px]">{{ $meta['icon'] }}</span>
                                         {{ $meta['label'] }}
                                     </span>

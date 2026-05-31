@@ -355,7 +355,7 @@
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
+                        <table class="table table-zebra w-full text-sm">
                             <thead>
                                 <tr class="text-left text-slate-500 border-b border-slate-100">
                                     <th class="py-3 pr-4 font-bold">Nama Anak</th>
@@ -382,11 +382,11 @@
                                         <td class="py-3 pr-4 text-slate-600">{{ $row['telegram_username'] ? '@' . $row['telegram_username'] : ('Chat ID: ' . $row['chat_id']) }}</td>
                                         <td class="py-3 pr-4">
                                             @if($selectedName)
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                                                <span class="badge badge-success badge-sm">
                                                     {{ $selectedName }}
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                                                <span class="badge badge-warning badge-sm">
                                                     Belum pilih siswa
                                                 </span>
                                             @endif

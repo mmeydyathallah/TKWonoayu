@@ -8,12 +8,13 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <article class="rounded-2xl border border-outline-variant/40 bg-surface-container p-5 space-y-4">
+        <article class="card bg-base-200 border border-base-300 shadow-sm">
+            <div class="card-body space-y-4">
             <h2 class="text-lg font-headline font-bold text-on-surface">Status Koneksi</h2>
 
-            <div class="flex items-center justify-between rounded-xl bg-surface-container-high p-4">
+            <div class="flex items-center justify-between rounded-xl bg-base-300 p-4">
                 <span class="text-sm font-semibold text-on-surface-variant">Koneksi Bot</span>
-                <span class="text-xs px-3 py-1 rounded-full font-bold {{ $isConnected ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }}">
+                <span class="badge badge-sm font-bold {{ $isConnected ? 'badge-success' : 'badge-error' }}">
                     {{ $isConnected ? 'Terhubung' : 'Belum Terhubung' }}
                 </span>
             </div>
@@ -25,32 +26,39 @@
             </div>
 
             @if($isConnected)
-                <div class="rounded-xl p-4 {{ $isSelectedForThisStudent ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200' }}">
+                <div class="alert {{ $isSelectedForThisStudent ? 'alert-success' : 'alert-warning' }}">
+                    <span>
                     @if($isSelectedForThisStudent)
-                        <p class="text-sm font-semibold text-emerald-700">Siswa aktif sudah sesuai.</p>
-                        <p class="text-xs text-emerald-700/80 mt-1">Notifikasi masuk/pulang akan dikirim untuk {{ $student->full_name }}.</p>
+                        <p class="text-sm font-semibold">Siswa aktif sudah sesuai.</p>
+                        <p class="text-xs mt-1">Notifikasi masuk/pulang akan dikirim untuk {{ $student->full_name }}.</p>
                     @else
-                        <p class="text-sm font-semibold text-amber-700">Siswa aktif belum sesuai.</p>
-                        <p class="text-xs text-amber-700/80 mt-1">
+                        <p class="text-sm font-semibold">Siswa aktif belum sesuai.</p>
+                        <p class="text-xs mt-1">
                             Bot saat ini terhubung ke siswa lain: {{ $selectedStudent?->full_name ?? 'tidak diketahui' }}.
                             Jalankan perintah <span class="font-bold">/siswa</span> lalu pilih {{ $student->full_name }}.
                         </p>
                     @endif
+                    </span>
                 </div>
             @endif
+            </div>
         </article>
 
-        <article class="rounded-2xl border border-outline-variant/40 bg-surface-container p-5 space-y-4">
+        <article class="card bg-base-200 border border-base-300 shadow-sm">
+            <div class="card-body space-y-4">
             <h2 class="text-lg font-headline font-bold text-on-surface">Instruksi Penggunaan</h2>
-            <ol class="list-decimal pl-5 space-y-2 text-sm text-on-surface-variant">
-                <li>Kirim perintah <span class="font-semibold text-on-surface">/hubungkan</span> ke bot Telegram.</li>
-                <li>Tekan tombol kirim kontak yang muncul agar nomor HP tersinkron.</li>
-                <li>Kirim perintah <span class="font-semibold text-on-surface">/siswa</span> untuk memilih anak yang dipantau.</li>
-                <li>Kirim perintah <span class="font-semibold text-on-surface">/plan</span> untuk melihat panduan fitur bot.</li>
-            </ol>
+            <ul class="steps steps-vertical text-sm text-on-surface-variant">
+                <li class="step step-primary">Kirim perintah <span class="font-semibold text-on-surface">/hubungkan</span> ke bot Telegram.</li>
+                <li class="step step-primary">Tekan tombol kirim kontak yang muncul agar nomor HP tersinkron.</li>
+                <li class="step step-primary">Kirim perintah <span class="font-semibold text-on-surface">/siswa</span> untuk memilih anak yang dipantau.</li>
+                <li class="step step-primary">Kirim perintah <span class="font-semibold text-on-surface">/plan</span> untuk melihat panduan fitur bot.</li>
+            </ul>
 
-            <div class="rounded-xl bg-blue-50 border border-blue-200 p-4 text-xs text-blue-700">
+            <div class="alert alert-info text-xs">
+                <span>
                 Jika status masih belum terhubung, cek lagi apakah nomor HP pada biodata wali sama dengan nomor Telegram yang dibagikan ke bot.
+                </span>
+            </div>
             </div>
         </article>
     </div>

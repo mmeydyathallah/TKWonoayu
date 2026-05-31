@@ -6,34 +6,9 @@
     <meta name="theme-color" content="#020617"/>
     <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
     <title>Login - TK Wonoayu Madiun</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0ea5e9',
-                        'primary-dim': '#0284c7',
-                        'on-surface': '#e5eefb',
-                        'on-surface-variant': '#a9b8cc',
-                    },
-                    borderRadius: {
-                        DEFAULT: '1rem',
-                        lg: '1.5rem',
-                        xl: '2rem',
-                        full: '9999px',
-                    },
-                    fontFamily: {
-                        headline: ['Plus Jakarta Sans'],
-                        body: ['Manrope'],
-                    },
-                },
-            },
-        };
-    </script>
     <style>
         body {
             font-family: 'Manrope', sans-serif;
@@ -104,7 +79,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen overflow-hidden bg-slate-950 font-body text-white">
+<body data-theme="tkwonoayu" class="min-h-screen overflow-hidden bg-slate-950 font-body text-white">
     <x-portal-video-background />
 
     <main class="login-page-main">

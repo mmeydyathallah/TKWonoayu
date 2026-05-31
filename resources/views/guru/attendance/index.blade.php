@@ -35,27 +35,27 @@
                 <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
                 <span id="current-clock">{{ now()->format('H:i:s') }}</span>
             </div>
-            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-3">
+            <div class="card bg-base-100 border border-base-300 shadow-sm rounded-2xl p-3">
                 <form id="attendance-date-filter" method="GET" action="{{ route('guru.attendance.index') }}" class="flex flex-col sm:flex-row gap-3">
                     <label class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">calendar_today</span>
-                        <input id="attendance-date-input" type="date" name="date" value="{{ $dateValue }}" class="w-full sm:w-44 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                        <input id="attendance-date-input" type="date" name="date" value="{{ $dateValue }}" class="input input-bordered w-full sm:w-44 rounded-xl py-3 pl-10 pr-3 text-sm font-bold">
                     </label>
                     <label class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-slate-400">groups</span>
-                        <select name="group" class="w-full sm:w-56 rounded-xl border-slate-200 bg-slate-50 py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:border-primary focus:ring-primary/20">
+                        <select name="group" class="select select-bordered w-full sm:w-56 rounded-xl py-3 pl-10 pr-9 text-sm font-bold">
                             <option value="">Semua kelompok</option>
                             @foreach($classGroups as $classGroup)
                                 <option value="{{ $classGroup }}" @selected($group === $classGroup)>{{ $classGroup }}</option>
                             @endforeach
                         </select>
                     </label>
-                    <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                    <button type="submit" class="btn btn-primary rounded-xl text-sm font-black">
                         <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                         Terapkan
                     </button>
                     @if($isCustomDate)
-                        <a href="{{ route('guru.attendance.index', array_filter(['group' => $group])) }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-600 hover:border-primary/30 hover:text-primary transition-colors">
+                        <a href="{{ route('guru.attendance.index', array_filter(['group' => $group])) }}" class="btn btn-outline rounded-xl text-sm font-black">
                             <span class="material-symbols-outlined text-[18px]">today</span>
                             Hari ini
                         </a>
@@ -70,20 +70,20 @@
     </header>
 
     @if(session('success'))
-        <div class="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
+        <div class="alert alert-success rounded-2xl text-sm font-bold">
             <span class="material-symbols-outlined">check_circle</span>
             {{ session('success') }}
         </div>
     @endif
 
     <section class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-        <div class="rounded-2xl bg-white border border-slate-100 p-5 shadow-sm">
+        <div class="stat rounded-2xl bg-base-100 border border-base-300 p-5 shadow-sm">
             <p class="text-xs font-black uppercase tracking-widest text-slate-400">Tercatat</p>
             <p class="mt-2 text-3xl font-black text-slate-900">{{ $recordedCount }}/{{ $totalStudents }}</p>
             <p class="mt-1 text-xs font-bold text-slate-400">Data pada tanggal ini</p>
         </div>
         @foreach($displayStatusMeta as $key => $meta)
-            <div class="rounded-2xl bg-white border border-slate-100 p-5 shadow-sm">
+            <div class="stat rounded-2xl bg-base-100 border border-base-300 p-5 shadow-sm">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-black uppercase tracking-widest text-slate-400">{{ $meta['label'] }}</p>
                     <span class="h-3 w-3 rounded-full {{ $meta['dot'] }}"></span>
@@ -94,7 +94,7 @@
         @endforeach
     </section>
 
-    <form method="POST" action="{{ route('guru.attendance.store') }}" class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <form method="POST" action="{{ route('guru.attendance.store') }}" class="card bg-base-100 rounded-2xl border border-base-300 shadow-sm overflow-hidden">
         @csrf
         <input id="attendance-submit-date" type="hidden" name="date" value="{{ $dateValue }}">
         <input type="hidden" name="group" value="{{ $group }}">
@@ -107,12 +107,12 @@
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     @foreach($statusMeta as $key => $meta)
-                        <button type="button" data-set-status="{{ $key }}" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 hover:border-primary/30 hover:text-primary transition-colors">
+                        <button type="button" data-set-status="{{ $key }}" class="btn btn-outline btn-sm rounded-xl text-xs font-black">
                             Semua {{ $meta['label'] }}
                         </button>
                     @endforeach
                 </div>
-                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-black text-white shadow-lg shadow-primary/20">
+                <button type="submit" class="btn btn-primary rounded-xl text-sm font-black">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Absensi
                 </button>
@@ -121,7 +121,7 @@
 
         @if($students->count())
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[860px] text-sm">
+                <table class="table table-zebra w-full min-w-[860px] text-sm">
                     <thead class="bg-slate-50 text-left">
                         <tr class="text-[11px] font-black uppercase tracking-widest text-slate-400">
                             <th class="px-5 py-4 w-12">No</th>
@@ -184,7 +184,7 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-4">
-                                    <input type="text" name="attendance[{{ $student->id }}][note]" value="{{ $att?->note }}" placeholder="Opsional" class="w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-700 placeholder:text-slate-300 focus:border-primary focus:ring-primary/20">
+                                    <input type="text" name="attendance[{{ $student->id }}][note]" value="{{ $att?->note }}" placeholder="Opsional" class="input input-bordered w-full rounded-xl text-sm font-bold">
                                 </td>
                             </tr>
                         @endforeach

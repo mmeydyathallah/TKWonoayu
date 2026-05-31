@@ -6,96 +6,16 @@
     <meta name="theme-color" content="#020617"/>
     <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
     <title>{{ $title ?? 'TK Wonoayu Madiun - Teacher Portal' }}</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-          tailwind.config = {
-            darkMode: "class",
-            theme: {
-              extend: {
-                "colors": {
-                        "tertiary-fixed": "#fdc825",
-                        "background": "#f8f9fb",
-                        "secondary": "#136e27",
-                        "tertiary-fixed-dim": "#edba10",
-                        "on-surface-variant": "#596064",
-                        "inverse-surface": "#0b0f10",
-                        "outline-variant": "#acb3b7",
-                        "on-primary-fixed-variant": "#003461",
-                        "on-tertiary-fixed": "#403000",
-                        "primary-fixed-dim": "#599ef1",
-                        "inverse-primary": "#68abff",
-                        "surface-container-lowest": "#ffffff",
-                        "on-error": "#fff7f6",
-                        "surface-container": "#eaeff2",
-                        "surface-tint": "#0060ad",
-                        "on-secondary": "#eaffe4",
-                        "surface-container-highest": "#dce4e8",
-                        "surface": "#f8f9fb",
-                        "surface-variant": "#dce4e8",
-                        "on-primary": "#f8f8ff",
-                        "surface-container-low": "#f0f4f7",
-                        "error-container": "#fa746f",
-                        "on-surface": "#2c3437",
-                        "tertiary-container": "#fdc825",
-                        "surface-bright": "#f8f9fb",
-                        "tertiary": "#775b00",
-                        "on-primary-fixed": "#000c1e",
-                        "error": "#a83836",
-                        "error-dim": "#67040d",
-                        "on-secondary-fixed-variant": "#0c6a24",
-                        "secondary-dim": "#00611e",
-                        "on-background": "#2c3437",
-                        "primary-fixed": "#68abff",
-                        "on-secondary-fixed": "#004a15",
-                        "secondary-container": "#9ff79f",
-                        "on-tertiary-fixed-variant": "#634c00",
-                        "tertiary-dim": "#685000",
-                        "primary": "#0060ad",
-                        "surface-dim": "#d4dbdf",
-                        "on-tertiary-container": "#584300",
-                        "on-error-container": "#6e0a12",
-                        "on-tertiary": "#fff8f0",
-                        "secondary-fixed": "#9ff79f",
-                        "surface-container-high": "#e3e9ed",
-                        "primary-dim": "#005498",
-                        "secondary-fixed-dim": "#91e892",
-                        "on-primary-container": "#002b52",
-                        "primary-container": "#68abff",
-                        "inverse-on-surface": "#9a9d9f",
-                        "outline": "#747c80",
-                        "on-secondary-container": "#005f1d"
-                },
-                "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                },
-                "spacing": {},
-                "fontFamily": {
-                        "headline": [
-                                "Plus Jakarta Sans"
-                        ],
-                        "body": [
-                                "Manrope"
-                        ],
-                        "label": [
-                                "Manrope"
-                        ]
-                }
-        },
-            },
-          }
-        </script>
     <style>
         body { font-family: 'Manrope', sans-serif; background-color: #f8f9fb; color: #2c3437; }
         h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
     @yield('styles')
 </head>
-<body class="bg-surface text-on-surface flex min-h-screen">
+<body data-theme="tkwonoayu" class="bg-surface text-on-surface flex min-h-screen">
     <x-portal-dark-theme />
 
     {{-- SideNavBar --}}
