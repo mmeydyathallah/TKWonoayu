@@ -37,6 +37,9 @@
         <button onclick="switchTab('absensi')" id="tab-absensi" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">schedule</span> Absensi RFID
         </button>
+        <button onclick="switchTab('telegram')" id="tab-telegram" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">send</span> Plan Telegram
+        </button>
         <button onclick="switchTab('info')" id="tab-info" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">info</span> Informasi Sistem
         </button>
@@ -284,6 +287,59 @@
         </div>
     </div>
 
+    {{-- ==================== TAB: PLAN TELEGRAM ==================== --}}
+    <div id="panel-telegram" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
+                <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50">
+                    <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">sync</span>
+                        Navigasi Sinkron Telegram
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Ikuti urutan ini agar notifikasi bot langsung aktif.</p>
+                </div>
+                <div class="p-8 space-y-4 text-sm text-slate-700">
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+                        <p class="font-black text-slate-800">Langkah 1 — Hubungkan Nomor</p>
+                        <p class="mt-1">Wali murid ketik <code>/hubungkan</code> di bot, lalu tekan tombol <b>Bagikan Nomor Telepon</b>.</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+                        <p class="font-black text-slate-800">Langkah 2 — Pilih Siswa</p>
+                        <p class="mt-1">Ketik <code>/siswa</code>. Jika 1 nomor terhubung ke beberapa anak, bot menampilkan daftar pilihan.</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+                        <p class="font-black text-slate-800">Langkah 3 — Verifikasi Notifikasi</p>
+                        <p class="mt-1">Setelah siswa terpilih, notifikasi <b>MASUK</b> dan <b>PULANG</b> akan terkirim otomatis saat tap RFID.</p>
+                    </div>
+                    <div class="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                        <p class="font-black text-blue-700">Troubleshoot cepat</p>
+                        <p class="mt-1 text-blue-700">Jika bot diam, kirim <code>/plan</code> atau <code>/hubungkan</code> ulang. Pastikan nomor di biodata wali sama dengan nomor Telegram yang dibagikan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow p-8 h-fit">
+                <h3 class="font-extrabold text-slate-800 text-base mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">query_stats</span> Status Bot
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Chat Terhubung</p>
+                        <p class="text-2xl font-black text-emerald-700 mt-1">{{ $telegramStats['connected_chats'] ?? 0 }}</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                        <p class="text-[10px] font-black text-blue-700 uppercase tracking-widest">Siswa Terpilih</p>
+                        <p class="text-2xl font-black text-blue-700 mt-1">{{ $telegramStats['selected_student_chats'] ?? 0 }}</p>
+                    </div>
+                    <div class="text-xs text-slate-400 font-medium leading-relaxed">
+                        <p>Command Telegram aktif:</p>
+                        <p class="mt-1"><code>/start</code>, <code>/hubungkan</code>, <code>/siswa</code>, <code>/plan</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ==================== TAB: INFO SISTEM ==================== --}}
     <div id="panel-info" class="hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -363,7 +419,7 @@
 @section('scripts')
 <script>
 function switchTab(tab) {
-    ['profil','password','absensi','info'].forEach(t => {
+    ['profil','password','absensi','telegram','info'].forEach(t => {
         document.getElementById('panel-' + t).classList.add('hidden');
         document.getElementById('tab-' + t).classList.remove('active');
     });

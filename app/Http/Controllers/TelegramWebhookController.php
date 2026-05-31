@@ -67,6 +67,8 @@ class TelegramWebhookController extends Controller
 
         if (in_array($command, ['/start', '/hubungkan'], true)) {
             $this->telegramNotifier->requestContact($chatId);
+        } elseif (in_array($command, ['/plan', '/bantuan', '/help'], true)) {
+            $this->telegramNotifier->sendMessage($chatId, $this->planMessage());
         } elseif ($command === '/siswa') {
             $chat = GuardianTelegramChat::query()->where('chat_id', $chatId)->first();
             if (! $chat) {
@@ -156,5 +158,14 @@ class TelegramWebhookController extends Controller
             ->map(fn (ParentProfile $profile) => $profile->student)
             ->filter()
             ->values();
+    }
+
+    private function planMessage(): string
+    {
+        return "Plan sinkron Telegram:\n"
+            . "1. Ketik /hubungkan lalu bagikan nomor HP wali.\n"
+            . "2. Ketik /siswa untuk memilih anak jika nomor dipakai lebih dari satu siswa.\n"
+            . "3. Setelah terpilih, notifikasi MASUK/PULANG akan dikirim otomatis.\n\n"
+            . "Jika tidak ada balasan, pastikan nomor di biodata wali murid sama dengan nomor Telegram yang dibagikan.";
     }
 }

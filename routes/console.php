@@ -26,6 +26,7 @@ Artisan::command('telegram:poll {--once : Process pending updates once and exit}
             ['command' => 'start', 'description' => 'Mulai dan hubungkan nomor HP'],
             ['command' => 'hubungkan', 'description' => 'Bagikan nomor HP wali'],
             ['command' => 'siswa', 'description' => 'Pilih siswa untuk notifikasi'],
+            ['command' => 'plan', 'description' => 'Lihat langkah sinkronisasi'],
         ],
     ]);
 
@@ -51,9 +52,12 @@ Artisan::command('telegram:poll {--once : Process pending updates once and exit}
                 Cache::forever('telegram_update_offset', $updateId + 1);
             }
 
-            app(TelegramWebhookController::class)->handle(
-                Request::create('/api/telegram/webhook', 'POST', $update)
-            );
+            $secret = config('services.telegram.webhook_secret');
+            $internalRequest = Request::create('/api/telegram/webhook', 'POST', $update, [], [], array_filter([
+                'HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN' => $secret,
+            ]));
+
+            app(TelegramWebhookController::class)->handle($internalRequest);
         }
     } while (! $this->option('once'));
 

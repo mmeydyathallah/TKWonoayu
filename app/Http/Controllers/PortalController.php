@@ -7,6 +7,7 @@ use App\Models\Artwork;
 use App\Models\ChecklistAssessment;
 use App\Models\DailyAssessment;
 use App\Models\DevelopmentReport;
+use App\Models\GuardianTelegramChat;
 use App\Models\ParentProfile;
 use App\Models\SchoolActivity;
 use App\Models\SchoolAnnouncement;
@@ -101,7 +102,12 @@ class PortalController extends Controller
             $attendanceSettings['window_minutes']
         );
 
-        return view('guru.settings.index', compact('user', 'attendanceSettings'));
+        $telegramStats = [
+            'connected_chats' => GuardianTelegramChat::query()->count(),
+            'selected_student_chats' => GuardianTelegramChat::query()->whereNotNull('selected_student_id')->count(),
+        ];
+
+        return view('guru.settings.index', compact('user', 'attendanceSettings', 'telegramStats'));
     }
 
     public function updateProfile(Request $request): RedirectResponse

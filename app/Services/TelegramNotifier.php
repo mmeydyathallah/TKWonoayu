@@ -39,7 +39,7 @@ class TelegramNotifier
         $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
         $response = Http::timeout(10)->post($url, [
             'chat_id' => $chatId,
-            'text' => "Agar notifikasi absensi aktif, tekan tombol di bawah lalu bagikan nomor Anda.",
+            'text' => "Agar notifikasi aktif:\n1. Tekan tombol di bawah untuk bagikan nomor HP.\n2. Lanjut ketik /siswa untuk pilih anak.\n3. Ketik /plan jika butuh panduan ulang.",
             'reply_markup' => [
                 'keyboard' => [[[
                     'text' => 'Bagikan Nomor Telepon',
