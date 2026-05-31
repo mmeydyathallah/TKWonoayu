@@ -19,19 +19,17 @@
 @section('styles')
 <style>
     .attendance-page {
-        --attendance-panel: rgba(15, 23, 42, 0.88);
-        --attendance-panel-soft: rgba(30, 41, 59, 0.78);
-        --attendance-panel-muted: rgba(14, 165, 233, 0.11);
-        --attendance-border: rgba(56, 189, 248, 0.28);
+        --attendance-panel: rgba(15, 23, 42, 0.94);
+        --attendance-panel-soft: rgba(15, 23, 42, 0.82);
+        --attendance-panel-muted: rgba(30, 41, 59, 0.62);
+        --attendance-border: rgba(148, 163, 184, 0.22);
         --attendance-border-soft: rgba(148, 163, 184, 0.18);
         --attendance-text: #e5eefb;
         --attendance-muted: #a9b8cc;
     }
 
     .attendance-page .attendance-panel {
-        background:
-            linear-gradient(135deg, rgba(14, 165, 233, 0.10), transparent 42%),
-            var(--attendance-panel) !important;
+        background: var(--attendance-panel) !important;
         border-color: var(--attendance-border) !important;
         box-shadow: 0 18px 42px rgba(2, 6, 23, 0.28) !important;
     }
@@ -42,14 +40,22 @@
     }
 
     .attendance-page .attendance-stat {
-        background:
-            linear-gradient(180deg, rgba(56, 189, 248, 0.14), rgba(15, 23, 42, 0.92)) !important;
+        background: var(--attendance-panel) !important;
         border-color: var(--attendance-border) !important;
         color: var(--attendance-text) !important;
     }
 
     .attendance-page .attendance-table-head {
-        background: rgba(14, 165, 233, 0.18) !important;
+        background: rgba(15, 23, 42, 0.92) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+    }
+
+    .attendance-page .attendance-table-row {
+        background: rgba(15, 23, 42, 0.94) !important;
+    }
+
+    .attendance-page .attendance-table-row:hover {
+        background: rgba(30, 41, 59, 0.88) !important;
     }
 
     .attendance-page .attendance-chip {
@@ -170,7 +176,7 @@
 
         @if($students->count())
             <div class="overflow-x-auto">
-                <table class="table table-zebra w-full min-w-[860px] text-sm">
+                <table class="table w-full min-w-[860px] text-sm">
                     <thead class="attendance-table-head bg-primary/10 text-left">
                         <tr class="text-[11px] font-black uppercase tracking-widest text-on-surface-variant">
                             <th class="px-5 py-4 w-12">No</th>
@@ -189,7 +195,7 @@
                                 $rowStatus = $att?->status ?? 'belum';
                                 $rowMeta = $displayStatusMeta[$rowStatus] ?? $displayStatusMeta['belum'];
                             @endphp
-                            <tr class="hover:bg-primary/5 transition-colors">
+                            <tr class="attendance-table-row transition-colors">
                                 <td class="px-5 py-4 font-black text-on-surface-variant">
                                     <input type="hidden" name="student_ids[]" value="{{ $student->id }}">
                                     {{ $loop->iteration }}
