@@ -1,245 +1,150 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="id"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="theme-color" content="#020617"/>
-<link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
-<title>Login - TK Wonoayu Madiun</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="theme-color" content="#020617"/>
+    <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
+    <title>Login - TK Wonoayu Madiun</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
         tailwind.config = {
-            darkMode: "class",
+            darkMode: 'class',
             theme: {
                 extend: {
-                    "colors": {
-                        "tertiary-fixed": "#fdc825",
-                        "background": "#f8f9fb",
-                        "secondary": "#136e27",
-                        "tertiary-fixed-dim": "#edba10",
-                        "on-surface-variant": "#596064",
-                        "inverse-surface": "#0b0f10",
-                        "outline-variant": "#acb3b7",
-                        "on-primary-fixed-variant": "#003461",
-                        "on-tertiary-fixed": "#403000",
-                        "primary-fixed-dim": "#599ef1",
-                        "inverse-primary": "#68abff",
-                        "surface-container-lowest": "#ffffff",
-                        "on-error": "#fff7f6",
-                        "surface-container": "#eaeff2",
-                        "surface-tint": "#0060ad",
-                        "on-secondary": "#eaffe4",
-                        "surface-container-highest": "#dce4e8",
-                        "surface": "#f8f9fb",
-                        "surface-variant": "#dce4e8",
-                        "on-primary": "#f8f8ff",
-                        "surface-container-low": "#f0f4f7",
-                        "error-container": "#fa746f",
-                        "on-surface": "#2c3437",
-                        "tertiary-container": "#fdc825",
-                        "surface-bright": "#f8f9fb",
-                        "tertiary": "#775b00",
-                        "on-primary-fixed": "#000c1e",
-                        "error": "#a83836",
-                        "error-dim": "#67040d",
-                        "on-secondary-fixed-variant": "#0c6a24",
-                        "secondary-dim": "#00611e",
-                        "on-background": "#2c3437",
-                        "primary-fixed": "#68abff",
-                        "on-secondary-fixed": "#004a15",
-                        "secondary-container": "#9ff79f",
-                        "on-tertiary-fixed-variant": "#634c00",
-                        "tertiary-dim": "#685000",
-                        "primary": "#0060ad",
-                        "surface-dim": "#d4dbdf",
-                        "on-tertiary-container": "#584300",
-                        "on-error-container": "#6e0a12",
-                        "on-tertiary": "#fff8f0",
-                        "secondary-fixed": "#9ff79f",
-                        "surface-container-high": "#e3e9ed",
-                        "primary-dim": "#005498",
-                        "secondary-fixed-dim": "#91e892",
-                        "on-primary-container": "#002b52",
-                        "primary-container": "#68abff",
-                        "inverse-on-surface": "#9a9d9f",
-                        "outline": "#747c80",
-                        "on-secondary-container": "#005f1d"
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dim': '#0284c7',
+                        'on-surface': '#e5eefb',
+                        'on-surface-variant': '#a9b8cc',
                     },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
+                    borderRadius: {
+                        DEFAULT: '1rem',
+                        lg: '1.5rem',
+                        xl: '2rem',
+                        full: '9999px',
                     },
-                    "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Manrope"],
-                        "label": ["Manrope"]
-                    }
-                }
-            }
-        }
+                    fontFamily: {
+                        headline: ['Plus Jakarta Sans'],
+                        body: ['Manrope'],
+                    },
+                },
+            },
+        };
     </script>
-<style type="text/tailwindcss">
+    <style type="text/tailwindcss">
         @layer utilities {
-            .glass-panel {
-                @apply bg-surface-container-lowest/80 backdrop-blur-[20px];
+            .login-card {
+                @apply border border-white/15 bg-slate-950/72 backdrop-blur-2xl shadow-[0_34px_90px_-28px_rgba(0,0,0,0.72)];
             }
-            .ghost-border {
-                @apply border border-outline-variant/15;
+
+            .login-control {
+                @apply w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-4 text-white placeholder:text-slate-400 outline-none transition-all focus:border-sky-300/70 focus:bg-white/15 focus:ring-4 focus:ring-sky-400/10;
             }
-            .soft-shadow {
-                @apply shadow-[0_32px_64px_-16px_rgba(44,52,55,0.06)];
-            }
-            .gradient-primary {
-                @apply bg-gradient-to-br from-primary to-primary-container text-on-primary;
-            }
-            .gradient-tertiary {
-                @apply bg-gradient-to-br from-tertiary-container to-tertiary-fixed-dim text-on-tertiary-container;
+
+            .login-primary {
+                @apply bg-gradient-to-br from-sky-400 to-blue-700 text-white shadow-lg shadow-sky-950/35;
             }
         }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center relative overflow-hidden">
-<x-portal-dark-theme />
-<x-portal-video-background />
-<!-- Decorative Background Elements -->
-<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-<div class="absolute -top-32 -right-32 w-96 h-96 bg-tertiary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-<div class="absolute top-1/2 -left-24 w-72 h-72 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
-<div class="absolute -bottom-40 right-20 w-[30rem] h-[30rem] bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-</div>
-<!-- Main Container -->
-<main class="w-full max-w-6xl px-6 md:px-12 py-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-<!-- Left Side: Graphic / Branding -->
-<div class="hidden lg:flex flex-col justify-center items-start space-y-8 pr-12">
-<div class="flex items-center gap-4">
-<div class="w-16 h-16 flex items-center justify-center">
-<x-school-logo class="h-12 w-12" />
-</div>
-<h1 class="font-headline text-3xl font-extrabold text-primary">TK Wonoayu <span class="block text-xl font-medium text-on-surface-variant">Madiun</span></h1>
-</div>
-<div class="relative w-full aspect-square overflow-hidden bg-transparent border border-transparent p-6 flex flex-col justify-center items-center text-center">
-<img alt="Children playing" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" data-alt="soft pastel watercolor illustration of diverse happy children playing together in a bright sunny kindergarten playground, warm cheerful educational mood" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdlMymS4kA7zsxkpNC7zWiI-zxY2vVFq4YS14kyWd0o1qMMCr5ozEYlVYP-LEgl4uNRZYqClzglYqFSuj0v-IQAtFLVlErCB4c9p9T2DAkz0PiKJEuaNUmjn2xEiF_kUYciJfhM6fXoZVXz_AbKWTb8_Ut2mDyoY-6fVcLy8N9GsXhXdRRStw8dXEoyY68v6RFsIdL36SVTyJxxvqvAvq7XYqQKmkZqIbr_Rc7OzQ4k_-SPH-CHV06G-RitUe56b2LUD1G82yYJWbw"/>
-<div class="relative z-10 space-y-4">
-<div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-tertiary-container text-on-tertiary-container shadow-lg mb-4">
-<span class="material-symbols-outlined text-4xl" data-icon="toys">toys</span>
-</div>
-<h2 class="font-headline text-2xl font-bold text-on-surface">Tempat Bermain &amp; Belajar</h2>
-<p class="text-on-surface-variant font-medium">Membangun karakter anak sejak usia dini dengan penuh keceriaan.</p>
-</div>
-</div>
-</div>
-<!-- Right Side: Login Form -->
-<div class="w-full max-w-md mx-auto">
-<!-- Mobile Logo -->
-<div class="lg:hidden flex flex-col items-center gap-3 mb-8 text-center">
-<div class="w-16 h-16 flex items-center justify-center">
-<x-school-logo class="h-12 w-12" />
-</div>
-<h1 class="font-headline text-2xl font-extrabold text-primary">TK Wonoayu</h1>
-</div>
-<div class="glass-panel rounded-lg p-8 soft-shadow ghost-border relative">
-<!-- Floating decorative blob -->
-<div class="absolute -top-6 -right-6 w-16 h-16 bg-transparent rounded-[2rem] rounded-bl-sm z-[-1]"></div>
-<div class="mb-8">
-<h2 class="font-headline text-2xl font-bold text-on-surface mb-2">Selamat Datang!</h2>
-<p class="text-sm text-on-surface-variant">Silakan login dengan akun Anda</p>
-</div>
-@if ($errors->any())
-<div class="bg-error-container/20 border border-error/30 rounded-DEFAULT p-4 mb-6">
-<p class="text-sm font-semibold text-error">{{ $errors->first('username') ?? 'Login gagal. Periksa kembali username/email dan password Anda.' }}</p>
-</div>
-@endif
-<!-- Role Selection Toggle -->
-<div class="flex p-1 bg-surface-container-high rounded-full mb-8 relative gap-1">
-<!-- Sliding background -->
-<div class="absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] bg-surface-container-lowest rounded-full shadow-sm transition-all duration-300 pointer-events-none" id="roleIndicator"></div>
-<!-- Guru Button -->
-<button class="flex-1 py-3 px-6 rounded-full text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 role-btn" data-role="guru" type="button" onclick="selectRole('guru')">
-<span class="material-symbols-outlined text-[20px]" data-icon="person_4">person_4</span>
-<span class="hidden sm:inline">Guru</span>
-</button>
-<!-- Wali Murid Button -->
-<button class="flex-1 py-3 px-6 rounded-full text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 role-btn" data-role="wali_murid" type="button" onclick="selectRole('wali_murid')">
-<span class="material-symbols-outlined text-[20px]" data-icon="family_restroom">family_restroom</span>
-<span class="hidden sm:inline">Wali</span>
-</button>
-</div>
+<body class="min-h-screen overflow-hidden bg-slate-950 font-body text-white">
+    <x-portal-video-background />
 
-<!-- Form -->
-<form action="{{ route('auth.handle') }}" class="space-y-6" method="post">
-    @csrf
-    <!-- Hidden role input -->
-    <input id="roleInput" name="role" type="hidden" value="guru"/>
+    <main class="relative z-10 flex min-h-screen items-center justify-center px-5 py-8">
+        <section class="login-card w-full max-w-md rounded-[2rem] p-7 sm:p-8">
+            <div class="mb-8 text-center">
+                <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center">
+                    <x-school-logo class="h-16 w-16" />
+                </div>
+                <p class="mb-2 text-xs font-black uppercase tracking-[0.28em] text-sky-200">TK Wonoayu Madiun</p>
+                <h1 class="font-headline text-3xl font-black tracking-tight text-white">Selamat Datang</h1>
+                <p class="mt-3 text-sm font-medium leading-relaxed text-slate-300">
+                    Masuk ke portal guru atau wali murid untuk mengakses layanan sekolah.
+                </p>
+            </div>
 
-<div class="space-y-2">
-<label class="block text-sm font-semibold text-on-surface ml-2" for="username">Nama Pengguna / Email</label>
-<div class="relative">
-<span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-</span>
-<input class="w-full bg-surface-container-high border-none rounded-DEFAULT py-4 pl-12 pr-4 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-colors" id="username" name="username" placeholder="Masukkan nama pengguna" type="text"/>
-</div>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between items-center ml-2">
-<label class="block text-sm font-semibold text-on-surface" for="password">Kata Sandi</label>
-<a class="text-xs font-semibold text-primary hover:text-primary-dim transition-colors" href="#">Lupa Kata Sandi?</a>
-</div>
-<div class="relative">
-<span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="lock">lock</span>
-</span>
-<input class="w-full bg-surface-container-high border-none rounded-DEFAULT py-4 pl-12 pr-12 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-colors" id="password" name="password" placeholder="••••••••" type="password"/>
-<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline-variant hover:text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
-</button>
-</div>
-</div>
-<button class="w-full gradient-primary py-4 rounded-full font-bold text-lg hover:scale-[1.02] hover:shadow-lg transition-all duration-300 mt-4 flex justify-center items-center gap-2" type="submit">
-                        Masuk
-                        <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
-</button>
-</form>
-<!-- Help Link -->
-<div class="mt-8 text-center">
-<p class="text-sm text-on-surface-variant">Pilih peran Anda untuk login</p>
-</div>
-</div>
-</div>
-</main>
+            @if ($errors->any())
+                <div class="mb-6 rounded-2xl border border-rose-300/30 bg-rose-500/15 p-4">
+                    <p class="text-sm font-semibold text-rose-100">
+                        {{ $errors->first('username') ?? 'Login gagal. Periksa kembali username/email dan password Anda.' }}
+                    </p>
+                </div>
+            @endif
 
-<script>
-function selectRole(role) {
-    // Update hidden input
-    document.getElementById('roleInput').value = role;
-    
-    // Update button styles
-    document.querySelectorAll('.role-btn').forEach(btn => {
-        btn.classList.remove('text-primary');
-        btn.classList.add('text-on-surface-variant');
-    });
-    
-    const activeBtn = document.querySelector(`[data-role="${role}"]`);
-    activeBtn.classList.remove('text-on-surface-variant');
-    activeBtn.classList.add('text-primary');
-    
-    // Update indicator position
-    const indicator = document.getElementById('roleIndicator');
-    if (role === 'guru') {
-        indicator.style.transform = 'translateX(0)';
-    } else {
-        indicator.style.transform = 'translateX(calc(100% + 0.25rem))';
-    }
-}
+            <div class="relative mb-7 flex rounded-2xl border border-white/10 bg-white/10 p-1">
+                <div class="absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-white shadow-sm transition-all duration-300 pointer-events-none" id="roleIndicator"></div>
+                <button class="role-btn z-10 flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-colors" data-role="guru" type="button" onclick="selectRole('guru')">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="person_4">person_4</span>
+                    <span>Guru</span>
+                </button>
+                <button class="role-btn z-10 flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-colors" data-role="wali_murid" type="button" onclick="selectRole('wali_murid')">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="family_restroom">family_restroom</span>
+                    <span>Wali</span>
+                </button>
+            </div>
 
-// Initialize on page load
-window.addEventListener('DOMContentLoaded', function() {
-    selectRole('guru');
-});
-</script>
-</body></html>
+            <form action="{{ route('auth.handle') }}" class="space-y-6" method="post">
+                @csrf
+                <input id="roleInput" name="role" type="hidden" value="guru"/>
+
+                <div class="space-y-2">
+                    <label class="ml-1 block text-sm font-bold text-slate-100" for="username">Nama Pengguna / Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 pointer-events-none">
+                            <span class="material-symbols-outlined" data-icon="person">person</span>
+                        </span>
+                        <input class="login-control pl-12" id="username" name="username" placeholder="Masukkan nama pengguna" type="text"/>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="ml-1 block text-sm font-bold text-slate-100" for="password">Kata Sandi</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 pointer-events-none">
+                            <span class="material-symbols-outlined" data-icon="lock">lock</span>
+                        </span>
+                        <input class="login-control pl-12 pr-12" id="password" name="password" placeholder="Password" type="password"/>
+                        <button class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-white" type="button">
+                            <span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="login-primary mt-2 flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-base font-black transition-all duration-300 hover:scale-[1.01] hover:shadow-xl" type="submit">
+                    Masuk
+                    <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+                </button>
+            </form>
+
+            <p class="mt-7 text-center text-xs font-semibold text-slate-400">Pilih peran sebelum masuk ke portal.</p>
+        </section>
+    </main>
+
+    <script>
+        function selectRole(role) {
+            document.getElementById('roleInput').value = role;
+
+            document.querySelectorAll('.role-btn').forEach((btn) => {
+                btn.classList.remove('text-slate-950');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.querySelector(`[data-role="${role}"]`);
+            activeBtn.classList.remove('text-slate-300');
+            activeBtn.classList.add('text-slate-950');
+
+            const indicator = document.getElementById('roleIndicator');
+            indicator.style.transform = role === 'guru'
+                ? 'translateX(0)'
+                : 'translateX(calc(100% + 0.25rem))';
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            selectRole('guru');
+        });
+    </script>
+</body>
+</html>
