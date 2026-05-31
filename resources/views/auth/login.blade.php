@@ -34,27 +34,81 @@
             },
         };
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .login-page-main {
+            position: relative;
+            z-index: 20;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 28rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(2, 6, 23, 0.82);
+            color: #ffffff;
+            padding: 1.75rem;
+            box-shadow: 0 34px 90px -28px rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        @media (min-width: 640px) {
             .login-card {
-                @apply border border-white/15 bg-slate-950/72 backdrop-blur-2xl shadow-[0_34px_90px_-28px_rgba(0,0,0,0.72)];
+                padding: 2rem;
             }
+        }
 
-            .login-control {
-                @apply w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-4 text-white placeholder:text-slate-400 outline-none transition-all focus:border-sky-300/70 focus:bg-white/15 focus:ring-4 focus:ring-sky-400/10;
-            }
+        .login-control {
+            width: 100%;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 1rem;
+            outline: none;
+            transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+        }
 
-            .login-primary {
-                @apply bg-gradient-to-br from-sky-400 to-blue-700 text-white shadow-lg shadow-sky-950/35;
-            }
+        .login-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .login-control:focus {
+            border-color: rgba(125, 211, 252, 0.75);
+            background: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+        }
+
+        .login-primary {
+            background: linear-gradient(135deg, #38bdf8, #1d4ed8);
+            color: #ffffff;
+            box-shadow: 0 18px 36px rgba(8, 47, 73, 0.35);
+        }
+
+        .login-primary:hover {
+            box-shadow: 0 24px 48px rgba(8, 47, 73, 0.45);
         }
     </style>
 </head>
 <body class="min-h-screen overflow-hidden bg-slate-950 font-body text-white">
     <x-portal-video-background />
 
-    <main class="relative z-10 flex min-h-screen items-center justify-center px-5 py-8">
-        <section class="login-card w-full max-w-md rounded-[2rem] p-7 sm:p-8">
+    <main class="login-page-main">
+        <section class="login-card">
             <div class="mb-8 text-center">
                 <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center">
                     <x-school-logo class="h-16 w-16" />
