@@ -117,12 +117,12 @@
 <!-- Left Side: Graphic / Branding -->
 <div class="hidden lg:flex flex-col justify-center items-start space-y-8 pr-12">
 <div class="flex items-center gap-4">
-<div class="w-16 h-16 rounded-2xl bg-white/90 flex items-center justify-center shadow-lg shadow-primary/20 p-2">
+<div class="w-16 h-16 flex items-center justify-center">
 <x-school-logo class="h-12 w-12" />
 </div>
 <h1 class="font-headline text-3xl font-extrabold text-primary">TK Wonoayu <span class="block text-xl font-medium text-on-surface-variant">Madiun</span></h1>
 </div>
-<div class="relative w-full aspect-square rounded-xl overflow-hidden glass-panel soft-shadow border border-surface-container-high/50 p-6 flex flex-col justify-center items-center text-center">
+<div class="relative w-full aspect-square overflow-hidden bg-transparent border border-transparent p-6 flex flex-col justify-center items-center text-center">
 <img alt="Children playing" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" data-alt="soft pastel watercolor illustration of diverse happy children playing together in a bright sunny kindergarten playground, warm cheerful educational mood" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdlMymS4kA7zsxkpNC7zWiI-zxY2vVFq4YS14kyWd0o1qMMCr5ozEYlVYP-LEgl4uNRZYqClzglYqFSuj0v-IQAtFLVlErCB4c9p9T2DAkz0PiKJEuaNUmjn2xEiF_kUYciJfhM6fXoZVXz_AbKWTb8_Ut2mDyoY-6fVcLy8N9GsXhXdRRStw8dXEoyY68v6RFsIdL36SVTyJxxvqvAvq7XYqQKmkZqIbr_Rc7OzQ4k_-SPH-CHV06G-RitUe56b2LUD1G82yYJWbw"/>
 <div class="relative z-10 space-y-4">
 <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-tertiary-container text-on-tertiary-container shadow-lg mb-4">
@@ -137,14 +137,14 @@
 <div class="w-full max-w-md mx-auto">
 <!-- Mobile Logo -->
 <div class="lg:hidden flex flex-col items-center gap-3 mb-8 text-center">
-<div class="w-16 h-16 rounded-2xl bg-white/90 flex items-center justify-center shadow-md shadow-primary/20 p-2">
+<div class="w-16 h-16 flex items-center justify-center">
 <x-school-logo class="h-12 w-12" />
 </div>
 <h1 class="font-headline text-2xl font-extrabold text-primary">TK Wonoayu</h1>
 </div>
 <div class="glass-panel rounded-lg p-8 soft-shadow ghost-border relative">
 <!-- Floating decorative blob -->
-<div class="absolute -top-6 -right-6 w-16 h-16 bg-secondary-container rounded-[2rem] rounded-bl-sm z-[-1]"></div>
+<div class="absolute -top-6 -right-6 w-16 h-16 bg-transparent rounded-[2rem] rounded-bl-sm z-[-1]"></div>
 <div class="mb-8">
 <h2 class="font-headline text-2xl font-bold text-on-surface mb-2">Selamat Datang!</h2>
 <p class="text-sm text-on-surface-variant">Silakan login dengan akun Anda</p>
