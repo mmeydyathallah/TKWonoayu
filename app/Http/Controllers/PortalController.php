@@ -294,8 +294,13 @@ class PortalController extends Controller
         ));
     }
 
-    public function studentProfile(): View
+    public function studentProfile(): View|RedirectResponse
     {
+        $guardian = Auth::user();
+        if ($guardian->role === 'guru') {
+            return redirect()->route('guru.dashboard');
+        }
+
         if (! $this->tableReady(['students', 'parent_profiles'])) {
             return view('wali_murid.profile.index', [
                 'student' => null,
@@ -303,7 +308,7 @@ class PortalController extends Controller
             ]);
         }
 
-        $student = Student::query()->with('parentProfile')->latest()->first();
+        $student = $guardian->student?->load('parentProfile');
 
         return view('wali_murid.profile.index', [
             'student' => $student,
