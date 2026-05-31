@@ -30,7 +30,30 @@
 @endonce
 
 <div class="portal-video-background" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="metadata">
+    <video class="portal-video-background__media" autoplay muted loop playsinline preload="auto">
         <source src="{{ asset('videos/portal-background.mp4') }}" type="video/mp4">
     </video>
 </div>
+
+@once
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.portal-video-background__media').forEach((video) => {
+                const replay = () => {
+                    video.muted = true;
+                    video.loop = true;
+
+                    if (video.ended || video.currentTime >= video.duration - 0.2) {
+                        video.currentTime = 0;
+                    }
+
+                    video.play().catch(() => {});
+                };
+
+                video.addEventListener('ended', replay);
+                video.addEventListener('pause', replay);
+                replay();
+            });
+        });
+    </script>
+@endonce
