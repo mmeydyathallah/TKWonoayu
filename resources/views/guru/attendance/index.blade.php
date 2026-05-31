@@ -68,6 +68,15 @@
         background: rgba(15, 23, 42, 0.72) !important;
         border-color: rgba(148, 163, 184, 0.22) !important;
     }
+
+    .attendance-page .attendance-status:checked + .attendance-radio {
+        color: #020617 !important;
+    }
+
+    .attendance-page .attendance-status-chip {
+        color: #020617 !important;
+        background: rgba(248, 250, 252, 0.92) !important;
+    }
 </style>
 @endsection
 
@@ -206,7 +215,7 @@
                                         <div>
                                             <p class="font-black text-on-surface">{{ $student->full_name }}</p>
                                             <p class="text-xs font-bold text-on-surface-variant">{{ $student->nickname ?: $student->student_no }}</p>
-                                            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-base-200 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
+                                            <span class="attendance-status-chip mt-1 inline-flex items-center gap-1 rounded-full bg-base-200 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-on-surface-variant">
                                                 <span class="h-1.5 w-1.5 rounded-full {{ $rowMeta['dot'] }}"></span>
                                                 {{ $rowMeta['label'] }}
                                             </span>
