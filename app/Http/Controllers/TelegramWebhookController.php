@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\GuardianTelegramChat;
+use App\Models\ParentProfile;
+use App\Models\Student;
 use App\Services\TelegramNotifier;
 use App\Support\PhoneNumber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class TelegramWebhookController extends Controller
 {
@@ -24,6 +27,12 @@ class TelegramWebhookController extends Controller
             }
         }
 
+        if ($request->has('callback_query')) {
+            $this->handleCallbackQuery($request->input('callback_query', []));
+
+            return response()->json(['ok' => true]);
+        }
+
         $message = $request->input('message', []);
         $chatId = (string) data_get($message, 'chat.id', '');
 
@@ -38,7 +47,7 @@ class TelegramWebhookController extends Controller
                 return response()->json(['ok' => true]);
             }
 
-            GuardianTelegramChat::query()->updateOrCreate(
+            $chat = GuardianTelegramChat::query()->updateOrCreate(
                 ['phone_number_normalized' => $phone],
                 [
                     'chat_id' => $chatId,
@@ -47,19 +56,105 @@ class TelegramWebhookController extends Controller
                 ]
             );
 
-            $this->telegramNotifier->sendMessage(
-                $chatId,
-                "Nomor <b>{$phone}</b> sudah terhubung.\nNotifikasi absensi masuk/pulang akan dikirim ke chat ini."
-            );
+            $this->sendStudentSelection($chat);
 
             return response()->json(['ok' => true]);
         }
 
         $text = trim((string) data_get($message, 'text', ''));
-        if (in_array($text, ['/start', '/hubungkan'], true)) {
+        $command = strtolower(strtok($text, ' ') ?: $text);
+        $command = strtok($command, '@') ?: $command;
+
+        if (in_array($command, ['/start', '/hubungkan'], true)) {
             $this->telegramNotifier->requestContact($chatId);
+        } elseif ($command === '/siswa') {
+            $chat = GuardianTelegramChat::query()->where('chat_id', $chatId)->first();
+            if (! $chat) {
+                $this->telegramNotifier->requestContact($chatId);
+            } else {
+                $this->sendStudentSelection($chat);
+            }
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    private function handleCallbackQuery(array $callbackQuery): void
+    {
+        $callbackQueryId = (string) data_get($callbackQuery, 'id', '');
+        $chatId = (string) data_get($callbackQuery, 'message.chat.id', '');
+        $data = (string) data_get($callbackQuery, 'data', '');
+
+        if ($callbackQueryId === '' || $chatId === '' || ! str_starts_with($data, 'select_student:')) {
+            return;
+        }
+
+        $studentId = (int) str_replace('select_student:', '', $data);
+        $chat = GuardianTelegramChat::query()->where('chat_id', $chatId)->first();
+        if (! $chat) {
+            $this->telegramNotifier->answerCallbackQuery($callbackQueryId, 'Bagikan nomor telepon dulu.');
+            return;
+        }
+
+        $students = $this->studentsForPhone($chat->phone_number_normalized);
+        $student = $students->firstWhere('id', $studentId);
+        if (! $student) {
+            $this->telegramNotifier->answerCallbackQuery($callbackQueryId, 'Siswa tidak cocok dengan nomor wali.');
+            return;
+        }
+
+        $chat->update(['selected_student_id' => $student->id]);
+        $this->telegramNotifier->answerCallbackQuery($callbackQueryId, 'Siswa dipilih.');
+        $this->telegramNotifier->sendMessage(
+            $chat->chat_id,
+            "Notifikasi aktif untuk:\nAnanda: <b>{$student->full_name}</b>\nKelas: {$student->class_group}"
+        );
+    }
+
+    private function sendStudentSelection(GuardianTelegramChat $chat): void
+    {
+        $students = $this->studentsForPhone($chat->phone_number_normalized);
+
+        if ($students->isEmpty()) {
+            $this->telegramNotifier->sendMessage(
+                $chat->chat_id,
+                "Nomor <b>{$chat->phone_number_normalized}</b> sudah terhubung, tetapi belum cocok dengan nomor HP wali di biodata siswa.\nPeriksa kolom nomor HP wali murid di biodata."
+            );
+            return;
+        }
+
+        if ($students->count() === 1) {
+            $student = $students->first();
+            $chat->update(['selected_student_id' => $student->id]);
+            $this->telegramNotifier->sendMessage(
+                $chat->chat_id,
+                "Nomor <b>{$chat->phone_number_normalized}</b> sudah terhubung.\nNotifikasi aktif untuk:\nAnanda: <b>{$student->full_name}</b>\nKelas: {$student->class_group}"
+            );
+            return;
+        }
+
+        $chat->update(['selected_student_id' => null]);
+        $this->telegramNotifier->sendMessage(
+            $chat->chat_id,
+            "Nomor <b>{$chat->phone_number_normalized}</b> terhubung ke beberapa siswa.\nPilih siswa yang ingin menerima notifikasi di chat ini.",
+            [
+                'inline_keyboard' => $students->map(fn (Student $student) => [[
+                    'text' => "{$student->full_name} - Kel. {$student->class_group}",
+                    'callback_data' => 'select_student:' . $student->id,
+                ]])->values()->all(),
+            ]
+        );
+    }
+
+    private function studentsForPhone(string $normalizedPhone): Collection
+    {
+        return ParentProfile::query()
+            ->whereNotNull('guardian_phone')
+            ->with('student:id,full_name,class_group')
+            ->get()
+            ->filter(fn (ParentProfile $profile) => PhoneNumber::normalize($profile->guardian_phone) === $normalizedPhone)
+            ->map(fn (ParentProfile $profile) => $profile->student)
+            ->filter()
+            ->values();
     }
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\GuardianTelegramChat;
+use App\Models\ParentProfile;
 use App\Models\Student;
 use App\Services\TelegramNotifier;
+use App\Support\AttendanceSchedule;
 use App\Support\PhoneNumber;
 use App\Support\RfidCode;
 use Illuminate\Http\JsonResponse;
@@ -85,11 +87,25 @@ class RfidAttendanceController extends Controller
         ]);
         $timestamp = now();
         $previousStatus = $attendance->exists ? $attendance->status : null;
-        $eventType = 'masuk';
+        $schedule = AttendanceSchedule::detectEvent($timestamp);
+        $eventType = $schedule['event_type'];
 
         $attendance->status = 'hadir';
-        if (! $attendance->check_in_at) {
+        if ($eventType === 'masuk') {
+            if (! $attendance->check_in_at) {
+                $attendance->check_in_at = $timestamp;
+            } else {
+                $eventType = 'sudah_tercatat';
+            }
+        } elseif ($eventType === 'pulang') {
+            if (! $attendance->check_out_at) {
+                $attendance->check_out_at = $timestamp;
+            } else {
+                $eventType = 'sudah_tercatat';
+            }
+        } elseif (! $attendance->check_in_at) {
             $attendance->check_in_at = $timestamp;
+            $eventType = 'masuk';
         } elseif (! $attendance->check_out_at) {
             $attendance->check_out_at = $timestamp;
             $eventType = 'pulang';
@@ -120,6 +136,9 @@ class RfidAttendanceController extends Controller
                 'date' => $today,
                 'status' => $attendance->status,
                 'event_type' => $eventType,
+                'inside_schedule_window' => $schedule['inside_window'],
+                'check_in_window' => $schedule['check_in_window'],
+                'check_out_window' => $schedule['check_out_window'],
                 'check_in_at' => optional($attendance->check_in_at)->format('Y-m-d H:i:s'),
                 'check_out_at' => optional($attendance->check_out_at)->format('Y-m-d H:i:s'),
                 'previous_status' => $previousStatus,
@@ -136,10 +155,23 @@ class RfidAttendanceController extends Controller
             return;
         }
 
+        $guardianStudents = $this->studentsForGuardianPhone($guardianPhone);
         $chat = GuardianTelegramChat::query()
             ->where('phone_number_normalized', $guardianPhone)
             ->first();
         if (! $chat) {
+            return;
+        }
+
+        if ($chat->selected_student_id && (int) $chat->selected_student_id !== (int) $student->id) {
+            return;
+        }
+
+        if (! $chat->selected_student_id && $guardianStudents->count() > 1) {
+            $this->telegramNotifier->sendMessage(
+                $chat->chat_id,
+                "Nomor wali terhubung ke beberapa siswa.\nKetik /siswa lalu pilih siswa agar notifikasi masuk/pulang tidak tertukar."
+            );
             return;
         }
 
@@ -151,5 +183,17 @@ class RfidAttendanceController extends Controller
             . "Kelas: {$student->class_group}";
 
         $this->telegramNotifier->sendMessage($chat->chat_id, $text);
+    }
+
+    private function studentsForGuardianPhone(string $normalizedPhone)
+    {
+        return ParentProfile::query()
+            ->whereNotNull('guardian_phone')
+            ->with('student:id,full_name,class_group')
+            ->get()
+            ->filter(fn (ParentProfile $profile) => PhoneNumber::normalize($profile->guardian_phone) === $normalizedPhone)
+            ->map(fn (ParentProfile $profile) => $profile->student)
+            ->filter()
+            ->values();
     }
 }

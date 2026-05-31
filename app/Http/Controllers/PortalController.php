@@ -14,6 +14,7 @@ use App\Models\Student;
 use App\Models\SchoolAgenda;
 use App\Models\User;
 use App\Models\Attendance;
+use App\Support\AttendanceSchedule;
 use App\Support\RfidCode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
@@ -90,7 +91,17 @@ class PortalController extends Controller
     public function settings(): View
     {
         $user = Auth::user();
-        return view('guru.settings.index', compact('user'));
+        $attendanceSettings = AttendanceSchedule::settings();
+        $attendanceSettings['check_in_window'] = AttendanceSchedule::windowLabel(
+            $attendanceSettings['check_in_time'],
+            $attendanceSettings['window_minutes']
+        );
+        $attendanceSettings['check_out_window'] = AttendanceSchedule::windowLabel(
+            $attendanceSettings['check_out_time'],
+            $attendanceSettings['window_minutes']
+        );
+
+        return view('guru.settings.index', compact('user', 'attendanceSettings'));
     }
 
     public function updateProfile(Request $request): RedirectResponse
@@ -124,6 +135,33 @@ class PortalController extends Controller
         $user->update(['password' => Hash::make($request->password)]);
 
         return back()->with('success_password', 'Password berhasil diperbarui.');
+    }
+
+    public function updateAttendanceSettings(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        if ($user->role !== 'guru') {
+            return redirect()->route('wali.dashboard');
+        }
+
+        $validated = $request->validate([
+            'check_in_time' => ['required', 'date_format:H:i'],
+            'check_out_time' => ['required', 'date_format:H:i', 'after:check_in_time'],
+        ], [
+            'check_in_time.required' => 'Jam masuk wajib diisi.',
+            'check_in_time.date_format' => 'Format jam masuk tidak valid.',
+            'check_out_time.required' => 'Jam pulang wajib diisi.',
+            'check_out_time.date_format' => 'Format jam pulang tidak valid.',
+            'check_out_time.after' => 'Jam pulang harus setelah jam masuk.',
+        ]);
+
+        AttendanceSchedule::save(
+            $validated['check_in_time'],
+            $validated['check_out_time'],
+            AttendanceSchedule::DEFAULT_WINDOW_MINUTES
+        );
+
+        return back()->with('success_attendance', 'Pengaturan jam masuk dan pulang berhasil disimpan.');
     }
 
     public function teacherDashboard(): View

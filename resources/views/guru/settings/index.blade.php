@@ -34,6 +34,9 @@
         <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">lock</span> Keamanan
         </button>
+        <button onclick="switchTab('absensi')" id="tab-absensi" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">schedule</span> Absensi RFID
+        </button>
         <button onclick="switchTab('info')" id="tab-info" class="tab-btn px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">info</span> Informasi Sistem
         </button>
@@ -198,6 +201,89 @@
         </div>
     </div>
 
+    {{-- ==================== TAB: ABSENSI RFID ==================== --}}
+    <div id="panel-absensi" class="hidden">
+        @if(session('success_attendance'))
+        <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-sm font-bold">
+            <span class="material-symbols-outlined text-emerald-500">check_circle</span> {{ session('success_attendance') }}
+        </div>
+        @endif
+        @if($errors->has('check_in_time') || $errors->has('check_out_time'))
+        <div class="mb-6 bg-rose-50 border border-rose-200 text-rose-800 px-5 py-4 rounded-2xl text-sm font-bold">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $e)
+                <li>{{ $e }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
+                <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50">
+                    <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">tap_and_play</span>
+                        Jadwal Tap RFID
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Rentang aktif otomatis 1 jam sebelum dan 1 jam sesudah jam utama.</p>
+                </div>
+                <form action="{{ route('guru.settings.attendance') }}" method="POST" class="p-8 space-y-6">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Jam Masuk</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 text-[20px]">login</span>
+                                <input type="time" name="check_in_time" value="{{ old('check_in_time', $attendanceSettings['check_in_time'] ?? '07:00') }}" required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none transition-all focus:bg-white">
+                            </div>
+                            <p class="text-xs font-bold text-slate-400">Contoh 07:00 akan dianggap masuk pada 06:00 - 08:00.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Jam Pulang</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-amber-500 text-[20px]">logout</span>
+                                <input type="time" name="check_out_time" value="{{ old('check_out_time', $attendanceSettings['check_out_time'] ?? '11:00') }}" required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none transition-all focus:bg-white">
+                            </div>
+                            <p class="text-xs font-bold text-slate-400">Contoh 11:00 akan dianggap pulang pada 10:00 - 12:00.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3">
+                        <span class="material-symbols-outlined text-blue-500 text-[20px] flex-shrink-0 mt-0.5">info</span>
+                        <p class="text-xs text-blue-700 font-medium leading-relaxed">
+                            Jika kartu ditap dalam rentang masuk, sistem mengisi jam masuk. Jika ditap dalam rentang pulang, sistem mengisi jam pulang. Di luar rentang, sistem tetap memakai urutan tap pertama sebagai masuk dan tap berikutnya sebagai pulang.
+                        </p>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="gradient-primary text-white px-8 py-3.5 rounded-2xl text-sm font-extrabold shadow-lg shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">save</span> Simpan Jadwal Absensi
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow p-8 h-fit">
+                <h3 class="font-extrabold text-slate-800 text-base mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">rule</span> Rentang Aktif
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Masuk</p>
+                        <p class="text-2xl font-black text-emerald-700 mt-1">{{ $attendanceSettings['check_in_window'] ?? '06:00 - 08:00' }}</p>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                        <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest">Pulang</p>
+                        <p class="text-2xl font-black text-amber-700 mt-1">{{ $attendanceSettings['check_out_window'] ?? '10:00 - 12:00' }}</p>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">Rentang ini dipakai oleh endpoint RFID dan notifikasi Telegram.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ==================== TAB: INFO SISTEM ==================== --}}
     <div id="panel-info" class="hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -277,7 +363,7 @@
 @section('scripts')
 <script>
 function switchTab(tab) {
-    ['profil','password','info'].forEach(t => {
+    ['profil','password','absensi','info'].forEach(t => {
         document.getElementById('panel-' + t).classList.add('hidden');
         document.getElementById('tab-' + t).classList.remove('active');
     });
@@ -288,6 +374,10 @@ function switchTab(tab) {
 // Open correct tab on error
 @if($errors->has('current_password') || $errors->has('password') || session('success_password'))
     document.addEventListener('DOMContentLoaded', () => switchTab('password'));
+@endif
+
+@if($errors->has('check_in_time') || $errors->has('check_out_time') || session('success_attendance'))
+    document.addEventListener('DOMContentLoaded', () => switchTab('absensi'));
 @endif
 
 // Password strength meter

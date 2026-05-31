@@ -39,6 +39,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::get('/pengaturan', [PortalController::class, 'settings'])->name('settings');
     Route::post('/pengaturan/profil', [PortalController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/pengaturan/password', [PortalController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/pengaturan/absensi', [PortalController::class, 'updateAttendanceSettings'])->name('settings.attendance');
     
     // Attendance (Guru only)
     Route::get('/absensi', [AttendanceController::class, 'index'])->name('attendance.index');
