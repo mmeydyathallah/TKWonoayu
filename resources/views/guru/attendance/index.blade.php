@@ -70,7 +70,7 @@
     }
 
     .attendance-page .attendance-status:checked + .attendance-radio {
-        color: #020617 !important;
+        color: #ffffff !important;
     }
 
     .attendance-page .attendance-status-chip {
