@@ -338,6 +338,67 @@
                 </div>
             </div>
         </div>
+
+        <div class="mt-8 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
+            <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between gap-3">
+                <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">group</span>
+                    Daftar Anak Terhubung Telegram
+                </h3>
+                <span class="text-xs font-bold text-slate-400">{{ ($telegramConnections ?? collect())->count() }} nomor</span>
+            </div>
+
+            <div class="p-6">
+                @if(($telegramConnections ?? collect())->isEmpty())
+                    <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
+                        Belum ada nomor Telegram yang terhubung.
+                    </div>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-left text-slate-500 border-b border-slate-100">
+                                    <th class="py-3 pr-4 font-bold">Nama Anak</th>
+                                    <th class="py-3 pr-4 font-bold">Nomor Wali</th>
+                                    <th class="py-3 pr-4 font-bold">Telegram</th>
+                                    <th class="py-3 pr-4 font-bold">Status Siswa Aktif</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(($telegramConnections ?? collect()) as $row)
+                                    @php
+                                        $studentNames = $row['students']->pluck('full_name')->filter()->values();
+                                        $selectedName = $row['selected_student']?->full_name;
+                                    @endphp
+                                    <tr class="border-b border-slate-50 align-top">
+                                        <td class="py-3 pr-4 text-slate-700 font-semibold">
+                                            @if($studentNames->isNotEmpty())
+                                                {{ $studentNames->join(', ') }}
+                                            @else
+                                                <span class="text-slate-400">Belum cocok ke biodata siswa</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 pr-4 text-slate-700 font-mono">{{ $row['phone'] ?: '-' }}</td>
+                                        <td class="py-3 pr-4 text-slate-600">{{ $row['telegram_username'] ? '@' . $row['telegram_username'] : ('Chat ID: ' . $row['chat_id']) }}</td>
+                                        <td class="py-3 pr-4">
+                                            @if($selectedName)
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                                                    {{ $selectedName }}
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                                                    Belum pilih siswa
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 
     {{-- ==================== TAB: INFO SISTEM ==================== --}}

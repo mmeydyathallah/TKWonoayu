@@ -108,7 +108,35 @@ class PortalController extends Controller
             'selected_student_chats' => GuardianTelegramChat::query()->whereNotNull('selected_student_id')->count(),
         ];
 
-        return view('guru.settings.index', compact('user', 'attendanceSettings', 'telegramStats'));
+        $profilesByPhone = ParentProfile::query()
+            ->with('student:id,full_name,class_group')
+            ->get()
+            ->filter(fn (ParentProfile $profile) => ! empty($profile->guardian_phone))
+            ->groupBy(fn (ParentProfile $profile) => PhoneNumber::normalize($profile->guardian_phone));
+
+        $telegramConnections = GuardianTelegramChat::query()
+            ->with('selectedStudent:id,full_name,class_group')
+            ->orderByDesc('updated_at')
+            ->get()
+            ->map(function (GuardianTelegramChat $chat) use ($profilesByPhone) {
+                $matchedProfiles = $profilesByPhone->get($chat->phone_number_normalized, collect());
+                $students = $matchedProfiles
+                    ->pluck('student')
+                    ->filter()
+                    ->unique('id')
+                    ->values();
+
+                return [
+                    'phone' => $chat->phone_number_normalized,
+                    'chat_id' => $chat->chat_id,
+                    'telegram_username' => $chat->telegram_username,
+                    'selected_student' => $chat->selectedStudent,
+                    'students' => $students,
+                    'updated_at' => $chat->updated_at,
+                ];
+            });
+
+        return view('guru.settings.index', compact('user', 'attendanceSettings', 'telegramStats', 'telegramConnections'));
     }
 
     public function updateProfile(Request $request): RedirectResponse
