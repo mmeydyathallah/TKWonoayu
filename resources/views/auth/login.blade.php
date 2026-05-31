@@ -53,7 +53,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.12);
             color: #ffffff;
-            padding: 1rem;
+            padding: 1rem 1rem 1rem 3.25rem;
             outline: none;
             transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
         }
@@ -122,20 +122,20 @@
                 <div class="space-y-2">
                     <label class="ml-1 block text-sm font-bold text-slate-100" for="username">Nama Pengguna / Email</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 pointer-events-none">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
                             <span class="material-symbols-outlined" data-icon="person">person</span>
                         </span>
-                        <input class="login-control pl-12" id="username" name="username" placeholder="Masukkan nama pengguna" type="text"/>
+                        <input class="login-control" id="username" name="username" placeholder="Masukkan nama pengguna" type="text"/>
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <label class="ml-1 block text-sm font-bold text-slate-100" for="password">Kata Sandi</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 pointer-events-none">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
                             <span class="material-symbols-outlined" data-icon="lock">lock</span>
                         </span>
-                        <input class="login-control pl-12 pr-12" id="password" name="password" placeholder="Password" type="password"/>
+                        <input class="login-control pr-12" id="password" name="password" placeholder="Password" type="password"/>
                         <button class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-white" type="button">
                             <span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
                         </button>
