@@ -34,29 +34,29 @@
         </a>
         
         <div class="my-4 border-t border-slate-100"></div>
-        <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Modul Penilaian</p>
+        <p class="px-4 text-[10px] font-black text-sky-200 uppercase tracking-[0.2em] mb-1">Modul Penilaian</p>
         
-        <a class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('guru.daily') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.daily') }}">
+        <a class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('guru.daily') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.daily') }}">
             <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.daily') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_note</span>
             <span class="font-bold text-xs">Penilaian Harian</span>
         </a>
 
-        <a class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('guru.checklist') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.checklist') }}">
+        <a class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('guru.checklist') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.checklist') }}">
             <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.checklist') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">fact_check</span>
             <span class="font-bold text-xs">Penilaian Ceklis</span>
         </a>
         
-        <a class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('guru.panel') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.panel') }}">
+        <a class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('guru.panel') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.panel') }}">
             <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.panel') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">forum</span>
             <span class="font-bold text-xs">Penilaian Percakapan</span>
         </a>
         
-        <a class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('guru.artworks') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.artworks') }}">
+        <a class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('guru.artworks') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.artworks') }}">
             <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.artworks') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">palette</span>
             <span class="font-bold text-xs">Hasil Karya</span>
         </a>
         
-        <a class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('guru.anecdotal') ? 'bg-primary text-white rounded-2xl shadow-lg shadow-primary/30' : 'text-slate-600 hover:bg-slate-100 rounded-2xl' }} transition-all duration-300" href="{{ route('guru.anecdotal') }}">
+        <a class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('guru.anecdotal') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.anecdotal') }}">
             <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.anecdotal') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">history_edu</span>
             <span class="font-bold text-xs">Catatan Anekdot</span>
         </a>

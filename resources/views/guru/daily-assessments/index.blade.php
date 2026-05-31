@@ -13,6 +13,7 @@
 @endphp
 
 @section('styles')
+<x-assessment-module-theme />
 <style>
     .gradient-primary { background: linear-gradient(135deg, #0060ad, #68abff); }
     .ambient-shadow   { box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
@@ -49,7 +50,7 @@
 @section('content')
 
 {{-- TOP BAR --}}
-<header class="bg-white/90 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-100 shadow-sm flex items-center justify-between px-8 py-4 w-full -mx-8 mb-8 docked full-width">
+<header class="assessment-header bg-white/90 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-100 shadow-sm flex items-center justify-between px-8 py-4 w-full -mx-8 mb-8 docked full-width">
     <div class="flex items-center gap-4">
         <div class="w-11 h-11 rounded-2xl gradient-primary flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
             <span class="material-symbols-outlined text-[22px]">edit_note</span>
@@ -61,7 +62,7 @@
     </div>
 </header>
 
-<div class="max-w-7xl mx-auto w-full pb-32">
+<div class="assessment-module max-w-7xl mx-auto w-full pb-32">
 
     @if(session('success'))
     <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-sm font-bold shadow-sm">

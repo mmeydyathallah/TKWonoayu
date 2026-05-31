@@ -35,9 +35,12 @@ class AttendanceController extends Controller
             'belum' => 0,
         ];
 
+        $recordedStatuses = ['hadir', 'izin', 'sakit', 'alpa'];
+
         foreach ($students as $student) {
-            $status = $attendances->get($student->id)?->status ?? 'belum';
-            $statusCounts[$status] = ($statusCounts[$status] ?? 0) + 1;
+            $status = $attendances->get($student->id)?->status;
+            $status = in_array($status, $recordedStatuses, true) ? $status : 'belum';
+            $statusCounts[$status]++;
         }
 
         $classGroups = Student::query()
@@ -45,7 +48,7 @@ class AttendanceController extends Controller
             ->distinct()
             ->orderBy('class_group')
             ->pluck('class_group');
-        $recordedCount = $attendances->only($students->pluck('id')->all())->count();
+        $recordedCount = collect($recordedStatuses)->sum(fn ($status) => $statusCounts[$status]);
         $totalStudents = $students->count();
 
         return view('guru.attendance.index', compact(

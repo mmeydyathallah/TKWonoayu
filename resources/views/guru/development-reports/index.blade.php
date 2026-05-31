@@ -5,6 +5,7 @@
 @endphp
 
 @section('styles')
+<x-assessment-module-theme />
 <style>
     .gradient-primary { background: linear-gradient(135deg, #0060ad, #68abff); }
     .ambient-shadow { box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
@@ -31,7 +32,7 @@
 @section('content')
 
 {{-- TOP BAR --}}
-<header class="bg-white/90 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-100 shadow-sm flex items-center justify-between px-6 py-4 w-full -mx-8 mb-6 docked full-width">
+<header class="assessment-header bg-white/90 backdrop-blur-2xl sticky top-0 z-30 border-b border-slate-100 shadow-sm flex items-center justify-between px-6 py-4 w-full -mx-8 mb-6 docked full-width">
     <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-white shadow-md">
             <span class="material-symbols-outlined text-[20px]">forum</span>
@@ -43,7 +44,7 @@
     </div>
 </header>
 
-<div class="max-w-7xl mx-auto w-full pb-20">
+<div class="assessment-module max-w-7xl mx-auto w-full pb-20">
 
     @if(session('success'))
     <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-sm font-bold">
@@ -67,7 +68,7 @@
         
         {{-- LEFT COLUMN: FORM INPUT --}}
         <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden sticky top-24">
-            <div class="px-6 py-5 border-b border-slate-50 bg-gradient-to-b from-slate-50/50 to-white">
+            <div class="assessment-form-header assessment-form-header-panel px-6 py-5 border-b border-slate-50 bg-gradient-to-b from-slate-50/50 to-white">
                 <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span> Tambah Penilaian
                 </h3>
