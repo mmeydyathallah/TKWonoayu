@@ -37,6 +37,7 @@
     .score-radio:checked + .score-pill.pill-clear { background:#f1f5f9; color:#64748b; border-color:#cbd5e1; }
     
     .score-pill:hover { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
+    .assessment-card-focus { box-shadow: 0 0 0 3px rgba(0, 96, 173, .16), 0 18px 36px rgba(15, 23, 42, .08) !important; }
 
     .icon-purple  { color:#7c3aed; background:#f3e8ff; }
     .icon-emerald { color:#059669; background:#d1fae5; }
@@ -200,7 +201,7 @@
                         $currentObservation = $assessmentsByStudent->get($student->id)?->observation;
                     @endphp
 
-                    <div class="bg-white rounded-3xl border {{ $hasAssessment ? 'border-emerald-100 bg-emerald-50/5' : 'border-slate-100' }} ambient-shadow overflow-hidden transition-all hover:border-slate-200">
+                    <div id="daily-card-{{ $student->id }}" class="bg-white rounded-3xl border {{ $hasAssessment ? 'border-emerald-100 bg-emerald-50/5' : 'border-slate-100' }} ambient-shadow overflow-hidden transition-all hover:border-slate-200">
                         {{-- Student Header --}}
                         <div class="flex items-center gap-3 px-5 py-4 border-b {{ $hasAssessment ? 'border-emerald-100/50 bg-emerald-50/20' : 'border-slate-50 bg-slate-50/40' }}">
                             <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
@@ -213,9 +214,17 @@
                             </div>
                             <div>
                                 @if($hasAssessment)
-                                <span class="text-emerald-600 bg-emerald-100 text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[12px]">check_circle</span> Terisi
-                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-emerald-600 bg-emerald-100 text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[12px]">check_circle</span> Terisi
+                                    </span>
+                                    <button type="button" onclick="focusDailyAssessment({{ $student->id }})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Edit penilaian">
+                                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                                    </button>
+                                    <button type="submit" form="delete-daily-{{ $assessmentsByStudent->get($student->id)->id }}" onclick="return confirm('Hapus penilaian harian {{ $student->full_name }}?')" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm" title="Hapus penilaian">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
+                                </div>
                                 @else
                                 <span class="text-slate-400 text-[9px] font-black uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">Belum Dinilai</span>
                                 @endif
@@ -275,6 +284,13 @@
                 </div>
                 @endif
             </form>
+
+            @foreach($assessmentsByStudent as $assessment)
+            <form id="delete-daily-{{ $assessment->id }}" action="{{ route('guru.daily.destroy', $assessment) }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+            </form>
+            @endforeach
         </div>
 
         {{-- BOTTOM SECTION: WEEKLY RECAP TABLE --}}
@@ -375,4 +391,14 @@
 
     </div>{{-- end layout --}}
 </div>
+
+<script>
+    function focusDailyAssessment(studentId) {
+        const card = document.getElementById(`daily-card-${studentId}`);
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('assessment-card-focus');
+        setTimeout(() => card.classList.remove('assessment-card-focus'), 1400);
+    }
+</script>
 @endsection

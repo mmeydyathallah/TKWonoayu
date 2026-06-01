@@ -26,10 +26,13 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::put('/siswa/{student}/quick-update-group', [PortalController::class, 'quickUpdateGroup'])->name('students.quickUpdateGroup');
     Route::get('/penilaian-harian', [PortalController::class, 'dailyAssessment'])->name('daily');
     Route::post('/penilaian-harian', [PortalController::class, 'storeDailyAssessment'])->name('daily.store');
+    Route::delete('/penilaian-harian/{assessment}', [PortalController::class, 'destroyDailyAssessment'])->name('daily.destroy');
     Route::get('/penilaian-ceklis', [PortalController::class, 'checklistAssessment'])->name('checklist');
     Route::post('/penilaian-ceklis', [PortalController::class, 'storeChecklistAssessment'])->name('checklist.store');
+    Route::delete('/penilaian-ceklis/siswa/{student}', [PortalController::class, 'destroyChecklistAssessment'])->name('checklist.destroy');
     Route::get('/catatan-anekdot', [PortalController::class, 'anecdotalNotes'])->name('anecdotal');
     Route::post('/catatan-anekdot', [PortalController::class, 'storeAnecdotal'])->name('anecdotal.store');
+    Route::delete('/catatan-anekdot/{note}', [PortalController::class, 'destroyAnecdotal'])->name('anecdotal.destroy');
     Route::get('/hasil-karya', [PortalController::class, 'artworkAssessment'])->name('artworks');
     Route::post('/hasil-karya', [PortalController::class, 'storeArtwork'])->name('artworks.store');
     Route::delete('/hasil-karya/{artwork}', [PortalController::class, 'destroyArtwork'])->name('artworks.destroy');

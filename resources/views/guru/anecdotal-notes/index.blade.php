@@ -42,19 +42,21 @@
         <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden sticky top-24">
             <div class="assessment-form-header assessment-form-header-anecdotal px-6 py-5 border-b border-slate-50 bg-gradient-to-b from-slate-50/50 to-white">
                 <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[20px]">add_circle</span> Tambah Catatan
+                    <span class="material-symbols-outlined text-primary text-[20px]" id="anecdotal-form-icon">add_circle</span>
+                    <span id="anecdotal-form-title">Tambah Catatan</span>
                 </h3>
             </div>
             
-            <form action="{{ route('guru.anecdotal.store') }}" method="POST" class="p-6 space-y-5">
+            <form action="{{ route('guru.anecdotal.store') }}" method="POST" class="p-6 space-y-5" id="anecdotal-form">
                 @csrf
+                <input type="hidden" name="note_id" id="note_id">
                 
                 {{-- Student --}}
                 <div class="space-y-1.5">
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Siswa</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">person</span>
-                        <select name="student_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
+                        <select name="student_id" id="note_student_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-9 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
                             <option value="">Pilih Siswa...</option>
                             @foreach($students as $student)
                             <option value="{{ $student->id }}">Kel. {{ $student->class_group }} - {{ $student->full_name }}</option>
@@ -69,7 +71,7 @@
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Waktu Kejadian</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[18px]">schedule</span>
-                        <input name="recorded_at" type="datetime-local" value="{{ now()->format('Y-m-d\TH:i') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
+                        <input name="recorded_at" id="note_recorded_at" type="datetime-local" value="{{ now()->format('Y-m-d\TH:i') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
                     </div>
                 </div>
 
@@ -78,19 +80,23 @@
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Tempat/Lokasi</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">location_on</span>
-                        <input name="location" type="text" placeholder="Contoh: Taman Bermain" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium">
+                        <input name="location" id="note_location" type="text" placeholder="Contoh: Taman Bermain" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium">
                     </div>
                 </div>
 
                 {{-- Description --}}
                 <div class="space-y-1.5">
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Deskripsi Peristiwa</label>
-                    <textarea name="description" rows="5" placeholder="Tuliskan kejadian secara objektif..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium resize-none"></textarea>
+                    <textarea name="description" id="note_description" rows="5" placeholder="Tuliskan kejadian secara objektif..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400 placeholder:font-medium resize-none"></textarea>
                 </div>
 
-                <div class="pt-4">
+                <div class="pt-4 space-y-2">
                     <button type="submit" class="w-full gradient-primary text-white py-3.5 rounded-xl text-sm font-extrabold shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[20px]">save</span> Simpan Catatan
+                        <span class="material-symbols-outlined text-[20px]">save</span>
+                        <span id="anecdotal-submit-label">Simpan Catatan</span>
+                    </button>
+                    <button type="button" id="anecdotal-cancel-edit" onclick="resetAnecdotalForm()" class="hidden w-full bg-slate-100 text-slate-600 py-3 rounded-xl text-sm font-extrabold hover:bg-slate-200 transition-all">
+                        Batal Edit
                     </button>
                 </div>
             </form>
@@ -122,11 +128,30 @@
                                     </p>
                                 </div>
                             </div>
-                            @if($note->location)
-                            <span class="flex items-center gap-1 text-[10px] font-black text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">
-                                <span class="material-symbols-outlined text-[14px]">location_on</span> {{ $note->location }}
-                            </span>
-                            @endif
+                            <div class="flex items-center gap-2">
+                                @if($note->location)
+                                <span class="flex items-center gap-1 text-[10px] font-black text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">
+                                    <span class="material-symbols-outlined text-[14px]">location_on</span> {{ $note->location }}
+                                </span>
+                                @endif
+                                <script type="application/json" id="note-data-{{ $note->id }}">@json([
+                                    'id' => $note->id,
+                                    'student_id' => $note->student_id,
+                                    'recorded_at' => optional($note->recorded_at)->format('Y-m-d\TH:i'),
+                                    'location' => $note->location,
+                                    'description' => $note->description,
+                                ])</script>
+                                <button type="button" onclick="editAnecdotalFromScript({{ $note->id }})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Edit catatan">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                                <form action="{{ route('guru.anecdotal.destroy', $note) }}" method="POST" onsubmit="return confirm('Hapus catatan anekdot ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm" title="Hapus catatan">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                         
                         <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100">
@@ -148,4 +173,39 @@
 
     </div>
 </div>
+
+<script>
+    const defaultRecordedAt = @js(now()->format('Y-m-d\TH:i'));
+
+    function editAnecdotalFromScript(noteId) {
+        const script = document.getElementById(`note-data-${noteId}`);
+        if (!script) return;
+        editAnecdotal(JSON.parse(script.textContent));
+    }
+
+    function editAnecdotal(note) {
+        document.getElementById('note_id').value = note.id || '';
+        document.getElementById('note_student_id').value = note.student_id || '';
+        document.getElementById('note_recorded_at').value = note.recorded_at || defaultRecordedAt;
+        document.getElementById('note_location').value = note.location || '';
+        document.getElementById('note_description').value = note.description || '';
+        document.getElementById('anecdotal-form-title').textContent = 'Edit Catatan';
+        document.getElementById('anecdotal-form-icon').textContent = 'edit_note';
+        document.getElementById('anecdotal-submit-label').textContent = 'Update Catatan';
+        document.getElementById('anecdotal-cancel-edit').classList.remove('hidden');
+        document.getElementById('anecdotal-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetAnecdotalForm() {
+        document.getElementById('note_id').value = '';
+        document.getElementById('note_student_id').value = '';
+        document.getElementById('note_recorded_at').value = defaultRecordedAt;
+        document.getElementById('note_location').value = '';
+        document.getElementById('note_description').value = '';
+        document.getElementById('anecdotal-form-title').textContent = 'Tambah Catatan';
+        document.getElementById('anecdotal-form-icon').textContent = 'add_circle';
+        document.getElementById('anecdotal-submit-label').textContent = 'Simpan Catatan';
+        document.getElementById('anecdotal-cancel-edit').classList.add('hidden');
+    }
+</script>
 @endsection

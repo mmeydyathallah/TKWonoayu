@@ -567,6 +567,14 @@ class PortalController extends Controller
 
         return back()->with('success', 'Penilaian harian berhasil disimpan.');
     }
+
+    public function destroyDailyAssessment(DailyAssessment $assessment): RedirectResponse
+    {
+        $assessment->delete();
+
+        return back()->with('success', 'Penilaian harian berhasil dihapus.');
+    }
+
     public function checklistAssessment(Request $request): View
     {
         if (! $this->tableReady(['students', 'checklist_assessments'])) {
@@ -614,6 +622,15 @@ class PortalController extends Controller
 
         foreach ($validated['assessments'] as $studentId => $domains) {
             foreach ($domains as $domainCode => $scoreLabel) {
+                if (empty($scoreLabel)) {
+                    ChecklistAssessment::query()
+                        ->where('student_id', $studentId)
+                        ->whereDate('assessed_on', $date)
+                        ->where('domain_code', $domainCode)
+                        ->delete();
+                    continue;
+                }
+
                 ChecklistAssessment::updateOrCreate(
                     [
                         'student_id' => $studentId,
@@ -633,6 +650,20 @@ class PortalController extends Controller
         }
 
         return back()->with('success', 'Penilaian ceklis berhasil disimpan.');
+    }
+
+    public function destroyChecklistAssessment(Request $request, Student $student): RedirectResponse
+    {
+        $date = $request->validate([
+            'date' => ['required', 'date'],
+        ])['date'];
+
+        ChecklistAssessment::query()
+            ->where('student_id', $student->id)
+            ->whereDate('assessed_on', $date)
+            ->delete();
+
+        return back()->with('success', 'Penilaian ceklis siswa berhasil dihapus.');
     }
 
     public function anecdotalNotes(): View
@@ -1125,6 +1156,7 @@ class PortalController extends Controller
     public function storeAnecdotal(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'note_id' => ['nullable', 'exists:anecdotal_notes,id'],
             'student_id' => ['required', 'exists:students,id'],
             'recorded_at' => ['required', 'date'],
             'location' => ['nullable', 'string', 'max:255'],
@@ -1132,9 +1164,23 @@ class PortalController extends Controller
             'description' => ['required', 'string'],
         ]);
 
-        AnecdotalNote::query()->create($validated);
+        $noteId = $validated['note_id'] ?? null;
+        unset($validated['note_id']);
 
-        return redirect()->route('guru.anecdotal')->with('success', 'Catatan anekdot berhasil disimpan.');
+        if ($noteId) {
+            AnecdotalNote::query()->whereKey($noteId)->update($validated);
+        } else {
+            AnecdotalNote::query()->create($validated);
+        }
+
+        return redirect()->route('guru.anecdotal')->with('success', $noteId ? 'Catatan anekdot berhasil diperbarui.' : 'Catatan anekdot berhasil disimpan.');
+    }
+
+    public function destroyAnecdotal(AnecdotalNote $note): RedirectResponse
+    {
+        $note->delete();
+
+        return back()->with('success', 'Catatan anekdot berhasil dihapus.');
     }
 
     public function teacherAgenda(Request $request)

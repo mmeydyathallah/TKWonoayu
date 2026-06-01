@@ -32,7 +32,9 @@
     .score-radio:checked + .score-pill.pill-MB  { background:#fef3c7; color:#d97706; border-color:#fcd34d; transform:scale(1.07); box-shadow:0 2px 8px rgba(245,158,11,.15); }
     .score-radio:checked + .score-pill.pill-BSH { background:#dcfce7; color:#16a34a; border-color:#86efac; transform:scale(1.07); box-shadow:0 2px 8px rgba(34,197,94,.15);  }
     .score-radio:checked + .score-pill.pill-BSB { background:#dbeafe; color:#2563eb; border-color:#93c5fd; transform:scale(1.07); box-shadow:0 2px 8px rgba(59,130,246,.15); }
+    .score-radio:checked + .score-pill.pill-clear { background:#f1f5f9; color:#64748b; border-color:#cbd5e1; }
     .score-pill:hover { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
+    .assessment-card-focus { box-shadow: 0 0 0 3px rgba(0, 96, 173, .16), 0 18px 36px rgba(15, 23, 42, .08) !important; }
 
     .icon-purple  { color:#7c3aed; background:#f3e8ff; }
     .icon-emerald { color:#059669; background:#d1fae5; }
@@ -100,15 +102,29 @@
             @forelse($students as $student)
             @php
                 $studentAssessments = $assessmentsByStudent->get($student->id) ?? collect();
+                $hasChecklist = $studentAssessments->isNotEmpty();
             @endphp
-            <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
+            <div id="checklist-card-{{ $student->id }}" class="bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
                 {{-- Header Siswa --}}
                 <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-50 flex items-center gap-4">
                     <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=e0efff&color=0060ad&bold=true&size=64' }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white">
-                    <div>
+                    <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-extrabold text-slate-900 leading-tight">{{ $student->full_name }}</h4>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Kelompok {{ $student->class_group }} · NISN: {{ $student->student_no }}</p>
                     </div>
+                    @if($hasChecklist)
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-emerald-600 bg-emerald-100 text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[12px]">check_circle</span> Terisi
+                        </span>
+                        <button type="button" onclick="focusChecklistAssessment({{ $student->id }})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Edit penilaian">
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                        </button>
+                        <button type="submit" form="delete-checklist-{{ $student->id }}" onclick="return confirm('Hapus semua penilaian ceklis {{ $student->full_name }} pada tanggal ini?')" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm" title="Hapus penilaian">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Grid Penilaian --}}
@@ -123,6 +139,10 @@
                             <span class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $domain['label'] }}</span>
                         </div>
                         <div class="flex gap-1.5 justify-between">
+                            <label class="flex-1">
+                                <input class="score-radio" type="radio" name="assessments[{{ $student->id }}][{{ $code }}]" value="" {{ !$currentScore ? 'checked' : '' }}>
+                                <span class="score-pill pill-clear w-full">-</span>
+                            </label>
                             @foreach(['BB','MB','BSH','BSB'] as $lbl)
                             <label class="flex-1">
                                 <input class="score-radio" type="radio" name="assessments[{{ $student->id }}][{{ $code }}]" value="{{ $lbl }}" {{ $currentScore == $lbl ? 'checked' : '' }}>
@@ -151,5 +171,25 @@
         </div>
         @endif
     </form>
+
+    @foreach($students as $student)
+        @if(($assessmentsByStudent->get($student->id) ?? collect())->isNotEmpty())
+        <form id="delete-checklist-{{ $student->id }}" action="{{ route('guru.checklist.destroy', $student) }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="date" value="{{ $date->format('Y-m-d') }}">
+        </form>
+        @endif
+    @endforeach
 </div>
+
+<script>
+    function focusChecklistAssessment(studentId) {
+        const card = document.getElementById(`checklist-card-${studentId}`);
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('assessment-card-focus');
+        setTimeout(() => card.classList.remove('assessment-card-focus'), 1400);
+    }
+</script>
 @endsection
