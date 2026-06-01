@@ -134,13 +134,16 @@
                                     <span class="material-symbols-outlined text-[14px]">location_on</span> {{ $note->location }}
                                 </span>
                                 @endif
-                                <script type="application/json" id="note-data-{{ $note->id }}">@json([
-                                    'id' => $note->id,
-                                    'student_id' => $note->student_id,
-                                    'recorded_at' => optional($note->recorded_at)->format('Y-m-d\TH:i'),
-                                    'location' => $note->location,
-                                    'description' => $note->description,
-                                ])</script>
+                                @php
+                                    $notePayload = [
+                                        'id' => $note->id,
+                                        'student_id' => $note->student_id,
+                                        'recorded_at' => optional($note->recorded_at)->format('Y-m-d\TH:i'),
+                                        'location' => $note->location,
+                                        'description' => $note->description,
+                                    ];
+                                @endphp
+                                <script type="application/json" id="note-data-{{ $note->id }}">{!! json_encode($notePayload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}</script>
                                 <button type="button" onclick="editAnecdotalFromScript({{ $note->id }})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Edit catatan">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
