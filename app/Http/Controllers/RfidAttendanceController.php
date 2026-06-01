@@ -122,7 +122,8 @@ class RfidAttendanceController extends Controller
             'message' => $this->messageForEvent($eventType),
             'data' => [
                 'student_id' => $student->id,
-                'student_name' => $student->full_name,
+                'student_name' => $this->lcdStudentLabel($student, $eventType, $attendance, $timestamp),
+                'student_full_name' => $student->full_name,
                 'class_group' => $student->class_group,
                 'rfid_code' => $rfidCode,
                 'matched_rfid_code' => $student->rfid_code,
@@ -150,6 +151,19 @@ class RfidAttendanceController extends Controller
             'di_luar_jadwal' => 'Tap RFID berada di luar jadwal masuk/pulang.',
             default => 'Absensi hari ini sudah lengkap.',
         };
+    }
+
+    private function lcdStudentLabel(Student $student, ?string $eventType, Attendance $attendance, $timestamp): string
+    {
+        $firstName = trim(strtok($student->full_name, ' ') ?: $student->full_name);
+        $eventTime = match ($eventType) {
+            'masuk', 'sudah_masuk' => $attendance->check_in_at ?: $timestamp,
+            'pulang', 'sudah_pulang' => $attendance->check_out_at ?: $timestamp,
+            default => $timestamp,
+        };
+        $label = trim($firstName . ' ' . $eventTime->format('H:i'));
+
+        return mb_substr($label, 0, 16);
     }
 
     private function studentsByRfidVariants(array $rfidVariants)
