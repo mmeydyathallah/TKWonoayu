@@ -150,26 +150,12 @@
                 </div>
                 <div class="space-y-2 flex-1">
                     <label class="block text-sm font-bold text-on-surface ml-1">Foto Profil Siswa</label>
-                    <input type="file" name="avatar" id="avatarInput" accept="image/*" class="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary-container file:text-on-primary-container hover:file:bg-primary-container/80 transition-all" onchange="previewImage(this)"/>
+                    <input type="file" name="avatar" id="avatarInput" accept="image/*" data-preview-target="avatarPreview" data-icon-target="avatarIcon" class="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary-container file:text-on-primary-container hover:file:bg-primary-container/80 transition-all" onchange="openAvatarCropper(this)"/>
                     <p class="text-xs text-on-surface-variant/70 ml-1">Kosongkan jika tidak ingin mengganti foto.</p>
                 </div>
             </div>
 
-            <script>
-                function previewImage(input) {
-                    const icon = document.getElementById('avatarIcon');
-                    const preview = document.getElementById('avatarPreview');
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            preview.src = e.target.result;
-                            preview.classList.remove('hidden');
-                            if(icon) icon.classList.add('hidden');
-                        }
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-            </script>
+            @include('guru.students.partials.avatar-cropper')
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                 <div class="space-y-2 md:col-span-8">
