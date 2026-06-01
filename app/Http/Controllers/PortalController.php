@@ -286,7 +286,11 @@ class PortalController extends Controller
         }
 
         $guardian = $student->parentProfile;
-        $latestReport = DevelopmentReport::query()->where('student_id', $student->id)->latest()->first();
+        $latestReport = DevelopmentReport::query()
+            ->where('student_id', $student->id)
+            ->latest('updated_at')
+            ->latest('id')
+            ->first();
         $announcement = SchoolAnnouncement::query()->latest('published_on')->first();
         $upcomingAgendas = SchoolAgenda::query()
             ->where('is_public', true)
@@ -820,8 +824,85 @@ class PortalController extends Controller
         return back()->with('success', 'Penilaian percakapan berhasil dihapus.');
     }
 
-    
-    
+    public function developmentNarrative(Request $request): View
+    {
+        if (! $this->tableReady(['development_reports', 'students'])) {
+            return view('guru.development-narratives.index', [
+                'students' => collect(),
+                'reports' => collect(),
+                'selectedStudentId' => null,
+            ]);
+        }
+
+        $students = Student::query()
+            ->orderBy('class_group')
+            ->orderBy('full_name')
+            ->get(['id', 'full_name', 'nickname', 'class_group', 'school_year', 'avatar_url']);
+
+        $selectedStudentId = $request->integer('student_id') ?: null;
+
+        $reports = DevelopmentReport::query()
+            ->with('student:id,full_name,nickname,class_group,school_year,avatar_url')
+            ->when($selectedStudentId, fn ($query) => $query->where('student_id', $selectedStudentId))
+            ->latest('updated_at')
+            ->latest('id')
+            ->limit(30)
+            ->get();
+
+        return view('guru.development-narratives.index', compact('students', 'reports', 'selectedStudentId'));
+    }
+
+    public function storeDevelopmentNarrative(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'report_id' => ['nullable', 'exists:development_reports,id'],
+            'student_id' => ['required', 'exists:students,id'],
+            'semester' => ['required', 'string', 'max:100'],
+            'school_year' => ['required', 'string', 'max:20'],
+            'summary' => ['required', 'string'],
+            'teacher_note' => ['nullable', 'string'],
+        ], [
+            'student_id.required' => 'Siswa wajib dipilih.',
+            'semester.required' => 'Semester wajib diisi.',
+            'school_year.required' => 'Tahun pelajaran wajib diisi.',
+            'summary.required' => 'Narasi perkembangan wajib diisi.',
+        ]);
+
+        $reportId = $validated['report_id'] ?? null;
+        unset($validated['report_id']);
+
+        if ($reportId) {
+            DevelopmentReport::query()->whereKey($reportId)->update($validated);
+            $message = 'Narasi perkembangan berhasil diperbarui dan tersinkron ke wali murid.';
+        } else {
+            DevelopmentReport::query()->updateOrCreate(
+                [
+                    'student_id' => $validated['student_id'],
+                    'semester' => $validated['semester'],
+                    'school_year' => $validated['school_year'],
+                ],
+                [
+                    'summary' => $validated['summary'],
+                    'teacher_note' => $validated['teacher_note'] ?? null,
+                ]
+            );
+            $message = 'Narasi perkembangan berhasil disimpan dan tersinkron ke wali murid.';
+        }
+
+        return redirect()
+            ->route('guru.development-narrative', ['student_id' => $validated['student_id']])
+            ->with('success', $message);
+    }
+
+    public function destroyDevelopmentNarrative(DevelopmentReport $report): RedirectResponse
+    {
+        $studentId = $report->student_id;
+        $report->delete();
+
+        return redirect()
+            ->route('guru.development-narrative', ['student_id' => $studentId])
+            ->with('success', 'Narasi perkembangan berhasil dihapus.');
+    }
 
     public function parentReport()
     {
@@ -832,7 +913,11 @@ class PortalController extends Controller
         if (!$student) return redirect()->route('wali.dashboard');
 
         // 1. Ringkasan (Development Report)
-        $report = DevelopmentReport::query()->where('student_id', $student->id)->latest()->first();
+        $report = DevelopmentReport::query()
+            ->where('student_id', $student->id)
+            ->latest('updated_at')
+            ->latest('id')
+            ->first();
 
         // 2. Harian (Daily Assessments) - Grouped by Week (reliable Y-m-d|Y-m-d key)
         $dailyAssessments = DailyAssessment::query()

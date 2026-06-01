@@ -39,6 +39,9 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::get('/panel-penilaian', [PortalController::class, 'assessmentPanel'])->name('panel');
     Route::post('/panel-penilaian', [PortalController::class, 'storeConversationAssessment'])->name('panel.store');
     Route::delete('/panel-penilaian/{assessment}', [PortalController::class, 'destroyConversationAssessment'])->name('panel.destroy');
+    Route::get('/narasi-perkembangan', [PortalController::class, 'developmentNarrative'])->name('development-narrative');
+    Route::post('/narasi-perkembangan', [PortalController::class, 'storeDevelopmentNarrative'])->name('development-narrative.store');
+    Route::delete('/narasi-perkembangan/{report}', [PortalController::class, 'destroyDevelopmentNarrative'])->name('development-narrative.destroy');
     Route::get('/pengaturan', [PortalController::class, 'settings'])->name('settings');
     Route::post('/pengaturan/profil', [PortalController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/pengaturan/password', [PortalController::class, 'updatePassword'])->name('settings.password');
