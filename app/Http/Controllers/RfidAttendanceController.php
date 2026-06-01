@@ -113,8 +113,8 @@ class RfidAttendanceController extends Controller
         $attendance->marked_by = null;
         $attendance->save();
 
-        if (in_array($eventType, ['masuk', 'pulang'], true)) {
-            $this->notifyGuardian($student, $eventType, $timestamp);
+        if (in_array($eventType, ['masuk', 'pulang', 'sudah_masuk', 'sudah_pulang'], true)) {
+            $this->notifyGuardian($student, $eventType, $attendance, $timestamp);
         }
 
         return response()->json([
@@ -171,7 +171,7 @@ class RfidAttendanceController extends Controller
             ->values();
     }
 
-    private function notifyGuardian(Student $student, string $eventType, $timestamp): void
+    private function notifyGuardian(Student $student, string $eventType, Attendance $attendance, $timestamp): void
     {
         $student->loadMissing('parentProfile');
         $guardianPhone = PhoneNumber::normalize($student->parentProfile?->guardian_phone);
@@ -187,23 +187,31 @@ class RfidAttendanceController extends Controller
             return;
         }
 
-        if ($chat->selected_student_id && (int) $chat->selected_student_id !== (int) $student->id) {
-            return;
-        }
-
         if (! $chat->selected_student_id && $guardianStudents->count() > 1) {
             $this->telegramNotifier->sendMessage(
                 $chat->chat_id,
                 "Nomor wali terhubung ke beberapa siswa.\nKetik /siswa lalu pilih siswa agar notifikasi masuk/pulang tidak tertukar."
             );
-            return;
         }
 
-        $eventLabel = $eventType === 'masuk' ? 'MASUK' : 'PULANG';
+        $eventLabel = match ($eventType) {
+            'masuk' => 'MASUK',
+            'pulang' => 'PULANG',
+            'sudah_masuk' => 'SUDAH MASUK',
+            'sudah_pulang' => 'SUDAH PULANG',
+            default => strtoupper($eventType),
+        };
+        $eventTime = match ($eventType) {
+            'masuk', 'sudah_masuk' => $attendance->check_in_at ?: $timestamp,
+            'pulang', 'sudah_pulang' => $attendance->check_out_at ?: $timestamp,
+            default => $timestamp,
+        };
         $text = "Notifikasi Absensi TK Wonoayu\n"
             . "Ananda: <b>{$student->full_name}</b>\n"
             . "Status: <b>{$eventLabel}</b>\n"
-            . "Waktu: <b>{$timestamp->format('d-m-Y H:i')}</b>\n"
+            . "Waktu: <b>{$eventTime->format('d-m-Y H:i')}</b>\n"
+            . "Jam Masuk: <b>" . ($attendance->check_in_at?->format('H:i') ?? '-') . "</b>\n"
+            . "Jam Pulang: <b>" . ($attendance->check_out_at?->format('H:i') ?? '-') . "</b>\n"
             . "Kelas: {$student->class_group}";
 
         $this->telegramNotifier->sendMessage($chat->chat_id, $text);

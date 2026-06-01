@@ -39,6 +39,16 @@
                     Hari ini, {{ now()->isoFormat('D MMMM YYYY') }}:
                     <span class="font-bold text-primary">{{ $todayAttendance ? ($attendanceStatusMeta[$todayAttendance->status]['label'] ?? ucfirst($todayAttendance->status)) : 'Belum dicatat' }}</span>
                 </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-surface-container-high px-3 py-1 text-xs font-black text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[15px]">login</span>
+                        Masuk: {{ $todayAttendance?->check_in_at?->format('H:i') ?? '-' }}
+                    </span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-surface-container-high px-3 py-1 text-xs font-black text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[15px]">logout</span>
+                        Pulang: {{ $todayAttendance?->check_out_at?->format('H:i') ?? '-' }}
+                    </span>
+                </div>
             </div>
             <a href="{{ route('wali.attendance') }}" class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:scale-[1.02] transition-transform">
                 {{ isset($attendancePercent) ? $attendancePercent . '% Hadir' : '-' }}

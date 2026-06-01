@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TelegramNotifier
 {
@@ -25,6 +26,14 @@ class TelegramNotifier
         }
 
         $response = Http::timeout(10)->post($url, $payload);
+
+        if (! $response->ok()) {
+            Log::warning('Telegram sendMessage failed', [
+                'chat_id' => $chatId,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        }
 
         return $response->ok();
     }
