@@ -153,7 +153,7 @@
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">groups</span>
                         <select name="group" onchange="document.getElementById('filter-form').submit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
                             <option value="">Semua Kelompok</option>
-                            @foreach(['A1','A2','B1','B2'] as $g)
+                            @foreach(['A','B'] as $g)
                             <option value="{{ $g }}" {{ $group == $g ? 'selected' : '' }}>Kelompok {{ $g }}</option>
                             @endforeach
                         </select>

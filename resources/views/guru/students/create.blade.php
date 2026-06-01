@@ -131,10 +131,8 @@
                     <div class="relative">
                         <select class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 appearance-none outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm cursor-pointer" name="class_group" required="">
                             <option disabled="" {{ old('class_group') ? '' : 'selected' }} value="">Pilih Kelompok</option>
-                            <option value="A1" {{ old('class_group') === 'A1' ? 'selected' : '' }}>Kelompok A1</option>
-                            <option value="A2" {{ old('class_group') === 'A2' ? 'selected' : '' }}>Kelompok A2</option>
-                            <option value="B1" {{ old('class_group') === 'B1' ? 'selected' : '' }}>Kelompok B1</option>
-                            <option value="B2" {{ old('class_group') === 'B2' ? 'selected' : '' }}>Kelompok B2</option>
+                            <option value="A" {{ old('class_group') === 'A' ? 'selected' : '' }}>Kelompok A</option>
+                            <option value="B" {{ old('class_group') === 'B' ? 'selected' : '' }}>Kelompok B</option>
                         </select>
                         <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                     </div>

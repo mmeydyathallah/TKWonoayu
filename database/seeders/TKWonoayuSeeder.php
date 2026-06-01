@@ -24,7 +24,7 @@ class TKWonoayuSeeder extends Seeder
         $siti = Student::create([
             'student_no' => '2023045',
             'nisn' => '3124567890',
-            'class_group' => 'Kelompok B - Mawar',
+            'class_group' => 'B',
             'school_year' => '2025/2026',
             'full_name' => 'Siti Aisyah Putri Permata',
             'nickname' => 'Siti Aisyah',
@@ -43,7 +43,7 @@ class TKWonoayuSeeder extends Seeder
         $bima = Student::create([
             'student_no' => '2023046',
             'nisn' => '3124567891',
-            'class_group' => 'Kelompok B - Matahari',
+            'class_group' => 'B',
             'school_year' => '2025/2026',
             'full_name' => 'Bima Arya Surya',
             'nickname' => 'Bima Arya',
@@ -62,7 +62,7 @@ class TKWonoayuSeeder extends Seeder
         $raka = Student::create([
             'student_no' => '2023047',
             'nisn' => '3124567892',
-            'class_group' => 'Kelompok A - Bintang',
+            'class_group' => 'A',
             'school_year' => '2025/2026',
             'full_name' => 'Raka Putra Pratama',
             'nickname' => 'Raka Putra',
@@ -330,4 +330,3 @@ class TKWonoayuSeeder extends Seeder
         ]);
     }
 }
-

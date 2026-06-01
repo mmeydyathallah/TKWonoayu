@@ -78,7 +78,7 @@
                class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all {{ !request('group') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50' }}">
                Semua
             </a>
-            @foreach(['A1', 'A2', 'B1', 'B2'] as $g)
+            @foreach(['A', 'B'] as $g)
             <a href="{{ route('guru.students.index', array_merge(request()->query(), ['group' => $g])) }}" 
                class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request('group') == $g ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50' }}">
                {{ $g }}
@@ -164,7 +164,7 @@
                                 @csrf
                                 @method('PUT')
                                 <select name="class_group" onchange="this.form.submit()" class="appearance-none bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 pr-10 text-xs font-black text-primary cursor-pointer hover:bg-primary/5 transition-all focus:ring-2 focus:ring-primary/20">
-                                    @foreach(['A1', 'A2', 'B1', 'B2'] as $grp)
+                                    @foreach(['A', 'B'] as $grp)
                                         <option value="{{ $grp }}" {{ $student->class_group == $grp ? 'selected' : '' }}>KELOMPOK {{ $grp }}</option>
                                     @endforeach
                                 </select>

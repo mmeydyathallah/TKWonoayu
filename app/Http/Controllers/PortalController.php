@@ -999,7 +999,7 @@ class PortalController extends Controller
             'nisn' => ['nullable', 'string', 'max:50'],
             'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
-            'class_group' => ['required', 'string', 'max:100'],
+            'class_group' => ['required', 'in:A,B'],
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:50'],
@@ -1111,7 +1111,7 @@ class PortalController extends Controller
             'nisn' => ['nullable', 'string', 'max:50'],
             'nik' => ['nullable', 'string', 'max:32'],
             'full_name' => ['required', 'string', 'max:255'],
-            'class_group' => ['required', 'string', 'max:100'],
+            'class_group' => ['required', 'in:A,B'],
             'school_year' => ['required', 'string', 'max:20'],
             'guardian_name' => ['required', 'string', 'max:255'],
             'parent_email' => ['nullable', 'string', 'max:255'],
@@ -1230,7 +1230,7 @@ class PortalController extends Controller
     public function quickUpdateGroup(Request $request, Student $student): RedirectResponse
     {
         $validated = $request->validate([
-            'class_group' => ['required', 'string', 'max:100'],
+            'class_group' => ['required', 'in:A,B'],
         ]);
 
         $student->update(['class_group' => $validated['class_group']]);
@@ -1365,6 +1365,7 @@ class PortalController extends Controller
             'student_no.required' => 'No Induk wajib diisi.',
             'full_name.required' => 'Nama lengkap wajib diisi.',
             'class_group.required' => 'Kelompok wajib dipilih.',
+            'class_group.in' => 'Kelompok hanya boleh A atau B.',
             'school_year.required' => 'Tahun pelajaran wajib diisi.',
             'guardian_name.required' => 'Nama wali murid wajib diisi.',
         ];

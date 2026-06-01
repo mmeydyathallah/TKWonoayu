@@ -112,7 +112,7 @@
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kelompok (Group)</label>
                     <div class="relative">
                         <select class="w-full bg-surface-container-high focus:bg-surface-container-lowest text-on-surface rounded-DEFAULT px-4 py-3 appearance-none outline-none transition-all ghost-border focus:border-primary border-transparent shadow-sm cursor-pointer" name="class_group" required="">
-                            @foreach(['A1', 'A2', 'B1', 'B2'] as $grp)
+                            @foreach(['A', 'B'] as $grp)
                                 <option value="{{ $grp }}" {{ old('class_group', $student->class_group) == $grp ? 'selected' : '' }}>Kelompok {{ $grp }}</option>
                             @endforeach
                         </select>

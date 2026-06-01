@@ -130,7 +130,7 @@
                         <select name="group" onchange="document.getElementById('filter-form').submit()"
                                 class="w-full bg-slate-50 rounded-2xl py-3 pl-9 pr-8 text-xs font-bold text-slate-700 border border-slate-100 focus:ring-2 focus:ring-primary/20 outline-none appearance-none transition-all">
                             <option value="">Semua</option>
-                            @foreach(['A1','A2','B1','B2'] as $g)
+                            @foreach(['A','B'] as $g)
                             <option value="{{ $g }}" {{ $group == $g ? 'selected' : '' }}>Kel. {{ $g }}</option>
                             @endforeach
                         </select>
