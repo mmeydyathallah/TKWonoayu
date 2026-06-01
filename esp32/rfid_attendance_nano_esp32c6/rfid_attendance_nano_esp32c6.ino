@@ -17,8 +17,9 @@ const char* API_TOKEN = "rfid_9ac7de3098aa4bd7b52735dc10ad69bb";
 // ================== PIN ==================
 const int I2C_SDA_PIN = 6;
 const int I2C_SCL_PIN = 7;
-const int BUZZER_PIN  = 5;
+const int BUZZER_PIN  = 0;   // Jika LCD kedip/reset, pindahkan buzzer ke GPIO lain yang aman
 const int RGB_PIN     = 8;   // Onboard WS2812 RGB LED di Nano ESP32-C6
+const bool BUZZER_ACTIVE_HIGH = true; // Ubah ke false jika buzzer aktif saat pin LOW
 
 // ================== RGB LED ==================
 Adafruit_NeoPixel rgb(1, RGB_PIN, NEO_GRB + NEO_KHZ800);
@@ -32,6 +33,15 @@ void setRGB(uint8_t r, uint8_t g, uint8_t b, uint8_t brightness = 50) {
 void rgbOff() {
   rgb.setPixelColor(0, 0);
   rgb.show();
+}
+
+// ================== BUZZER ==================
+void buzzerOn() {
+  digitalWrite(BUZZER_PIN, BUZZER_ACTIVE_HIGH ? HIGH : LOW);
+}
+
+void buzzerOff() {
+  digitalWrite(BUZZER_PIN, BUZZER_ACTIVE_HIGH ? LOW : HIGH);
 }
 
 // ================== LCD ==================
@@ -58,9 +68,9 @@ String jsonGetString(const String& json, const String& key) {
 
 void beep(int times, int onMs, int offMs) {
   for (int i = 0; i < times; i++) {
-    digitalWrite(BUZZER_PIN, HIGH);
+    buzzerOn();
     delay(onMs);
-    digitalWrite(BUZZER_PIN, LOW);
+    buzzerOff();
     if (i < times - 1) delay(offMs);
   }
 }
@@ -140,8 +150,9 @@ void setup() {
   Serial.begin(115200);
   delay(300);
 
+  digitalWrite(BUZZER_PIN, BUZZER_ACTIVE_HIGH ? LOW : HIGH);
   pinMode(BUZZER_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW);
+  buzzerOff();
 
   // Init RGB
   rgb.begin();

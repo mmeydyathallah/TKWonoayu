@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 class RfidAttendanceController extends Controller
 {
+    private const MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES = 30;
+
     public function __construct(private readonly TelegramNotifier $telegramNotifier)
     {
     }
@@ -99,7 +101,11 @@ class RfidAttendanceController extends Controller
             }
         } elseif ($eventType === 'pulang') {
             if (! $attendance->check_out_at) {
-                $attendance->check_out_at = $timestamp;
+                if ($attendance->check_in_at && $attendance->check_in_at->diffInMinutes($timestamp) < self::MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES) {
+                    $eventType = 'sudah_tercatat';
+                } else {
+                    $attendance->check_out_at = $timestamp;
+                }
             } else {
                 $eventType = 'sudah_tercatat';
             }
@@ -107,8 +113,12 @@ class RfidAttendanceController extends Controller
             $attendance->check_in_at = $timestamp;
             $eventType = 'masuk';
         } elseif (! $attendance->check_out_at) {
-            $attendance->check_out_at = $timestamp;
-            $eventType = 'pulang';
+            if ($attendance->check_in_at->diffInMinutes($timestamp) < self::MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES) {
+                $eventType = 'sudah_tercatat';
+            } else {
+                $attendance->check_out_at = $timestamp;
+                $eventType = 'pulang';
+            }
         } else {
             $eventType = 'sudah_tercatat';
         }
