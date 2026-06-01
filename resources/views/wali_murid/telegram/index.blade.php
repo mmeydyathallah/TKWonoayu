@@ -35,6 +35,40 @@
         color: var(--telegram-text) !important;
     }
 
+    .telegram-page .telegram-step-item {
+        display: grid;
+        grid-template-columns: 2rem 1fr;
+        gap: 0.75rem;
+        align-items: start;
+        padding: 0.85rem 0.9rem;
+        border-radius: 0.9rem;
+        background: rgba(30, 41, 59, 0.58);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .telegram-page .telegram-step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        color: #082f49;
+        background: #7dd3fc;
+        box-shadow: inset 0 0 0 1px rgba(14, 116, 144, 0.25);
+    }
+
+    .telegram-page .telegram-note {
+        border-radius: 0.9rem;
+        padding: 0.9rem 1rem;
+        background: rgba(14, 116, 144, 0.14);
+        border: 1px solid rgba(56, 189, 248, 0.28);
+        color: #bae6fd;
+    }
+
     .telegram-page .telegram-table-head {
         background: rgba(15, 23, 42, 0.92) !important;
         border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
@@ -101,17 +135,27 @@
         <article class="telegram-panel card border shadow-sm rounded-2xl">
             <div class="card-body space-y-4">
                 <h2 class="text-lg font-headline font-bold text-white">Instruksi Penggunaan</h2>
-                <ul class="steps steps-vertical text-sm text-slate-300">
-                    <li class="step step-primary telegram-step rounded-2xl">Kirim perintah <span class="font-semibold text-white">/hubungkan</span> ke bot Telegram.</li>
-                    <li class="step step-primary telegram-step rounded-2xl">Tekan tombol kirim kontak yang muncul agar nomor HP tersinkron.</li>
-                    <li class="step step-primary telegram-step rounded-2xl">Kirim perintah <span class="font-semibold text-white">/siswa</span> untuk memilih anak yang dipantau.</li>
-                    <li class="step step-primary telegram-step rounded-2xl">Kirim perintah <span class="font-semibold text-white">/plan</span> untuk melihat panduan fitur bot.</li>
-                </ul>
+                <div class="space-y-3 text-sm text-slate-300">
+                    <div class="telegram-step-item">
+                        <span class="telegram-step-number">01</span>
+                        <p>Kirim perintah <span class="font-black text-white">/hubungkan</span> ke bot Telegram.</p>
+                    </div>
+                    <div class="telegram-step-item">
+                        <span class="telegram-step-number">02</span>
+                        <p>Tekan tombol kirim kontak yang muncul agar nomor HP tersinkron.</p>
+                    </div>
+                    <div class="telegram-step-item">
+                        <span class="telegram-step-number">03</span>
+                        <p>Kirim perintah <span class="font-black text-white">/siswa</span> untuk memilih anak yang dipantau.</p>
+                    </div>
+                    <div class="telegram-step-item">
+                        <span class="telegram-step-number">04</span>
+                        <p>Kirim perintah <span class="font-black text-white">/plan</span> untuk melihat panduan fitur bot.</p>
+                    </div>
+                </div>
 
-                <div class="alert alert-info rounded-2xl border-0 text-xs">
-                    <span>
-                    Jika status masih belum terhubung, cek lagi apakah nomor HP pada biodata wali sama dengan nomor Telegram yang dibagikan ke bot.
-                    </span>
+                <div class="telegram-note text-xs font-semibold leading-relaxed">
+                    Jika status masih belum terhubung, pastikan nomor HP pada biodata wali sama dengan nomor Telegram yang dibagikan ke bot.
                 </div>
             </div>
         </article>
