@@ -31,6 +31,9 @@ class RfidCode
             $value = (int) ltrim($normalized, '0');
 
             if ($value >= 0 && $value <= 0xFFFFFFFF) {
+                $variants[] = (string) $value;
+                $variants[] = str_pad((string) $value, 10, '0', STR_PAD_LEFT);
+
                 $bigEndianHex = strtoupper(str_pad(dechex($value), 8, '0', STR_PAD_LEFT));
                 $variants[] = $bigEndianHex;
                 $variants[] = self::reverseHexBytes($bigEndianHex);
@@ -42,6 +45,8 @@ class RfidCode
             $reversedHex = self::reverseHexBytes($normalized);
             $reversedValue = hexdec($reversedHex);
 
+            $variants[] = (string) $bigEndianValue;
+            $variants[] = (string) $reversedValue;
             $variants[] = str_pad((string) $bigEndianValue, 10, '0', STR_PAD_LEFT);
             $variants[] = str_pad((string) $reversedValue, 10, '0', STR_PAD_LEFT);
             $variants[] = $reversedHex;

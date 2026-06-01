@@ -51,10 +51,7 @@ class RfidAttendanceController extends Controller
         }
 
         $rfidVariants = RfidCode::variants($rfidCode);
-
-        $students = Student::query()
-            ->whereIn('rfid_code', $rfidVariants)
-            ->get(['id', 'full_name', 'class_group', 'rfid_code']);
+        $students = $this->studentsByRfidVariants($rfidVariants);
 
         if ($students->isEmpty()) {
             return response()->json([
@@ -153,6 +150,25 @@ class RfidAttendanceController extends Controller
             'di_luar_jadwal' => 'Tap RFID berada di luar jadwal masuk/pulang.',
             default => 'Absensi hari ini sudah lengkap.',
         };
+    }
+
+    private function studentsByRfidVariants(array $rfidVariants)
+    {
+        $students = Student::query()
+            ->whereIn('rfid_code', $rfidVariants)
+            ->get(['id', 'full_name', 'class_group', 'rfid_code']);
+
+        if ($students->isNotEmpty()) {
+            return $students;
+        }
+
+        return Student::query()
+            ->whereNotNull('rfid_code')
+            ->get(['id', 'full_name', 'class_group', 'rfid_code'])
+            ->filter(function (Student $student) use ($rfidVariants): bool {
+                return count(array_intersect(RfidCode::variants($student->rfid_code), $rfidVariants)) > 0;
+            })
+            ->values();
     }
 
     private function notifyGuardian(Student $student, string $eventType, $timestamp): void
