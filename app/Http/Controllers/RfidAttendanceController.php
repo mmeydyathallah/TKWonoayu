@@ -15,8 +15,6 @@ use Illuminate\Http\Request;
 
 class RfidAttendanceController extends Controller
 {
-    private const MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES = 30;
-
     public function __construct(private readonly TelegramNotifier $telegramNotifier)
     {
     }
@@ -52,8 +50,10 @@ class RfidAttendanceController extends Controller
             ], 422);
         }
 
+        $rfidVariants = RfidCode::variants($rfidCode);
+
         $students = Student::query()
-            ->where('rfid_code', $rfidCode)
+            ->whereIn('rfid_code', $rfidVariants)
             ->get(['id', 'full_name', 'class_group', 'rfid_code']);
 
         if ($students->isEmpty()) {
@@ -62,6 +62,7 @@ class RfidAttendanceController extends Controller
                 'message' => 'Kartu RFID belum terdaftar pada biodata siswa.',
                 'data' => [
                     'rfid_code' => $rfidCode,
+                    'rfid_variants' => $rfidVariants,
                 ],
             ], 404);
         }
@@ -97,30 +98,16 @@ class RfidAttendanceController extends Controller
             if (! $attendance->check_in_at) {
                 $attendance->check_in_at = $timestamp;
             } else {
-                $eventType = 'sudah_tercatat';
+                $eventType = 'sudah_masuk';
             }
         } elseif ($eventType === 'pulang') {
             if (! $attendance->check_out_at) {
-                if ($attendance->check_in_at && $attendance->check_in_at->diffInMinutes($timestamp) < self::MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES) {
-                    $eventType = 'sudah_tercatat';
-                } else {
-                    $attendance->check_out_at = $timestamp;
-                }
-            } else {
-                $eventType = 'sudah_tercatat';
-            }
-        } elseif (! $attendance->check_in_at) {
-            $attendance->check_in_at = $timestamp;
-            $eventType = 'masuk';
-        } elseif (! $attendance->check_out_at) {
-            if ($attendance->check_in_at->diffInMinutes($timestamp) < self::MIN_CHECK_OUT_AFTER_CHECK_IN_MINUTES) {
-                $eventType = 'sudah_tercatat';
-            } else {
                 $attendance->check_out_at = $timestamp;
-                $eventType = 'pulang';
+            } else {
+                $eventType = 'sudah_pulang';
             }
         } else {
-            $eventType = 'sudah_tercatat';
+            $eventType = 'di_luar_jadwal';
         }
 
         if (! $attendance->note || str_starts_with($attendance->note, 'Absen otomatis RFID')) {
@@ -135,14 +122,13 @@ class RfidAttendanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $eventType === 'pulang'
-                ? 'Absensi pulang berhasil dicatat.'
-                : ($eventType === 'masuk' ? 'Absensi masuk berhasil dicatat.' : 'Absensi hari ini sudah lengkap.'),
+            'message' => $this->messageForEvent($eventType),
             'data' => [
                 'student_id' => $student->id,
                 'student_name' => $student->full_name,
                 'class_group' => $student->class_group,
                 'rfid_code' => $rfidCode,
+                'matched_rfid_code' => $student->rfid_code,
                 'date' => $today,
                 'status' => $attendance->status,
                 'event_type' => $eventType,
@@ -155,6 +141,18 @@ class RfidAttendanceController extends Controller
                 'time' => $timestamp->format('H:i:s'),
             ],
         ]);
+    }
+
+    private function messageForEvent(?string $eventType): string
+    {
+        return match ($eventType) {
+            'masuk' => 'Absensi masuk berhasil dicatat.',
+            'pulang' => 'Absensi pulang berhasil dicatat.',
+            'sudah_masuk' => 'Siswa sudah tercatat masuk.',
+            'sudah_pulang' => 'Siswa sudah tercatat pulang.',
+            'di_luar_jadwal' => 'Tap RFID berada di luar jadwal masuk/pulang.',
+            default => 'Absensi hari ini sudah lengkap.',
+        };
     }
 
     private function notifyGuardian(Student $student, string $eventType, $timestamp): void
