@@ -674,7 +674,14 @@ class PortalController extends Controller
             $msg = 'Penilaian hasil karya berhasil disimpan.';
         }
 
-        return back()->with('success', $msg);
+        $student = Student::query()->find($data['student_id']);
+
+        return redirect()
+            ->route('guru.artworks', array_filter([
+                'date' => $data['created_on'],
+                'group' => $student?->class_group,
+            ]))
+            ->with('success', $msg);
     }
 
     public function destroyArtwork(\App\Models\Artwork $artwork)

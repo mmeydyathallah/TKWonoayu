@@ -104,7 +104,7 @@
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Tanggal</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[18px]">calendar_month</span>
-                        <input name="created_on" type="date" value="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
+                        <input name="created_on" type="date" value="{{ $date->format('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
                     </div>
                 </div>
 
@@ -126,8 +126,8 @@
                     <div class="file-input-wrapper bg-slate-50 border border-slate-200 border-dashed rounded-xl p-4 text-center hover:bg-slate-100 transition-colors cursor-pointer group">
                         <span class="material-symbols-outlined text-slate-400 text-3xl mb-1 group-hover:text-primary transition-colors">cloud_upload</span>
                         <p class="text-xs font-bold text-slate-600">Klik untuk unggah foto</p>
-                        <p class="text-[10px] font-medium text-slate-400 mt-0.5">JPG/PNG (Maks 5MB)</p>
-                        <input type="file" name="image" accept="image/*" required onchange="previewImage(this)">
+                        <p class="text-[10px] font-medium text-slate-400 mt-0.5">Opsional, bisa ditambahkan saat edit · JPG/PNG (Maks 5MB)</p>
+                        <input type="file" name="image" accept="image/*" onchange="previewImage(this)">
                     </div>
                     <div id="image-preview-container" class="hidden mt-3 relative rounded-xl overflow-hidden border border-slate-200">
                         <img id="image-preview" class="w-full h-32 object-cover" src="#" alt="Preview">
@@ -209,7 +209,15 @@
                         <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
                             {{-- Image Container --}}
                             <div class="relative h-48 bg-slate-200 overflow-hidden">
+                                @if($artwork->image_url)
                                 <img src="{{ $artwork->image_url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl mb-2">image_not_supported</span>
+                                    <span class="text-xs font-black uppercase tracking-widest">Belum ada foto</span>
+                                    <span class="text-[10px] font-semibold mt-1">Edit untuk menambahkan gambar</span>
+                                </div>
+                                @endif
                                 @php
                                     $score = $artwork->score_label;
                                     $badgeClass = match($score) {
@@ -307,14 +315,18 @@
         const radio = document.querySelector(`input[name="score_label"][value="${data.score_label}"]`);
         if (radio) radio.checked = true;
 
+        const fileInput = document.getElementsByName('image')[0];
+        fileInput.value = '';
+        fileInput.required = false;
+
         // Show existing image as preview
         if (data.image_url) {
             const previewContainer = document.getElementById('image-preview-container');
             const previewImage = document.getElementById('image-preview');
             previewImage.src = data.image_url;
             previewContainer.classList.remove('hidden');
-            // Make image NOT required when editing
-            document.getElementsByName('image')[0].required = false;
+        } else {
+            document.getElementById('image-preview-container').classList.add('hidden');
         }
         
         window.scrollTo({ top: 0, behavior: 'smooth' });

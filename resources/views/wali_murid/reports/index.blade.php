@@ -405,7 +405,14 @@
         @forelse($artworks as $art)
         <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 card-hover transition-all flex flex-col">
             <div class="aspect-video bg-slate-100">
+                @if($art->image_url)
                 <img src="{{ $art->image_url }}" class="w-full h-full object-cover" alt="{{ $art->title }}">
+                @else
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400">
+                    <span class="material-symbols-outlined text-4xl mb-2">image_not_supported</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Foto belum tersedia</span>
+                </div>
+                @endif
             </div>
             <div class="p-5 flex-1 flex flex-col">
                 <div class="flex items-start justify-between gap-2 mb-1">
