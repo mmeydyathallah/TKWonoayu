@@ -818,11 +818,13 @@ class PortalController extends Controller
             'score_label' => 'required|in:BB,MB,BSH,BSB',
         ]);
 
+        $data = collect($validated)->except('assessment_id')->all();
+
         if ($request->assessment_id) {
-            \App\Models\ConversationAssessment::where('id', $request->assessment_id)->update($validated);
+            \App\Models\ConversationAssessment::where('id', $request->assessment_id)->update($data);
             $msg = 'Penilaian percakapan berhasil diperbarui.';
         } else {
-            \App\Models\ConversationAssessment::create($validated);
+            \App\Models\ConversationAssessment::create($data);
             $msg = 'Penilaian percakapan berhasil disimpan.';
         }
 
