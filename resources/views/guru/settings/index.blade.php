@@ -289,6 +289,12 @@
 
     {{-- ==================== TAB: PLAN TELEGRAM ==================== --}}
     <div id="panel-telegram" class="hidden">
+        @if(session('success_telegram'))
+        <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-sm font-bold">
+            <span class="material-symbols-outlined text-emerald-500">check_circle</span> {{ session('success_telegram') }}
+        </div>
+        @endif
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
                 <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/50">
@@ -362,6 +368,7 @@
                                     <th class="py-3 pr-4 font-bold">Nomor Wali</th>
                                     <th class="py-3 pr-4 font-bold">Telegram</th>
                                     <th class="py-3 pr-4 font-bold">Status Siswa Aktif</th>
+                                    <th class="py-3 pr-4 font-bold text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -390,6 +397,15 @@
                                                     Belum pilih siswa
                                                 </span>
                                             @endif
+                                        </td>
+                                        <td class="py-3 pr-4 text-right">
+                                            <form action="{{ route('guru.settings.telegram.destroy', $row['id']) }}" method="POST" onsubmit="return confirm('Hapus koneksi Telegram nomor {{ $row['phone'] ?: $row['chat_id'] }}? Wali perlu menghubungkan ulang jika ingin menerima notifikasi lagi.')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-all hover:bg-rose-600 hover:text-white" title="Hapus koneksi Telegram">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach

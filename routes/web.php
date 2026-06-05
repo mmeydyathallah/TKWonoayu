@@ -46,6 +46,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::post('/pengaturan/profil', [PortalController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/pengaturan/password', [PortalController::class, 'updatePassword'])->name('settings.password');
     Route::post('/pengaturan/absensi', [PortalController::class, 'updateAttendanceSettings'])->name('settings.attendance');
+    Route::delete('/pengaturan/telegram/{chat}', [PortalController::class, 'destroyTelegramConnection'])->name('settings.telegram.destroy');
     
     // Attendance (Guru only)
     Route::get('/absensi', [AttendanceController::class, 'index'])->name('attendance.index');

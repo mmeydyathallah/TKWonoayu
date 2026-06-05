@@ -127,6 +127,7 @@ class PortalController extends Controller
                     ->values();
 
                 return [
+                    'id' => $chat->id,
                     'phone' => $chat->phone_number_normalized,
                     'chat_id' => $chat->chat_id,
                     'telegram_username' => $chat->telegram_username,
@@ -137,6 +138,16 @@ class PortalController extends Controller
             });
 
         return view('guru.settings.index', compact('user', 'attendanceSettings', 'telegramStats', 'telegramConnections'));
+    }
+
+    public function destroyTelegramConnection(GuardianTelegramChat $chat): RedirectResponse
+    {
+        $identifier = $chat->phone_number_normalized ?: 'Chat ID ' . $chat->chat_id;
+        $chat->delete();
+
+        return redirect()
+            ->route('guru.settings', ['tab' => 'telegram'])
+            ->with('success_telegram', 'Koneksi Telegram ' . $identifier . ' berhasil dihapus.');
     }
 
     public function updateProfile(Request $request): RedirectResponse
