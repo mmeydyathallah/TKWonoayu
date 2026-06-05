@@ -120,4 +120,29 @@ class AttendanceController extends Controller
 
         return back()->with('success', 'Absensi diperbarui.');
     }
+
+    public function clearTime(Request $request, Attendance $attendance, string $field)
+    {
+        $user = Auth::user();
+        if ($user->role !== 'guru') {
+            return redirect()->route('wali.dashboard');
+        }
+
+        if (! in_array($field, ['masuk', 'pulang'], true)) {
+            abort(404);
+        }
+
+        $column = $field === 'masuk' ? 'check_in_at' : 'check_out_at';
+        $attendance->update([
+            $column => null,
+            'marked_by' => $user->id,
+        ]);
+
+        return redirect()
+            ->route('guru.attendance.index', array_filter([
+                'date' => $attendance->date?->toDateString(),
+                'group' => $request->input('group'),
+            ]))
+            ->with('success', 'Waktu absensi ' . $field . ' berhasil dihapus.');
+    }
 }

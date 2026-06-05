@@ -49,6 +49,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::get('/absensi', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/absensi', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::put('/absensi/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::delete('/absensi/{attendance}/waktu/{field}', [AttendanceController::class, 'clearTime'])->name('attendance.clear-time');
     
     // Agenda Routes
     Route::get('/agenda', [PortalController::class, 'teacherAgenda'])->name('agenda');

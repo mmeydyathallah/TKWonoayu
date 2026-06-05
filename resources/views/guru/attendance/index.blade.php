@@ -224,16 +224,30 @@
                                 </td>
                                 <td class="px-5 py-4 font-bold text-on-surface-variant">{{ $student->class_group }}</td>
                                 <td class="px-5 py-4">
-                                    <span class="attendance-chip inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-xs font-black text-on-surface-variant">
-                                        <span class="material-symbols-outlined text-[15px]">login</span>
-                                        {{ $att?->check_in_at?->format('H:i') ?? '-' }}
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="attendance-chip inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-xs font-black text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[15px]">login</span>
+                                            {{ $att?->check_in_at?->format('H:i') ?? '-' }}
+                                        </span>
+                                        @if($att?->check_in_at)
+                                            <button type="submit" form="clear-attendance-time-{{ $att->id }}-masuk" onclick="return confirm('Hapus jam masuk {{ $student->full_name }}?')" class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-all hover:bg-rose-600 hover:text-white" title="Hapus jam masuk">
+                                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4">
-                                    <span class="attendance-chip inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-xs font-black text-on-surface-variant">
-                                        <span class="material-symbols-outlined text-[15px]">logout</span>
-                                        {{ $att?->check_out_at?->format('H:i') ?? '-' }}
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="attendance-chip inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-xs font-black text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-[15px]">logout</span>
+                                            {{ $att?->check_out_at?->format('H:i') ?? '-' }}
+                                        </span>
+                                        @if($att?->check_out_at)
+                                            <button type="submit" form="clear-attendance-time-{{ $att->id }}-pulang" onclick="return confirm('Hapus jam pulang {{ $student->full_name }}?')" class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-all hover:bg-rose-600 hover:text-white" title="Hapus jam pulang">
+                                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4">
                                     <div class="grid grid-cols-4 gap-2">
@@ -263,6 +277,23 @@
             </div>
         @endif
     </form>
+
+    @foreach($attendances as $attendance)
+        @if($attendance->check_in_at)
+            <form id="clear-attendance-time-{{ $attendance->id }}-masuk" action="{{ route('guru.attendance.clear-time', [$attendance, 'masuk']) }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="group" value="{{ $group }}">
+            </form>
+        @endif
+        @if($attendance->check_out_at)
+            <form id="clear-attendance-time-{{ $attendance->id }}-pulang" action="{{ route('guru.attendance.clear-time', [$attendance, 'pulang']) }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="group" value="{{ $group }}">
+            </form>
+        @endif
+    @endforeach
 </div>
 @endsection
 
