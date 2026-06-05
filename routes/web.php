@@ -27,9 +27,6 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::get('/penilaian-harian', [PortalController::class, 'dailyAssessment'])->name('daily');
     Route::post('/penilaian-harian', [PortalController::class, 'storeDailyAssessment'])->name('daily.store');
     Route::delete('/penilaian-harian/{assessment}', [PortalController::class, 'destroyDailyAssessment'])->name('daily.destroy');
-    Route::get('/penilaian-ceklis', [PortalController::class, 'checklistAssessment'])->name('checklist');
-    Route::post('/penilaian-ceklis', [PortalController::class, 'storeChecklistAssessment'])->name('checklist.store');
-    Route::delete('/penilaian-ceklis/siswa/{student}', [PortalController::class, 'destroyChecklistAssessment'])->name('checklist.destroy');
     Route::get('/catatan-anekdot', [PortalController::class, 'anecdotalNotes'])->name('anecdotal');
     Route::post('/catatan-anekdot', [PortalController::class, 'storeAnecdotal'])->name('anecdotal.store');
     Route::delete('/catatan-anekdot/{note}', [PortalController::class, 'destroyAnecdotal'])->name('anecdotal.destroy');

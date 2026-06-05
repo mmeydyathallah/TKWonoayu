@@ -76,10 +76,6 @@
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.daily') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_note</span>
                     <span class="font-bold text-xs">Penilaian Harian</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('guru.checklist') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.checklist') }}">
-                    <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.checklist') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">fact_check</span>
-                    <span class="font-bold text-xs">Penilaian Ceklis</span>
-                </a>
                 <a class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('guru.panel') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.panel') }}">
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.panel') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">forum</span>
                     <span class="font-bold text-xs">Penilaian Percakapan</span>

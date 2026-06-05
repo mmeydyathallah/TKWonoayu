@@ -341,7 +341,7 @@
                         </li>
                         <li class="flex items-start gap-2 text-xs text-emerald-700 font-medium">
                             <span class="text-emerald-500">•</span>
-                            <span>Wali murid dapat melihat semua perkembangan anak (Harian, Ceklis, Hasil Karya, dll) melalui portal khusus.</span>
+                            <span>Wali murid dapat melihat semua perkembangan anak (Harian, Percakapan, Anekdot, Hasil Karya, dll) melalui portal khusus.</span>
                         </li>
                         <li class="flex items-start gap-2 text-xs text-emerald-700 font-medium">
                             <span class="text-emerald-500">•</span>

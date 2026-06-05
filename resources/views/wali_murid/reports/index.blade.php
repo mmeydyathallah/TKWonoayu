@@ -53,7 +53,6 @@
     @foreach([
         'raport'     => 'Ringkasan',
         'harian'     => 'Harian',
-        'ceklis'     => 'Ceklis',
         'percakapan' => 'Percakapan',
         'anekdot'    => 'Anekdot',
         'karya'      => 'Hasil Karya',
@@ -311,42 +310,6 @@
 
 </div>
 
-{{-- ===== TAB: CEKLIS ===== --}}
-<div id="tab-ceklis" class="hidden">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach($domains as $code => $domain)
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col transition-all hover:border-primary/20">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-2xl {{ $domain['color'] }} flex items-center justify-center">
-                    <span class="material-symbols-outlined">{{ $domain['icon'] }}</span>
-                </div>
-                <h3 class="font-black text-slate-800">{{ $domain['label'] }}</h3>
-            </div>
-            <div class="space-y-3 flex-1">
-                @forelse($checklistAssessments->get($domain['label'], collect()) as $item)
-                <div class="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0 gap-4">
-                    <p class="text-sm text-slate-700 flex-1">{{ $item->indicator ?? 'Aspek Perkembangan' }}</p>
-                    <span class="shrink-0 px-2 py-1 rounded text-xs font-bold {{ $scoreColors[$item->score_label] ?? 'bg-slate-100 text-slate-500' }}">
-                        {{ $item->score_label }}
-                    </span>
-                </div>
-                @empty
-                <p class="text-xs text-slate-300 italic py-3 text-center">Belum ada data.</p>
-                @endforelse
-            </div>
-        </div>
-        @endforeach
-    </div>
-    <div class="border-t border-slate-100 pt-5 mt-6">
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Keterangan Nilai</p>
-        <div class="flex flex-wrap gap-3">
-            @foreach(['BB'=>['Belum Berkembang','bg-red-100 text-red-600'],'MB'=>['Mulai Berkembang','bg-amber-100 text-amber-600'],'BSH'=>['Berkembang Sesuai Harapan','bg-green-100 text-green-600'],'BSB'=>['Berkembang Sangat Baik','bg-blue-100 text-blue-600']] as $code=>$info)
-            <div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded text-[10px] font-black {{ $info[1] }}">{{ $code }}</span><span class="text-xs text-slate-500">{{ $info[0] }}</span></div>
-            @endforeach
-        </div>
-    </div>
-</div>
-
 {{-- ===== TAB: PERCAKAPAN ===== --}}
 <div id="tab-percakapan" class="hidden">
     @php
@@ -476,7 +439,7 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-const allTabs = ['raport', 'harian', 'ceklis', 'percakapan', 'anekdot', 'karya'];
+const allTabs = ['raport', 'harian', 'percakapan', 'anekdot', 'karya'];
 let chartsReady = false;
 
 function switchTab(tab) {

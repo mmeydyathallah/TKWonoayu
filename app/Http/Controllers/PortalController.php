@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\AnecdotalNote;
 use App\Models\Artwork;
-use App\Models\ChecklistAssessment;
 use App\Models\DailyAssessment;
 use App\Models\DevelopmentReport;
 use App\Models\GuardianTelegramChat;
@@ -590,97 +589,6 @@ class PortalController extends Controller
         return back()->with('success', 'Penilaian harian berhasil dihapus.');
     }
 
-    public function checklistAssessment(Request $request): View
-    {
-        if (! $this->tableReady(['students', 'checklist_assessments'])) {
-            return view('guru.checklist-assessments.index', [
-                'students' => collect(),
-                'assessmentsByStudent' => collect(),
-                'date' => now(),
-                'group' => null
-            ]);
-        }
-
-        $date = $request->date('date') ?: now();
-        $group = $request->input('group');
-
-        $students = Student::query()
-            ->when($group, fn($q) => $q->where('class_group', $group))
-            ->orderBy('full_name')
-            ->get();
-
-        $assessmentsByStudent = ChecklistAssessment::query()
-            ->whereDate('assessed_on', $date->toDateString())
-            ->get()
-            ->groupBy('student_id');
-
-        return view('guru.checklist-assessments.index', compact('students', 'assessmentsByStudent', 'date', 'group'));
-    }
-
-    public function storeChecklistAssessment(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'assessments' => 'required|array',
-        ]);
-
-        $date = $validated['date'];
-        
-        $domainNames = [
-            'NAM'  => 'Nilai Agama & Moral',
-            'FM'   => 'Fisik Motorik',
-            'KOG'  => 'Kognitif',
-            'BHS'  => 'Bahasa',
-            'SOSEM' => 'Sosial Emosional',
-            'SENI' => 'Seni'
-        ];
-
-        foreach ($validated['assessments'] as $studentId => $domains) {
-            foreach ($domains as $domainCode => $scoreLabel) {
-                if (empty($scoreLabel)) {
-                    ChecklistAssessment::query()
-                        ->where('student_id', $studentId)
-                        ->whereDate('assessed_on', $date)
-                        ->where('domain_code', $domainCode)
-                        ->delete();
-                    continue;
-                }
-
-                ChecklistAssessment::updateOrCreate(
-                    [
-                        'student_id' => $studentId,
-                        'assessed_on' => $date,
-                        'domain_code' => $domainCode,
-                    ],
-                    [
-                        'domain_name' => $domainNames[$domainCode] ?? $domainCode,
-                        'indicator' => 'Aspek ' . ($domainNames[$domainCode] ?? $domainCode),
-                        'score_label' => $scoreLabel,
-                        'score_value' => match($scoreLabel) {
-                            'BB' => 1, 'MB' => 2, 'BSH' => 3, 'BSB' => 4, default => 0
-                        }
-                    ]
-                );
-            }
-        }
-
-        return back()->with('success', 'Penilaian ceklis berhasil disimpan.');
-    }
-
-    public function destroyChecklistAssessment(Request $request, Student $student): RedirectResponse
-    {
-        $date = $request->validate([
-            'date' => ['required', 'date'],
-        ])['date'];
-
-        ChecklistAssessment::query()
-            ->where('student_id', $student->id)
-            ->whereDate('assessed_on', $date)
-            ->delete();
-
-        return back()->with('success', 'Penilaian ceklis siswa berhasil dihapus.');
-    }
-
     public function anecdotalNotes(): View
     {
         if (! $this->tableReady(['anecdotal_notes', 'students'])) {
@@ -947,25 +855,19 @@ class PortalController extends Controller
             })
             ->sortKeysDesc(); // newest week first
 
-        // 3. Ceklis (Checklist Assessments)
-        $checklistAssessments = ChecklistAssessment::query()
-            ->where('student_id', $student->id)
-            ->get()
-            ->groupBy('domain_name');
-
-        // 4. Percakapan (Conversation Assessments)
+        // 3. Percakapan (Conversation Assessments)
         $conversationAssessments = \App\Models\ConversationAssessment::query()
             ->where('student_id', $student->id)
             ->latest('assessed_on')
             ->get();
 
-        // 5. Anekdot (Anecdotal Notes)
+        // 4. Anekdot (Anecdotal Notes)
         $anecdotalNotes = AnecdotalNote::query()
             ->where('student_id', $student->id)
             ->latest('recorded_at')
             ->get();
             
-        // 6. Hasil Karya (Artworks)
+        // 5. Hasil Karya (Artworks)
         $artworks = Artwork::query()
             ->where('student_id', $student->id)
             ->latest('created_on')
@@ -974,8 +876,7 @@ class PortalController extends Controller
         return view('wali_murid.reports.index', compact(
             'student', 
             'report', 
-            'dailyAssessments', 
-            'checklistAssessments', 
+            'dailyAssessments',
             'conversationAssessments', 
             'anecdotalNotes', 
             'artworks'
