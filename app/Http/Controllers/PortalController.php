@@ -693,6 +693,10 @@ class PortalController extends Controller
             return view('guru.development-reports.index', [
                 'students' => collect(),
                 'assessments' => collect(),
+                'date' => now(),
+                'group' => null,
+                'search' => '',
+                'sort' => 'latest',
             ]);
         }
 
@@ -700,19 +704,56 @@ class PortalController extends Controller
         
         $date = $request->date('date') ?: now();
         $group = $request->input('group');
+        $search = trim((string) $request->input('search'));
+        $sort = $request->input('sort', 'latest');
+        if (! in_array($sort, ['latest', 'oldest', 'student_asc', 'student_desc', 'score_asc', 'score_desc'], true)) {
+            $sort = 'latest';
+        }
 
         $query = \App\Models\ConversationAssessment::query()
             ->with('student')
-            ->when($date, fn($q) => $q->whereDate('assessed_on', $date->toDateString()))
-            ->latest('id');
+            ->when($date, fn($q) => $q->whereDate('assessed_on', $date->toDateString()));
 
         if ($group) {
             $query->whereHas('student', fn($q) => $q->where('class_group', $group));
         }
 
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('activity', 'like', "%{$search}%")
+                    ->orWhere('aspect', 'like', "%{$search}%")
+                    ->orWhereHas('student', function ($studentQuery) use ($search) {
+                        $studentQuery->where('full_name', 'like', "%{$search}%")
+                            ->orWhere('nickname', 'like', "%{$search}%")
+                            ->orWhere('student_no', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        match ($sort) {
+            'oldest' => $query->oldest('id'),
+            'student_asc' => $query
+                ->join('students', 'conversation_assessments.student_id', '=', 'students.id')
+                ->select('conversation_assessments.*')
+                ->orderBy('students.full_name')
+                ->orderByDesc('conversation_assessments.id'),
+            'student_desc' => $query
+                ->join('students', 'conversation_assessments.student_id', '=', 'students.id')
+                ->select('conversation_assessments.*')
+                ->orderByDesc('students.full_name')
+                ->orderByDesc('conversation_assessments.id'),
+            'score_asc' => $query
+                ->orderByRaw("CASE score_label WHEN 'BB' THEN 1 WHEN 'MB' THEN 2 WHEN 'BSH' THEN 3 WHEN 'BSB' THEN 4 ELSE 5 END")
+                ->latest('id'),
+            'score_desc' => $query
+                ->orderByRaw("CASE score_label WHEN 'BSB' THEN 1 WHEN 'BSH' THEN 2 WHEN 'MB' THEN 3 WHEN 'BB' THEN 4 ELSE 5 END")
+                ->latest('id'),
+            default => $query->latest('id'),
+        };
+
         $assessments = $query->get();
 
-        return view('guru.development-reports.index', compact('students', 'assessments', 'date', 'group'));
+        return view('guru.development-reports.index', compact('students', 'assessments', 'date', 'group', 'search', 'sort'));
     }
 
     public function storeConversationAssessment(Request $request): \Illuminate\Http\RedirectResponse

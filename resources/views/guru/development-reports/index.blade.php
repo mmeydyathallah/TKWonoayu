@@ -160,6 +160,38 @@
                         <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
                     </div>
                 </div>
+                <div class="flex-[1.4] min-w-[220px] space-y-1">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Pencarian</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[16px]">search</span>
+                        <input name="search" type="search" value="{{ $search }}" placeholder="Cari siswa, kegiatan, aspek..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none placeholder:text-slate-400">
+                    </div>
+                </div>
+                <div class="flex-1 min-w-[170px] space-y-1">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Sortir</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">sort</span>
+                        <select name="sort" onchange="document.getElementById('filter-form').submit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
+                            <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>Terbaru</option>
+                            <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Terlama</option>
+                            <option value="student_asc" {{ $sort === 'student_asc' ? 'selected' : '' }}>Nama A-Z</option>
+                            <option value="student_desc" {{ $sort === 'student_desc' ? 'selected' : '' }}>Nama Z-A</option>
+                            <option value="score_desc" {{ $sort === 'score_desc' ? 'selected' : '' }}>Capaian Tertinggi</option>
+                            <option value="score_asc" {{ $sort === 'score_asc' ? 'selected' : '' }}>Capaian Terendah</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="submit" class="h-9 px-4 rounded-xl bg-primary text-white text-xs font-black shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">search</span>
+                        Cari
+                    </button>
+                    <a href="{{ route('guru.panel') }}" class="h-9 px-4 rounded-xl bg-slate-100 text-slate-600 text-xs font-black hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                        Reset
+                    </a>
+                </div>
             </form>
 
             {{-- Records List --}}
