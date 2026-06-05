@@ -49,7 +49,7 @@ class ConversationAssessmentPanelTest extends TestCase
         ]);
 
         $response
-            ->assertRedirect()
+            ->assertRedirect(route('guru.panel', ['date' => '2026-06-05', 'group' => 'A']))
             ->assertSessionHas('success', 'Penilaian percakapan berhasil diperbarui.');
 
         $this->assertDatabaseHas('conversation_assessments', [

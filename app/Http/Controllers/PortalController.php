@@ -736,7 +736,14 @@ class PortalController extends Controller
             $msg = 'Penilaian percakapan berhasil disimpan.';
         }
 
-        return back()->with('success', $msg);
+        $student = Student::query()->find($data['student_id']);
+
+        return redirect()
+            ->route('guru.panel', array_filter([
+                'date' => $data['assessed_on'],
+                'group' => $student?->class_group,
+            ]))
+            ->with('success', $msg);
     }
 
     public function destroyConversationAssessment(\App\Models\ConversationAssessment $assessment)

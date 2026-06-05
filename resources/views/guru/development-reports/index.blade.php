@@ -98,7 +98,7 @@
                     <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest">Tanggal</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[18px]">calendar_month</span>
-                        <input name="assessed_on" type="date" value="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
+                        <input name="assessed_on" type="date" value="{{ $date->format('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
                     </div>
                 </div>
 
