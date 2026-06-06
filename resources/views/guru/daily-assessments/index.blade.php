@@ -137,29 +137,6 @@
                 </button>
             </form>
             
-            {{-- Active Aspect Info Banner --}}
-            @php $activeAspBanner = collect($aspects)->firstWhere('label', $selectedAspect); @endphp
-            <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center gap-4 bg-white rounded-2xl border border-slate-100 ambient-shadow px-5 py-3.5">
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
-                        <span class="material-symbols-outlined text-[18px]">topic</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tema / Subtema</p>
-                        <p class="font-extrabold text-slate-800 text-sm leading-tight truncate">{{ $activity ?: 'Belum diisi' }}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 bg-white rounded-2xl border border-slate-100 ambient-shadow px-5 py-3.5">
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 icon-{{ $activeAspBanner['color'] ?? 'blue' }}">
-                        <span class="material-symbols-outlined text-[18px]">{{ $activeAspBanner['icon'] ?? 'star' }}</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Aspek Perkembangan</p>
-                        <p class="font-extrabold text-slate-800 text-sm leading-tight truncate">{{ $selectedAspect }}</p>
-                    </div>
-                </div>
-            </div>
-
             {{-- ASSESSMENT FORM --}}
             <form action="{{ route('guru.daily.store') }}" method="POST" id="assessment-form">
                 @csrf
