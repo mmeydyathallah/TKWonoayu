@@ -361,7 +361,7 @@
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="table table-zebra w-full text-sm">
+                        <table class="table w-full text-sm">
                             <thead>
                                 <tr class="text-left text-slate-500 border-b border-slate-100">
                                     <th class="py-3 pr-4 font-bold">Nama Anak</th>
@@ -377,7 +377,7 @@
                                         $studentNames = $row['students']->pluck('full_name')->filter()->values();
                                         $selectedName = $row['selected_student']?->full_name;
                                     @endphp
-                                    <tr class="border-b border-slate-50 align-top">
+                                    <tr class="border-b border-slate-100 align-top bg-white hover:bg-slate-50/70 transition-colors">
                                         <td class="py-3 pr-4 text-slate-700 font-semibold">
                                             @if($studentNames->isNotEmpty())
                                                 {{ $studentNames->join(', ') }}
