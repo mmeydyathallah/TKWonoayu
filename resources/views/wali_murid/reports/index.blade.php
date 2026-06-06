@@ -191,6 +191,20 @@
             <canvas id="trend-chart"></canvas>
         </div>
     </div>
+    <div class="daily-panel mb-8 rounded-3xl border p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="daily-icon w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">leaderboard</span>
+            </div>
+            <div>
+                <p class="daily-title font-extrabold text-sm leading-none">Perbandingan 6 Aspek Perkembangan</p>
+                <p class="daily-muted text-[10px] mt-0.5">Rata-rata skor tiap aspek untuk melihat aspek tertinggi.</p>
+            </div>
+        </div>
+        <div style="position:relative;height:260px;max-height:260px;">
+            <canvas id="aspect-comparison-chart"></canvas>
+        </div>
+    </div>
     <div id="charts-container" class="mb-8"></div>
     @endif
 
@@ -333,6 +347,7 @@
     @if($dailyAssessments->isNotEmpty())
     <div id="chart-data-store"
          data-aspect-labels='@json(array_keys($allAspects))'
+         data-aspect-names='@json(array_column($allAspects,"label"))'
          data-aspect-colors='@json(array_column($allAspects,"hex"))'
          data-trend-labels='@json($trendLabels)'
          data-trend-datasets='@json($trendDatasets)'
@@ -462,6 +477,7 @@ function initCharts() {
     if (!store) return;
 
     const aspectLabels   = JSON.parse(store.dataset.aspectLabels  || '[]');
+    const aspectNames    = JSON.parse(store.dataset.aspectNames   || '[]');
     const aspectColors   = JSON.parse(store.dataset.aspectColors  || '[]');
     const trendLabels    = JSON.parse(store.dataset.trendLabels   || '[]');
     const trendDatasets  = JSON.parse(store.dataset.trendDatasets || '{}');
@@ -561,8 +577,75 @@ function initCharts() {
     });
 
     // ── Per-aspect mini charts: show weekly trend for each aspect (2 columns max) ──
+    const comparisonEl = document.getElementById('aspect-comparison-chart');
+    if (comparisonEl) {
+        const aspectAverages = aspKeys.map(code => {
+            const values = (trendDatasets[code] || []).map(v => Number(v || 0)).filter(v => v > 0);
+            if (!values.length) return 0;
+            return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2));
+        });
+
+        new Chart(comparisonEl, {
+            type: 'bar',
+            data: {
+                labels: aspKeys.map((code, i) => aspectNames[i] || code),
+                datasets: [{
+                    label: 'Rata-rata Skor',
+                    data: aspectAverages,
+                    backgroundColor: aspectColors,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 800 },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const value = Number(ctx.raw || 0);
+                                const nearest = Math.round(value);
+                                return ' Rata-rata: ' + value.toFixed(2) + ' / 4 (' + (scoreLabel[nearest] || '-') + ')';
+                            }
+                        },
+                        font: { size: 11 }
+                    }
+                },
+                scales: {
+                    x: {
+                        min: 0,
+                        max: 4,
+                        ticks: {
+                            stepSize: 1,
+                            callback: v => scoreLabel[v] || v,
+                            color: '#a9b8cc',
+                            font: { size: 10, weight: '600' }
+                        },
+                        grid: { color: 'rgba(148, 163, 184, 0.16)', drawBorder: false }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#e5eefb',
+                            font: { size: 10, weight: '700' }
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
     const chartContainer = document.getElementById('charts-container');
     if (!chartContainer) return;
+
+    const sectionTitle = document.createElement('div');
+    sectionTitle.className = 'daily-panel mb-4 rounded-3xl border p-5';
+    sectionTitle.innerHTML = '<div class="flex items-center gap-3"><div class="daily-icon w-9 h-9 rounded-xl flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[18px]">show_chart</span></div><div><p class="daily-title font-extrabold text-sm leading-none">Grafik Kenaikan Masing-masing Aspek</p><p class="daily-muted text-[10px] mt-0.5">Setiap kartu menampilkan perubahan nilai aspek dari minggu ke minggu.</p></div></div>';
+    chartContainer.appendChild(sectionTitle);
 
     const perAspectContainer = document.createElement('div');
     perAspectContainer.className = 'grid gap-4 grid-cols-1 sm:grid-cols-2 auto-rows-max';
@@ -573,7 +656,7 @@ function initCharts() {
 
         const title = document.createElement('div');
         title.className = 'flex items-center justify-between mb-2';
-        title.innerHTML = `<strong class="daily-title text-xs font-black">${code}</strong><span class="daily-muted text-[9px]">Tren Per Minggu</span>`;
+        title.innerHTML = `<strong class="daily-title text-xs font-black">${aspectNames[idx] || code}</strong><span class="daily-muted text-[9px]">${code}</span>`;
 
         const c = document.createElement('canvas');
         c.id = 'chart-' + code;
