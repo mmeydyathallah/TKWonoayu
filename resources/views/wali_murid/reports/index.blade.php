@@ -28,6 +28,49 @@
     .dot-MB { background: #f59e0b; }
     .dot-BSH { background: #10b981; }
     .dot-BSB { background: #3b82f6; }
+
+    .daily-report-page {
+        --daily-panel: rgba(15, 23, 42, 0.94);
+        --daily-panel-soft: rgba(15, 23, 42, 0.82);
+        --daily-panel-hover: rgba(30, 41, 59, 0.88);
+        --daily-border: rgba(148, 163, 184, 0.22);
+        --daily-border-soft: rgba(148, 163, 184, 0.16);
+        --daily-text: #e5eefb;
+        --daily-muted: #a9b8cc;
+    }
+
+    .daily-report-page .daily-panel,
+    .daily-report-page .daily-card,
+    .daily-report-page .daily-empty {
+        background: var(--daily-panel) !important;
+        border-color: var(--daily-border) !important;
+        box-shadow: 0 18px 42px rgba(2, 6, 23, 0.24) !important;
+        color: var(--daily-text) !important;
+    }
+
+    .daily-report-page .daily-panel-soft,
+    .daily-report-page .daily-week-header,
+    .daily-report-page .daily-chip,
+    .daily-report-page .daily-activity,
+    .daily-report-page .daily-note {
+        background: var(--daily-panel-soft) !important;
+        border-color: var(--daily-border-soft) !important;
+        color: var(--daily-text) !important;
+    }
+
+    .daily-report-page .daily-card:hover {
+        background: var(--daily-panel-hover) !important;
+        border-color: rgba(56, 189, 248, 0.24) !important;
+    }
+
+    .daily-report-page .daily-title { color: #f8fafc !important; }
+    .daily-report-page .daily-muted { color: var(--daily-muted) !important; }
+    .daily-report-page .daily-border { border-color: var(--daily-border) !important; }
+
+    .daily-report-page .daily-icon {
+        background: rgba(56, 189, 248, 0.12) !important;
+        color: #7dd3fc !important;
+    }
 </style>
 @endsection
 
@@ -111,7 +154,7 @@
 </div>
 
 {{-- ===== TAB: HARIAN (Grouped by Week) ===== --}}
-<div id="tab-harian" class="hidden max-h-screen overflow-y-auto">
+<div id="tab-harian" class="daily-report-page hidden max-h-screen overflow-y-auto">
 
     @php
         $allAspects = [
@@ -134,14 +177,14 @@
 
     {{-- Multi-week Trend Chart --}}
     @if($dailyAssessments->count() > 0)
-    <div class="mb-8 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+    <div class="daily-panel mb-8 rounded-3xl border p-6">
         <div class="flex items-center gap-3 mb-4">
-            <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary text-[18px]">trending_up</span>
+            <div class="daily-icon w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">trending_up</span>
             </div>
             <div>
-                <p class="font-extrabold text-slate-800 text-sm leading-none">Tren Perkembangan Mingguan</p>
-                <p class="text-[10px] text-slate-400 mt-0.5">Skor per aspek tiap minggu (1=BB, 2=MB, 3=BSH, 4=BSB)</p>
+                <p class="daily-title font-extrabold text-sm leading-none">Tren Perkembangan Mingguan</p>
+                <p class="daily-muted text-[10px] mt-0.5">Skor per aspek tiap minggu (1=BB, 2=MB, 3=BSH, 4=BSB)</p>
             </div>
         </div>
         <div style="position:relative;height:240px;max-height:240px;">
@@ -203,34 +246,34 @@
         }
     @endphp
 
-    <div class="mb-6 rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+    <div class="daily-panel mb-6 rounded-3xl border overflow-hidden">
         {{-- Week Header --}}
-        <div class="bg-gradient-to-br from-slate-50 to-white border-b border-slate-100 px-6 py-5">
+        <div class="daily-week-header border-b px-6 py-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-primary text-[20px]">calendar_view_week</span>
+                    <div class="daily-icon w-10 h-10 rounded-2xl flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[20px]">calendar_view_week</span>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Minggu Pembelajaran</p>
-                        <p class="font-extrabold text-slate-800 text-sm mt-0.5">{{ $weekLabel }}</p>
+                        <p class="daily-muted text-[9px] font-black uppercase tracking-widest">Minggu Pembelajaran</p>
+                        <p class="daily-title font-extrabold text-sm mt-0.5">{{ $weekLabel }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col md:items-end shrink-0">
-                    <p class="text-[8px] font-black text-slate-400 uppercase mb-1">Rata-rata Minggu Ini</p>
+                    <p class="daily-muted text-[8px] font-black uppercase mb-1">Rata-rata Minggu Ini</p>
                     <span class="text-xs font-black {{ $statusInfo[1] }} px-3 py-1 rounded-full">{{ $statusInfo[0] }} — {{ $statusInfo[3] }}</span>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1 md:text-right">Skor {{ number_format($avg,1) }} / 4.0</p>
+                    <p class="daily-muted text-[9px] font-bold mt-1 md:text-right">Skor {{ number_format($avg,1) }} / 4.0</p>
                 </div>
             </div>
             
-            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100">
+            <div class="daily-border flex flex-wrap gap-2 mt-4 pt-4 border-t">
                 @foreach($allAspects as $code => $asp)
                 @php $wItem = $weekScores[$code] ?? null; @endphp
-                <div class="flex items-center gap-1.5 bg-white rounded-xl px-2.5 py-2 border border-slate-100 shadow-sm">
+                <div class="daily-chip flex items-center gap-1.5 rounded-xl px-2.5 py-2 border">
                     <div class="w-5 h-5 rounded-md flex items-center justify-center {{ $asp['color'] }} border">
                         <span class="material-symbols-outlined text-[11px]">{{ $asp['icon'] }}</span>
                     </div>
-                    <span class="text-[9px] font-black text-slate-600">{{ $code }}</span>
+                    <span class="daily-title text-[9px] font-black">{{ $code }}</span>
                     <span class="text-[10px] font-black rounded px-1 {{ $wItem ? ($scoreColors[$wItem->score_label] ?? '') : 'text-slate-300' }}">
                         {{ $wItem ? $wItem->score_label : '—' }}
                     </span>
@@ -239,7 +282,7 @@
             </div>
         </div>
         {{-- Day Cards --}}
-        <div class="bg-white p-5">
+        <div class="p-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($items->sortBy('assessed_on') as $item)
                 @php
@@ -249,29 +292,29 @@
                         'BB'=>'Belum Berkembang','MB'=>'Mulai Berkembang',
                         'BSH'=>'Berkembang Sesuai Harapan','BSB'=>'Berkembang Sangat Baik',default=>$item->score_label};
                 @endphp
-                <div class="bg-slate-50/60 rounded-2xl border border-slate-100 hover:shadow-md transition-all p-4 flex flex-col gap-3">
+                <div class="daily-card rounded-2xl border transition-all p-4 flex flex-col gap-3">
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
                             <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 {{ $aspDetails['color'] }} border">
                                 <span class="material-symbols-outlined text-[15px]">{{ $aspDetails['icon'] }}</span>
                             </div>
                             <div class="min-w-0">
-                                <p class="text-xs font-black text-slate-800 truncate leading-none">{{ $aspDetails['label'] }}</p>
-                                <p class="text-[9px] text-slate-400 mt-0.5">{{ $item->assessed_on->format('l, d M Y') }}</p>
+                                <p class="daily-title text-xs font-black truncate leading-none">{{ $aspDetails['label'] }}</p>
+                                <p class="daily-muted text-[9px] mt-0.5">{{ $item->assessed_on->format('l, d M Y') }}</p>
                             </div>
                         </div>
                         <span class="shrink-0 px-2 py-0.5 rounded text-[11px] font-black {{ $scoreColors[$item->score_label] ?? 'bg-slate-100 text-slate-500' }}" title="{{ $scoreFull }}">{{ $item->score_label }}</span>
                     </div>
                     @if($item->activity)
-                    <div class="bg-white rounded-xl px-3 py-2 border border-slate-100">
-                        <p class="text-[8px] font-black text-slate-400 uppercase mb-0.5">Tema / Kegiatan</p>
-                        <p class="text-xs font-bold text-slate-700 leading-snug">{{ $item->activity }}</p>
+                    <div class="daily-activity rounded-xl px-3 py-2 border">
+                        <p class="daily-muted text-[8px] font-black uppercase mb-0.5">Tema / Kegiatan</p>
+                        <p class="daily-title text-xs font-bold leading-snug">{{ $item->activity }}</p>
                     </div>
                     @endif
                     @if($item->observation)
-                    <div class="flex items-start gap-2 bg-primary/5 rounded-xl p-3 border border-primary/10">
-                        <span class="material-symbols-outlined text-[13px] text-primary shrink-0 mt-0.5">comment</span>
-                        <p class="text-[11px] text-slate-600 italic leading-relaxed">&ldquo;{{ $item->observation }}&rdquo;</p>
+                    <div class="daily-note flex items-start gap-2 rounded-xl p-3 border">
+                        <span class="material-symbols-outlined text-[13px] text-sky-300 shrink-0 mt-0.5">comment</span>
+                        <p class="daily-muted text-[11px] italic leading-relaxed">&ldquo;{{ $item->observation }}&rdquo;</p>
                     </div>
                     @endif
                 </div>
@@ -281,9 +324,9 @@
     </div>
 
     @empty
-    <div class="py-16 text-center bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
-        <span class="material-symbols-outlined text-4xl text-slate-300">event_busy</span>
-        <p class="text-sm font-bold text-slate-400 mt-3">Belum ada catatan penilaian harian.</p>
+    <div class="daily-empty py-16 text-center rounded-3xl border border-dashed">
+        <span class="material-symbols-outlined text-4xl text-slate-500">event_busy</span>
+        <p class="daily-muted text-sm font-bold mt-3">Belum ada catatan penilaian harian.</p>
     </div>
     @endforelse
 
@@ -297,11 +340,11 @@
          data-weekday-datasets='@json($latestWeekdayDatasets)'
          data-weekday-colors='@json($weekdayColors)'
          style="display:none"></div>
-    <div class="border-t border-slate-100 pt-5 mt-2 flex flex-wrap gap-4">
+    <div class="daily-border border-t pt-5 mt-2 flex flex-wrap gap-4">
         @foreach(['BB'=>['Belum Berkembang','bg-red-100 text-red-600'],'MB'=>['Mulai Berkembang','bg-amber-100 text-amber-600'],'BSH'=>['Berkembang Sesuai Harapan','bg-green-100 text-green-600'],'BSB'=>['Berkembang Sangat Baik','bg-blue-100 text-blue-600']] as $c=>$i)
         <div class="flex items-center gap-2">
             <span class="px-2 py-0.5 rounded text-[10px] font-black {{ $i[1] }}">{{ $c }}</span>
-            <span class="text-xs font-bold text-slate-500">{{ $i[0] }}</span>
+            <span class="daily-muted text-xs font-bold">{{ $i[0] }}</span>
         </div>
         @endforeach
     </div>
@@ -440,7 +483,7 @@ function initCharts() {
     if (!hasData) {
         const container = document.getElementById('charts-container');
         if (container) {
-            container.innerHTML = '<div class="py-12 text-center text-slate-400"><p class="font-bold">Belum ada data penilaian untuk ditampilkan.</p></div>';
+            container.innerHTML = '<div class="daily-empty py-12 text-center rounded-3xl border border-dashed"><p class="daily-muted font-bold">Belum ada data penilaian untuk ditampilkan.</p></div>';
         }
         return;
     }
@@ -474,7 +517,8 @@ function initCharts() {
                         font: { size: 11, weight: '600' }, 
                         usePointStyle: true, 
                         padding: 12,
-                        boxHeight: 6
+                        boxHeight: 6,
+                        color: '#cbd5e1'
                     },
                     margin: { top: 16 }
                 },
@@ -493,14 +537,15 @@ function initCharts() {
                     ticks: { 
                         stepSize: 1, 
                         callback: v => scoreLabel[v] || '',
-                        font: { size: 10, weight: '600' }
+                        font: { size: 10, weight: '600' },
+                        color: '#a9b8cc'
                     }, 
-                    grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } 
+                    grid: { color: 'rgba(148, 163, 184, 0.16)', drawBorder: false } 
                 },
                 x: { 
                     ticks: { 
                         font: { size: 10, weight: '600' }, 
-                        color: '#64748b' 
+                        color: '#a9b8cc' 
                     }, 
                     grid: { display: false },
                     stacked: false
@@ -524,11 +569,11 @@ function initCharts() {
 
     aspKeys.forEach((code, idx) => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-3 shadow-sm border border-slate-100';
+        card.className = 'daily-panel-soft rounded-2xl p-3 border';
 
         const title = document.createElement('div');
         title.className = 'flex items-center justify-between mb-2';
-        title.innerHTML = `<strong class="text-xs font-black text-slate-800">${code}</strong><span class="text-[9px] text-slate-400">Tren Per Minggu</span>`;
+        title.innerHTML = `<strong class="daily-title text-xs font-black">${code}</strong><span class="daily-muted text-[9px]">Tren Per Minggu</span>`;
 
         const c = document.createElement('canvas');
         c.id = 'chart-' + code;
@@ -545,7 +590,7 @@ function initCharts() {
 
         if (!hasValues) {
             const no = document.createElement('div');
-            no.className = 'py-6 text-center text-slate-400 text-sm';
+            no.className = 'daily-muted py-6 text-center text-sm';
             no.innerText = 'Belum ada data';
             // remove canvas and show placeholder
             c.remove();
@@ -589,13 +634,14 @@ function initCharts() {
                         ticks: {
                             stepSize: 1,
                             callback: v => scoreLabel[v] || '',
-                            font: { size: 10 }
+                            font: { size: 10 },
+                            color: '#a9b8cc'
                         },
-                        grid: { color: 'rgba(0,0,0,0.04)' }
+                        grid: { color: 'rgba(148, 163, 184, 0.16)' }
                     },
                     x: {
                         display: multiplePoints,
-                        ticks: { font: { size: 9, weight: '600' }, color: '#64748b' },
+                        ticks: { font: { size: 9, weight: '600' }, color: '#a9b8cc' },
                         grid: { display: false }
                     }
                 },
