@@ -107,15 +107,6 @@
         {{-- QUICK ACCESS --}}
         <div class="lg:col-span-8 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="{{ route('guru.panel') }}" class="group bg-white p-6 rounded-3xl border border-slate-100 ambient-shadow hover:border-primary/30 transition-all flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-[28px]">forum</span>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-base">Penilaian Percakapan</h4>
-                        <p class="text-xs text-slate-500 mt-0.5">Tanya jawab terpandu siswa</p>
-                    </div>
-                </a>
                 <a href="{{ route('guru.artworks') }}" class="group bg-white p-6 rounded-3xl border border-slate-100 ambient-shadow hover:border-primary/30 transition-all flex items-center gap-5">
                     <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-[28px]">palette</span>

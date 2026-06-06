@@ -53,7 +53,6 @@
     @foreach([
         'raport'     => 'Ringkasan',
         'harian'     => 'Harian',
-        'percakapan' => 'Percakapan',
         'anekdot'    => 'Anekdot',
         'karya'      => 'Hasil Karya',
     ] as $key => $label)
@@ -310,52 +309,6 @@
 
 </div>
 
-{{-- ===== TAB: PERCAKAPAN ===== --}}
-<div id="tab-percakapan" class="hidden">
-    @php
-        $toneColors = ['Positif'=>'bg-emerald-50 text-emerald-600 border-emerald-200','Netral'=>'bg-slate-50 text-slate-500 border-slate-200','Negatif'=>'bg-red-50 text-red-600 border-red-200'];
-    @endphp
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-        @forelse($conversationAssessments as $conv)
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <div class="flex items-start justify-between gap-3 mb-3">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $conv->assessed_on->isoFormat('D MMM Y') }}</span>
-                <span class="shrink-0 px-2 py-0.5 rounded text-[10px] font-black {{ $scoreColors[$conv->score_label] ?? 'bg-slate-100 text-slate-500' }}">
-                    {{ $conv->score_label }}
-                    <span class="font-medium"> · {{ ['BB'=>'Belum Berkembang','MB'=>'Mulai Berkembang','BSH'=>'Berkembang Sesuai Harapan','BSB'=>'Berkembang Sangat Baik'][$conv->score_label] ?? '' }}</span>
-                </span>
-            </div>
-            <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span class="material-symbols-outlined text-purple-500 text-[16px]">chat_bubble</span>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-bold text-slate-800 mb-1">{{ $conv->activity }}</p>
-                    <p class="text-xs text-slate-500 italic leading-relaxed">&ldquo;{{ $conv->aspect }}&rdquo;</p>
-                </div>
-            </div>
-        </div>
-        @empty
-        <div class="col-span-full py-16 text-center">
-            <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
-                <span class="material-symbols-outlined text-slate-300 text-2xl">record_voice_over</span>
-            </div>
-            <p class="text-sm text-slate-400 italic">Belum ada catatan percakapan.</p>
-        </div>
-        @endforelse
-    </div>
-    @if($conversationAssessments->isNotEmpty())
-    <div class="border-t border-slate-100 pt-5">
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Keterangan Nilai</p>
-        <div class="flex flex-wrap gap-3">
-            @foreach(['BB'=>['Belum Berkembang','bg-red-100 text-red-600'],'MB'=>['Mulai Berkembang','bg-amber-100 text-amber-600'],'BSH'=>['Berkembang Sesuai Harapan','bg-green-100 text-green-600'],'BSB'=>['Berkembang Sangat Baik','bg-blue-100 text-blue-600']] as $code=>$info)
-            <div class="flex items-center gap-1.5"><span class="px-2 py-0.5 rounded text-[10px] font-black {{ $info[1] }}">{{ $code }}</span><span class="text-xs text-slate-500">{{ $info[0] }}</span></div>
-            @endforeach
-        </div>
-    </div>
-    @endif
-</div>
-
 {{-- ===== TAB: ANEKDOT ===== --}}
 <div id="tab-anekdot" class="hidden">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
@@ -446,7 +399,7 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-const allTabs = ['raport', 'harian', 'percakapan', 'anekdot', 'karya'];
+const allTabs = ['raport', 'harian', 'anekdot', 'karya'];
 let chartsReady = false;
 
 function switchTab(tab) {

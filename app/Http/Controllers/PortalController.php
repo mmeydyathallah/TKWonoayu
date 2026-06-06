@@ -694,112 +694,6 @@ class PortalController extends Controller
         return back()->with('success', 'Hasil karya berhasil dihapus.');
     }
 
-    public function assessmentPanel(Request $request): View
-    {
-        if (! $this->tableReady(['conversation_assessments', 'students'])) {
-            return view('guru.development-reports.index', [
-                'students' => collect(),
-                'assessments' => collect(),
-                'date' => now(),
-                'group' => null,
-                'search' => '',
-                'sort' => 'latest',
-            ]);
-        }
-
-        $students = Student::query()->orderBy('full_name')->get();
-        
-        $date = $request->date('date') ?: now();
-        $group = $request->input('group');
-        $search = trim((string) $request->input('search'));
-        $sort = $request->input('sort', 'latest');
-        if (! in_array($sort, ['latest', 'oldest', 'student_asc', 'student_desc', 'score_asc', 'score_desc'], true)) {
-            $sort = 'latest';
-        }
-
-        $query = \App\Models\ConversationAssessment::query()
-            ->with('student')
-            ->when($date, fn($q) => $q->whereDate('assessed_on', $date->toDateString()));
-
-        if ($group) {
-            $query->whereHas('student', fn($q) => $q->where('class_group', $group));
-        }
-
-        if ($search !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('activity', 'like', "%{$search}%")
-                    ->orWhere('aspect', 'like', "%{$search}%")
-                    ->orWhereHas('student', function ($studentQuery) use ($search) {
-                        $studentQuery->where('full_name', 'like', "%{$search}%")
-                            ->orWhere('nickname', 'like', "%{$search}%")
-                            ->orWhere('student_no', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        match ($sort) {
-            'oldest' => $query->oldest('id'),
-            'student_asc' => $query
-                ->join('students', 'conversation_assessments.student_id', '=', 'students.id')
-                ->select('conversation_assessments.*')
-                ->orderBy('students.full_name')
-                ->orderByDesc('conversation_assessments.id'),
-            'student_desc' => $query
-                ->join('students', 'conversation_assessments.student_id', '=', 'students.id')
-                ->select('conversation_assessments.*')
-                ->orderByDesc('students.full_name')
-                ->orderByDesc('conversation_assessments.id'),
-            'score_asc' => $query
-                ->orderByRaw("CASE score_label WHEN 'BB' THEN 1 WHEN 'MB' THEN 2 WHEN 'BSH' THEN 3 WHEN 'BSB' THEN 4 ELSE 5 END")
-                ->latest('id'),
-            'score_desc' => $query
-                ->orderByRaw("CASE score_label WHEN 'BSB' THEN 1 WHEN 'BSH' THEN 2 WHEN 'MB' THEN 3 WHEN 'BB' THEN 4 ELSE 5 END")
-                ->latest('id'),
-            default => $query->latest('id'),
-        };
-
-        $assessments = $query->get();
-
-        return view('guru.development-reports.index', compact('students', 'assessments', 'date', 'group', 'search', 'sort'));
-    }
-
-    public function storeConversationAssessment(Request $request): \Illuminate\Http\RedirectResponse
-    {
-        $validated = $request->validate([
-            'assessment_id' => 'nullable|exists:conversation_assessments,id',
-            'student_id' => 'required|exists:students,id',
-            'assessed_on' => 'required|date',
-            'activity' => 'required|string|max:255',
-            'aspect' => 'required|string|max:255',
-            'score_label' => 'required|in:BB,MB,BSH,BSB',
-        ]);
-
-        $data = collect($validated)->except('assessment_id')->all();
-
-        if ($request->assessment_id) {
-            \App\Models\ConversationAssessment::where('id', $request->assessment_id)->update($data);
-            $msg = 'Penilaian percakapan berhasil diperbarui.';
-        } else {
-            \App\Models\ConversationAssessment::create($data);
-            $msg = 'Penilaian percakapan berhasil disimpan.';
-        }
-
-        $student = Student::query()->find($data['student_id']);
-
-        return redirect()
-            ->route('guru.panel', array_filter([
-                'date' => $data['assessed_on'],
-                'group' => $student?->class_group,
-            ]))
-            ->with('success', $msg);
-    }
-
-    public function destroyConversationAssessment(\App\Models\ConversationAssessment $assessment)
-    {
-        $assessment->delete();
-        return back()->with('success', 'Penilaian percakapan berhasil dihapus.');
-    }
-
     public function developmentNarrative(Request $request): View
     {
         if (! $this->tableReady(['development_reports', 'students'])) {
@@ -910,19 +804,13 @@ class PortalController extends Controller
             })
             ->sortKeysDesc(); // newest week first
 
-        // 3. Percakapan (Conversation Assessments)
-        $conversationAssessments = \App\Models\ConversationAssessment::query()
-            ->where('student_id', $student->id)
-            ->latest('assessed_on')
-            ->get();
-
-        // 4. Anekdot (Anecdotal Notes)
+        // 3. Anekdot (Anecdotal Notes)
         $anecdotalNotes = AnecdotalNote::query()
             ->where('student_id', $student->id)
             ->latest('recorded_at')
             ->get();
             
-        // 5. Hasil Karya (Artworks)
+        // 4. Hasil Karya (Artworks)
         $artworks = Artwork::query()
             ->where('student_id', $student->id)
             ->latest('created_on')
@@ -932,7 +820,6 @@ class PortalController extends Controller
             'student', 
             'report', 
             'dailyAssessments',
-            'conversationAssessments', 
             'anecdotalNotes', 
             'artworks'
         ));
