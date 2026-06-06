@@ -589,23 +589,33 @@ class PortalController extends Controller
         return back()->with('success', 'Penilaian harian berhasil dihapus.');
     }
 
-    public function anecdotalNotes(): View
+    public function anecdotalNotes(Request $request): View
     {
+        $sort = $request->input('sort', 'latest');
+        if (! in_array($sort, ['latest', 'oldest'], true)) {
+            $sort = 'latest';
+        }
+
         if (! $this->tableReady(['anecdotal_notes', 'students'])) {
             return view('guru.anecdotal-notes.index', [
                 'notes' => collect(),
                 'students' => collect(),
+                'sort' => $sort,
             ]);
         }
 
         $students = Student::query()->orderBy('full_name')->get(['id', 'full_name', 'nickname']);
         $notes = AnecdotalNote::query()
             ->with('student:id,full_name,nickname,avatar_url,class_group')
-            ->latest('recorded_at')
+            ->when(
+                $sort === 'oldest',
+                fn ($query) => $query->oldest('recorded_at')->oldest('id'),
+                fn ($query) => $query->latest('recorded_at')->latest('id')
+            )
             ->limit(10)
             ->get();
 
-        return view('guru.anecdotal-notes.index', compact('notes', 'students'));
+        return view('guru.anecdotal-notes.index', compact('notes', 'students', 'sort'));
     }
 
     public function artworkAssessment(Request $request): View

@@ -107,11 +107,24 @@
             
             {{-- Records List --}}
             <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                <div class="px-6 py-4 border-b border-slate-50 bg-slate-50/50 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary text-[18px]">history</span> Riwayat Catatan
                     </h3>
-                    <span class="text-[10px] font-black text-slate-400 uppercase bg-slate-200/50 px-2.5 py-1 rounded-md">{{ $notes->count() }} Data</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <form action="{{ route('guru.anecdotal') }}" method="GET" id="sort-form" class="flex items-center gap-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sortir Tanggal</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">sort</span>
+                                <select name="sort" onchange="document.getElementById('sort-form').submit()" class="bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
+                                    <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>Terbaru</option>
+                                    <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Terlama</option>
+                                </select>
+                                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
+                            </div>
+                        </form>
+                        <span class="text-[10px] font-black text-slate-400 uppercase bg-slate-200/50 px-2.5 py-1 rounded-md">{{ $notes->count() }} Data</span>
+                    </div>
                 </div>
                 
                 <div class="divide-y divide-slate-50">
