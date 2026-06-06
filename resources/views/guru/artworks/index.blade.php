@@ -130,7 +130,7 @@
                         <input type="file" name="image" accept="image/*" onchange="previewImage(this)">
                     </div>
                     <div id="image-preview-container" class="hidden mt-3 relative rounded-xl overflow-hidden border border-slate-200">
-                        <img id="image-preview" class="w-full h-32 object-cover" src="#" alt="Preview">
+                        <img id="image-preview" class="w-full h-32 object-contain bg-slate-100" src="#" alt="Preview">
                         <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                             <span class="text-white text-xs font-bold bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-md">Ganti Foto</span>
                         </div>
@@ -208,9 +208,9 @@
                         @foreach($artworks as $artwork)
                         <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
                             {{-- Image Container --}}
-                            <div class="relative h-48 bg-slate-200 overflow-hidden">
+                            <div class="relative h-48 bg-slate-100 overflow-hidden">
                                 @if($artwork->image_url)
-                                <img src="{{ $artwork->image_url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $artwork->image_url }}" class="w-full h-full object-contain transition-transform duration-500">
                                 @else
                                 <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
                                     <span class="material-symbols-outlined text-4xl mb-2">image_not_supported</span>
