@@ -591,31 +591,26 @@ class PortalController extends Controller
 
     public function anecdotalNotes(Request $request): View
     {
-        $sort = $request->input('sort', 'latest');
-        if (! in_array($sort, ['latest', 'oldest'], true)) {
-            $sort = 'latest';
-        }
+        $selectedDate = $request->date('date')?->toDateString();
 
         if (! $this->tableReady(['anecdotal_notes', 'students'])) {
             return view('guru.anecdotal-notes.index', [
                 'notes' => collect(),
                 'students' => collect(),
-                'sort' => $sort,
+                'selectedDate' => $selectedDate,
             ]);
         }
 
         $students = Student::query()->orderBy('full_name')->get(['id', 'full_name', 'nickname']);
         $notes = AnecdotalNote::query()
             ->with('student:id,full_name,nickname,avatar_url,class_group')
-            ->when(
-                $sort === 'oldest',
-                fn ($query) => $query->oldest('recorded_at')->oldest('id'),
-                fn ($query) => $query->latest('recorded_at')->latest('id')
-            )
+            ->when($selectedDate, fn ($query) => $query->whereDate('recorded_at', $selectedDate))
+            ->latest('recorded_at')
+            ->latest('id')
             ->limit(10)
             ->get();
 
-        return view('guru.anecdotal-notes.index', compact('notes', 'students', 'sort'));
+        return view('guru.anecdotal-notes.index', compact('notes', 'students', 'selectedDate'));
     }
 
     public function artworkAssessment(Request $request): View

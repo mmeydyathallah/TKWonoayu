@@ -112,16 +112,18 @@
                         <span class="material-symbols-outlined text-primary text-[18px]">history</span> Riwayat Catatan
                     </h3>
                     <div class="flex flex-wrap items-center gap-2">
-                        <form action="{{ route('guru.anecdotal') }}" method="GET" id="sort-form" class="flex items-center gap-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sortir Tanggal</label>
+                        <form action="{{ route('guru.anecdotal') }}" method="GET" id="date-filter-form" class="flex items-center gap-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Tanggal</label>
                             <div class="relative">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">sort</span>
-                                <select name="sort" onchange="document.getElementById('sort-form').submit()" class="bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none appearance-none">
-                                    <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>Terbaru</option>
-                                    <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Terlama</option>
-                                </select>
-                                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">calendar_today</span>
+                                <input type="date" name="date" value="{{ $selectedDate }}" onchange="document.getElementById('date-filter-form').submit()" class="bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-primary/20 outline-none">
                             </div>
+                            @if($selectedDate)
+                            <a href="{{ route('guru.anecdotal') }}" class="h-9 px-3 rounded-xl bg-slate-100 text-slate-600 text-xs font-black hover:bg-slate-200 transition-colors flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+                                Reset
+                            </a>
+                            @endif
                         </form>
                         <span class="text-[10px] font-black text-slate-400 uppercase bg-slate-200/50 px-2.5 py-1 rounded-md">{{ $notes->count() }} Data</span>
                     </div>
