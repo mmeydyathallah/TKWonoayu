@@ -2,6 +2,15 @@
 
 @php $title = 'Galeri Aktivitas - Portal Wali Murid TK Wonoayu'; @endphp
 
+@section('styles')
+<style>
+    .gallery-modal {
+        background: rgba(2, 6, 23, 0.86);
+        backdrop-filter: blur(14px);
+    }
+</style>
+@endsection
+
 @section('content')
 {{-- Header --}}
 <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -32,7 +41,16 @@
             <div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgba(44,52,55,0.04)] overflow-hidden flex flex-col">
                 <div class="h-48 relative overflow-hidden bg-surface-variant">
                     @if($artwork->image_url)
-                    <img alt="{{ $artwork->title }}" class="w-full h-full object-cover" src="{{ $artwork->image_url }}"/>
+                    <button type="button"
+                            class="group block w-full h-full"
+                            onclick="openGalleryImage(@js($artwork->image_url), @js($artwork->title ?? 'Hasil Karya Anak'))"
+                            aria-label="Lihat gambar penuh {{ $artwork->title }}">
+                        <img alt="{{ $artwork->title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" src="{{ $artwork->image_url }}"/>
+                        <span class="absolute bottom-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-slate-950/70 px-3 py-1.5 text-xs font-black text-white shadow-sm backdrop-blur">
+                            <span class="material-symbols-outlined text-[15px]">open_in_full</span>
+                            Lihat Full
+                        </span>
+                    </button>
                     @else
                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/40">
                         <span class="material-symbols-outlined text-5xl">image_not_supported</span>
@@ -107,4 +125,52 @@
         </div>
     </div>
 </div>
+
+<div id="gallery-full-modal" class="gallery-modal fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <button type="button" class="absolute inset-0 cursor-default" onclick="closeGalleryImage()" aria-label="Tutup gambar"></button>
+    <div class="relative z-10 flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl">
+        <div class="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+            <p id="gallery-full-title" class="truncate text-sm font-black text-white">Hasil Karya Anak</p>
+            <button type="button" onclick="closeGalleryImage()" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20" aria-label="Tutup">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+        <div class="flex min-h-[60vh] items-center justify-center bg-black">
+            <img id="gallery-full-image" src="" alt="" class="max-h-[82vh] w-full object-contain">
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+function openGalleryImage(src, title) {
+    const modal = document.getElementById('gallery-full-modal');
+    const image = document.getElementById('gallery-full-image');
+    const titleEl = document.getElementById('gallery-full-title');
+    if (!modal || !image || !titleEl) return;
+
+    image.src = src;
+    image.alt = title || 'Hasil Karya Anak';
+    titleEl.textContent = title || 'Hasil Karya Anak';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.classList.add('overflow-hidden');
+}
+
+function closeGalleryImage() {
+    const modal = document.getElementById('gallery-full-modal');
+    const image = document.getElementById('gallery-full-image');
+    if (!modal || !image) return;
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    image.src = '';
+    document.body.classList.remove('overflow-hidden');
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeGalleryImage();
+});
+</script>
 @endsection
