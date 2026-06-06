@@ -305,11 +305,28 @@
                             {{ $startOfWeek->translatedFormat('d F Y') }} — {{ $endOfWeek->translatedFormat('d F Y') }}
                         </p>
                     </div>
-                    <div class="flex items-center gap-3 bg-primary/5 px-4 py-2.5 rounded-xl border border-primary/10">
-                            <span class="text-[10px] font-black text-primary uppercase tracking-wider">Aspek Perkembangan</span>
-                            <span class="text-xs font-black text-white bg-primary px-3 py-1 rounded-lg shadow-sm">Tema/Subtema Mandiri</span>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <form action="{{ route('guru.daily') }}" method="GET" class="flex items-end gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                                <input type="hidden" name="date" value="{{ $date->format('Y-m-d') }}">
+                                <input type="hidden" name="aspect" value="{{ $selectedAspect }}">
+                                <input type="hidden" name="group" value="{{ $group }}">
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                                <div class="space-y-1">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Pilih Minggu</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[15px]">calendar_view_week</span>
+                                        <input name="week" type="date" value="{{ $recapDate->format('Y-m-d') }}"
+                                               onchange="this.form.submit()"
+                                               class="w-[170px] bg-white rounded-xl py-2.5 pl-9 pr-3 text-xs font-bold text-slate-700 border border-slate-100 focus:ring-2 focus:ring-primary/20 outline-none transition-all"/>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="flex items-center gap-3 bg-primary/5 px-4 py-2.5 rounded-xl border border-primary/10">
+                                <span class="text-[10px] font-black text-primary uppercase tracking-wider">Aspek Perkembangan</span>
+                                <span class="text-xs font-black text-white bg-primary px-3 py-1 rounded-lg shadow-sm">Tema/Subtema Mandiri</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse min-w-[850px]">

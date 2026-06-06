@@ -443,18 +443,26 @@ class PortalController extends Controller
     public function dailyAssessment(Request $request): View
     {
         if (! $this->tableReady(['students', 'daily_assessments'])) {
+            $recapDate = now();
+            $startOfWeek = $recapDate->copy()->startOfWeek();
+            $endOfWeek = $startOfWeek->copy()->addDays(4);
+
             return view('guru.daily-assessments.index', [
                 'students' => collect(),
                 'assessmentsByStudent' => collect(),
                 'weeklyAssessments' => collect(),
                 'date' => now(),
+                'recapDate' => $recapDate,
                 'group' => null,
                 'selectedAspect' => 'Nilai Agama & Moral',
                 'activity' => '',
+                'startOfWeek' => $startOfWeek,
+                'endOfWeek' => $endOfWeek,
             ]);
         }
 
         $date = $request->date('date') ?: now();
+        $recapDate = $request->date('week') ?: $date;
         $group = $request->input('group');
         $search = $request->input('search');
 
@@ -500,9 +508,9 @@ class PortalController extends Controller
             ->first();
         $activity = $existingAssessment ? $existingAssessment->activity : '';
 
-        // 4. Fetch ALL assessments for the current week to show in the Weekly Recap Table!
+        // 4. Fetch ALL assessments for the selected recap week.
         // Week range: Monday (startOfWeek) through Friday (startOfWeek + 4 days)
-        $startOfWeek = $date->copy()->startOfWeek();
+        $startOfWeek = $recapDate->copy()->startOfWeek();
         $endOfWeek = $startOfWeek->copy()->addDays(4);
         
         $weeklyAssessments = DailyAssessment::query()
@@ -515,6 +523,7 @@ class PortalController extends Controller
             'assessmentsByStudent', 
             'weeklyAssessments',
             'date', 
+            'recapDate',
             'group', 
             'selectedAspect',
             'activity',
