@@ -473,19 +473,18 @@ class PortalController extends Controller
 
         $students = $query->get();
 
-        // 1. Determine selected aspect (Theme aspect of the day)
-        // Iso day of week: 1 (Mon) - 7 (Sun)
-        $dayOfWeek = $date->dayOfWeekIso;
-        $defaultAspect = match($dayOfWeek) {
-            1 => 'Nilai Agama & Moral',
-            2 => 'Fisik Motorik',
-            3 => 'Kognitif',
-            4 => 'Bahasa',
-            5 => 'Sosial Emosional',
-            default => 'Seni'
-        };
-        
-        $selectedAspect = $request->input('aspect', $defaultAspect);
+        $aspectOptions = [
+            'Nilai Agama & Moral',
+            'Fisik Motorik',
+            'Kognitif',
+            'Bahasa',
+            'Sosial Emosional',
+            'Seni',
+        ];
+        $selectedAspect = $request->input('aspect', $aspectOptions[0]);
+        if (! in_array($selectedAspect, $aspectOptions, true)) {
+            $selectedAspect = $aspectOptions[0];
+        }
 
         // 2. Fetch existing assessments for this specific date and selected aspect
         $assessmentsByStudent = DailyAssessment::query()
@@ -528,7 +527,10 @@ class PortalController extends Controller
     {
         $date = $request->input('date', now()->toDateString());
         $aspectName = $request->input('aspect');
-        $activity = $request->input('activity', 'Kegiatan Harian') ?: 'Kegiatan Harian';
+        $activity = trim((string) $request->input('activity'));
+        if ($activity === '') {
+            $activity = 'Tema/Subtema belum diisi';
+        }
         
         $scores = $request->input('scores', []); // Structure: [student_id => score]
         $observations = $request->input('observations', []); // Structure: [student_id => observation]

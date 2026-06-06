@@ -103,19 +103,13 @@
 
                 {{-- Aspect Dropdown --}}
                 <div class="flex-1 min-w-[210px] space-y-1.5">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Aspek / Mata Pelajaran</label>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Aspek Perkembangan</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-[16px]">collections_bookmark</span>
                         <select name="aspect" onchange="document.getElementById('filter-form').submit()"
                                 class="w-full bg-slate-50 rounded-2xl py-3 pl-9 pr-8 text-xs font-bold text-slate-700 border border-slate-100 focus:ring-2 focus:ring-primary/20 outline-none appearance-none transition-all">
                             @foreach($aspects as $code => $asp)
-                            @php
-                                $dayMap = match($code) { 'NAM'=>1,'FM'=>2,'KOG'=>3,'BHS'=>4,'SEM'=>5,'SENI'=>5 };
-                                $isRec = ($date->dayOfWeekIso === $dayMap) || ($date->dayOfWeekIso > 5 && ($code==='SEM'||$code==='SENI'));
-                            @endphp
-                            <option value="{{ $asp['label'] }}" {{ $selectedAspect === $asp['label'] ? 'selected' : '' }}>
-                                {{ $asp['label'] }}{{ $isRec ? ' ★' : '' }}
-                            </option>
+                            <option value="{{ $asp['label'] }}" {{ $selectedAspect === $asp['label'] ? 'selected' : '' }}>{{ $asp['label'] }}</option>
                             @endforeach
                         </select>
                         <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] pointer-events-none">expand_more</span>
@@ -150,12 +144,12 @@
                     <span class="material-symbols-outlined text-[18px]">{{ $activeAspBanner['icon'] ?? 'star' }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Aspek Aktif Hari Ini</p>
-                    <p class="font-extrabold text-slate-800 text-sm leading-tight truncate">{{ $selectedAspect }}</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tema / Subtema</p>
+                    <p class="font-extrabold text-slate-800 text-sm leading-tight truncate">{{ $activity ?: 'Belum diisi' }}</p>
                 </div>
                 <div class="text-right shrink-0">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tanggal Penilaian</p>
-                    <p class="font-bold text-slate-600 text-xs">{{ $date->format('d M Y') }}</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Aspek Perkembangan</p>
+                    <p class="font-bold text-slate-600 text-xs">{{ $selectedAspect }}</p>
                 </div>
             </div>
 
@@ -169,7 +163,7 @@
                 <div class="bg-white rounded-3xl border border-slate-100 ambient-shadow p-5 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
                         <div class="md:col-span-5">
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Aspek Aktif</label>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Aspek Perkembangan</label>
                             <div class="flex items-center gap-3">
                                 @php $activeAspectDetails = collect($aspects)->firstWhere('label', $selectedAspect); @endphp
                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center icon-{{ $activeAspectDetails['color'] ?? 'blue' }} shrink-0">
@@ -177,15 +171,15 @@
                                 </div>
                                 <div>
                                     <h4 class="font-extrabold text-slate-800 text-sm leading-none">{{ $selectedAspect }}</h4>
-                                    <p class="text-[9px] text-slate-400 font-bold mt-1">Hanya nilai untuk aspek ini yang akan disimpan hari ini.</p>
+                                    <p class="text-[9px] text-slate-400 font-bold mt-1">Pilih aspek perkembangan dari daftar di filter atas.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="md:col-span-7 space-y-1">
-                            <label for="activity-input" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tema / Kegiatan Pembelajaran Hari Ini</label>
+                            <label for="activity-input" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tema / Subtema</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">topic</span>
-                                <input id="activity-input" name="activity" type="text" value="{{ $activity }}" placeholder="Contoh: Pengenalan Huruf Hijaiyah, Berlari zigzag, Menggambar alam..."
+                                <input id="activity-input" name="activity" type="text" value="{{ $activity }}" placeholder="Contoh: Tanaman / Buah Mangga, Diriku / Anggota Tubuh..."
                                        class="w-full bg-slate-50 rounded-2xl py-3 pl-11 pr-3 text-xs font-bold text-slate-700 border border-slate-100 focus:ring-2 focus:ring-primary/20 outline-none transition-all"/>
                             </div>
                         </div>
@@ -305,8 +299,8 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-3 bg-primary/5 px-4 py-2.5 rounded-xl border border-primary/10">
-                        <span class="text-[10px] font-black text-primary uppercase tracking-wider">Metode Penilaian</span>
-                        <span class="text-xs font-black text-white bg-primary px-3 py-1 rounded-lg shadow-sm">1 Hari 1 Tema</span>
+                            <span class="text-[10px] font-black text-primary uppercase tracking-wider">Aspek Perkembangan</span>
+                            <span class="text-xs font-black text-white bg-primary px-3 py-1 rounded-lg shadow-sm">Tema/Subtema Mandiri</span>
                     </div>
                 </div>
 
