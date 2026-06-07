@@ -183,12 +183,20 @@
                 <span class="material-symbols-outlined text-[18px]">trending_up</span>
             </div>
             <div>
-                <p class="daily-title font-extrabold text-sm leading-none">Tren Perkembangan Mingguan</p>
-                <p class="daily-muted text-[10px] mt-0.5">Skor per aspek tiap minggu (1=BB, 2=MB, 3=BSH, 4=BSB)</p>
+                <p class="daily-title font-extrabold text-sm leading-none">Tren Rata-rata Perkembangan Mingguan</p>
+                <p class="daily-muted text-[10px] mt-0.5">Garis naik berarti rata-rata perkembangan ananda meningkat dari minggu ke minggu.</p>
             </div>
         </div>
         <div style="position:relative;height:240px;max-height:240px;">
             <canvas id="trend-chart"></canvas>
+        </div>
+        <div class="daily-border mt-4 grid grid-cols-2 gap-2 border-t pt-4 sm:grid-cols-4">
+            @foreach(['BB' => 'Belum Berkembang', 'MB' => 'Mulai Berkembang', 'BSH' => 'Sesuai Harapan', 'BSB' => 'Sangat Baik'] as $code => $label)
+            <div class="daily-panel-soft rounded-xl border px-3 py-2">
+                <p class="daily-title text-xs font-black">{{ $code }}</p>
+                <p class="daily-muted text-[10px] font-bold">{{ $label }}</p>
+            </div>
+            @endforeach
         </div>
     </div>
     <div class="daily-panel mb-8 rounded-3xl border p-6">
@@ -511,23 +519,42 @@ function initCharts() {
     if (!trendEl) return;
 
     const aspKeys = Object.keys(trendDatasets);
-    const lineDatasets = aspKeys.map((code, i) => ({
-        label: code,
-        data: (trendDatasets[code] || []).map(v => Number(v || 0)),
-        backgroundColor: aspectColors[i] || '#888',
-        borderRadius: 4,
-        borderSkipped: false,
-    }));
+    const weeklyAverageData = trendLabels.map((_, weekIndex) => {
+        const weekValues = aspKeys
+            .map(code => Number((trendDatasets[code] || [])[weekIndex] || 0))
+            .filter(value => value > 0);
+
+        if (!weekValues.length) return 0;
+
+        const average = weekValues.reduce((sum, value) => sum + value, 0) / weekValues.length;
+        return Number(average.toFixed(2));
+    });
 
     new Chart(trendEl, {
-        type: 'bar',
-        data: { labels: trendLabels, datasets: lineDatasets },
+        type: 'line',
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: 'Rata-rata Mingguan',
+                data: weeklyAverageData,
+                borderColor: '#38bdf8',
+                backgroundColor: 'rgba(56, 189, 248, 0.18)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#e0f2fe',
+                pointBorderColor: '#0284c7',
+                pointBorderWidth: 2,
+            }]
+        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 800 },
             plugins: {
                 legend: { 
+                    display: false,
                     position: 'bottom', 
                     labels: { 
                         font: { size: 11, weight: '600' }, 
@@ -540,7 +567,11 @@ function initCharts() {
                 },
                 tooltip: { 
                     callbacks: { 
-                        label: ctx => ' ' + ctx.dataset.label + ': ' + (scoreLabel[ctx.raw] || '—') 
+                        label: ctx => {
+                            const value = Number(ctx.raw || 0);
+                            const nearest = Math.round(value);
+                            return ' Rata-rata: ' + value.toFixed(2) + ' / 4 (' + (scoreLabel[nearest] || '-') + ')';
+                        }
                     },
                     padding: 8,
                     font: { size: 11 }
@@ -568,10 +599,7 @@ function initCharts() {
                 }
             },
             datasets: {
-                bar: { 
-                    barPercentage: 0.7, 
-                    categoryPercentage: 0.8 
-                }
+                line: { borderWidth: 3 }
             }
         }
     });
