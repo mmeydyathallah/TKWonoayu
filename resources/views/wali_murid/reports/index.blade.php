@@ -183,8 +183,8 @@
                 <span class="material-symbols-outlined text-[18px]">trending_up</span>
             </div>
             <div>
-                <p class="daily-title font-extrabold text-sm leading-none">Tren Rata-rata Perkembangan Mingguan</p>
-                <p class="daily-muted text-[10px] mt-0.5">Garis naik berarti rata-rata perkembangan ananda meningkat dari minggu ke minggu.</p>
+                <p class="daily-title font-extrabold text-sm leading-none">Tren Perkembangan Aspek per Minggu</p>
+                <p class="daily-muted text-[10px] mt-0.5">Setiap garis menunjukkan perubahan nilai satu aspek dari minggu ke minggu.</p>
             </div>
         </div>
         <div style="position:relative;height:240px;max-height:240px;">
@@ -206,10 +206,10 @@
             </div>
             <div>
                 <p class="daily-title font-extrabold text-sm leading-none">Perbandingan 6 Aspek Perkembangan</p>
-                <p class="daily-muted text-[10px] mt-0.5">Rata-rata skor tiap aspek untuk melihat aspek tertinggi.</p>
+                <p class="daily-muted text-[10px] mt-0.5">Diagram batang horizontal untuk melihat aspek dengan rata-rata tertinggi.</p>
             </div>
         </div>
-        <div style="position:relative;height:260px;max-height:260px;">
+        <div style="position:relative;height:320px;max-height:320px;">
             <canvas id="aspect-comparison-chart"></canvas>
         </div>
     </div>
@@ -519,34 +519,26 @@ function initCharts() {
     if (!trendEl) return;
 
     const aspKeys = Object.keys(trendDatasets);
-    const weeklyAverageData = trendLabels.map((_, weekIndex) => {
-        const weekValues = aspKeys
-            .map(code => Number((trendDatasets[code] || [])[weekIndex] || 0))
-            .filter(value => value > 0);
-
-        if (!weekValues.length) return 0;
-
-        const average = weekValues.reduce((sum, value) => sum + value, 0) / weekValues.length;
-        return Number(average.toFixed(2));
-    });
+    const aspectTrendDatasets = aspKeys.map((code, index) => ({
+        label: aspectNames[index] || code,
+        data: (trendDatasets[code] || []).map(value => Number(value || 0)),
+        borderColor: aspectColors[index] || '#38bdf8',
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.32,
+        spanGaps: true,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: aspectColors[index] || '#38bdf8',
+        pointBorderColor: '#f8fafc',
+        pointBorderWidth: 2,
+    }));
 
     new Chart(trendEl, {
         type: 'line',
         data: {
             labels: trendLabels,
-            datasets: [{
-                label: 'Rata-rata Mingguan',
-                data: weeklyAverageData,
-                borderColor: '#38bdf8',
-                backgroundColor: 'rgba(56, 189, 248, 0.18)',
-                fill: true,
-                tension: 0.35,
-                pointRadius: 5,
-                pointHoverRadius: 7,
-                pointBackgroundColor: '#e0f2fe',
-                pointBorderColor: '#0284c7',
-                pointBorderWidth: 2,
-            }]
+            datasets: aspectTrendDatasets
         },
         options: {
             responsive: true,
@@ -554,7 +546,7 @@ function initCharts() {
             animation: { duration: 800 },
             plugins: {
                 legend: { 
-                    display: false,
+                    display: true,
                     position: 'bottom', 
                     labels: { 
                         font: { size: 11, weight: '600' }, 
@@ -570,7 +562,7 @@ function initCharts() {
                         label: ctx => {
                             const value = Number(ctx.raw || 0);
                             const nearest = Math.round(value);
-                            return ' Rata-rata: ' + value.toFixed(2) + ' / 4 (' + (scoreLabel[nearest] || '-') + ')';
+                            return ' ' + ctx.dataset.label + ': ' + value.toFixed(2) + ' / 4 (' + (scoreLabel[nearest] || '-') + ')';
                         }
                     },
                     padding: 8,
@@ -672,7 +664,7 @@ function initCharts() {
 
     const sectionTitle = document.createElement('div');
     sectionTitle.className = 'daily-panel mb-4 rounded-3xl border p-5';
-    sectionTitle.innerHTML = '<div class="flex items-center gap-3"><div class="daily-icon w-9 h-9 rounded-xl flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[18px]">show_chart</span></div><div><p class="daily-title font-extrabold text-sm leading-none">Grafik Kenaikan Masing-masing Aspek</p><p class="daily-muted text-[10px] mt-0.5">Setiap kartu menampilkan perubahan nilai aspek dari minggu ke minggu.</p></div></div>';
+    sectionTitle.innerHTML = '<div class="flex items-center gap-3"><div class="daily-icon w-9 h-9 rounded-xl flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[18px]">bar_chart</span></div><div><p class="daily-title font-extrabold text-sm leading-none">Grafik Kenaikan Masing-masing Aspek</p><p class="daily-muted text-[10px] mt-0.5">Setiap kartu memakai diagram batang untuk membandingkan nilai aspek per minggu.</p></div></div>';
     chartContainer.appendChild(sectionTitle);
 
     const perAspectContainer = document.createElement('div');
@@ -697,8 +689,6 @@ function initCharts() {
 
         const weekData = (trendDatasets[code] || []).map(v => Number(v || 0));
         const hasValues = weekData.some(v => v > 0);
-        const multiplePoints = (weekData.length > 1);
-
         if (!hasValues) {
             const no = document.createElement('div');
             no.className = 'daily-muted py-6 text-center text-sm';
@@ -710,21 +700,17 @@ function initCharts() {
         }
 
         new Chart(c, {
-            type: multiplePoints ? 'line' : 'bar',
+            type: 'bar',
             data: {
                 labels: trendLabels,
                 datasets: [{
                     label: code,
                     data: weekData,
+                    backgroundColor: (aspectColors[idx] || '#888') + '66',
                     borderColor: aspectColors[idx] || '#888',
-                    backgroundColor: (aspectColors[idx] || '#888') + (multiplePoints ? '15' : '33'),
-                    borderWidth: 2,
-                    fill: multiplePoints,
-                    tension: 0.3,
-                    pointRadius: multiplePoints ? 3 : 5,
-                    pointBackgroundColor: aspectColors[idx] || '#888',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    borderSkipped: false
                 }]
             },
             options: {
@@ -751,14 +737,16 @@ function initCharts() {
                         grid: { color: 'rgba(148, 163, 184, 0.16)' }
                     },
                     x: {
-                        display: multiplePoints,
+                        display: true,
                         ticks: { font: { size: 9, weight: '600' }, color: '#a9b8cc' },
                         grid: { display: false }
                     }
                 },
-                elements: {
-                    point: { radius: multiplePoints ? 3 : 6 },
-                    line: { borderWidth: 2 }
+                datasets: {
+                    bar: {
+                        barPercentage: 0.65,
+                        categoryPercentage: 0.75
+                    }
                 },
                 layout: { padding: { top: 4, bottom: 4, left: 6, right: 6 } }
             }
