@@ -818,7 +818,7 @@ class PortalController extends Controller
                 $end   = $start->copy()->addDays(4);   // Friday
                 return $start->format('Y-m-d') . '|' . $end->format('Y-m-d');
             })
-            ->sortKeysDesc(); // newest week first
+            ->sortKeys(); // oldest week first for charts and weekly cards
 
         // 3. Anekdot (Anecdotal Notes)
         $anecdotalNotes = AnecdotalNote::query()
