@@ -184,7 +184,7 @@
             </div>
             <div>
                 <p class="daily-title font-extrabold text-sm leading-none">Tren Perkembangan Aspek per Minggu</p>
-                <p class="daily-muted text-[10px] mt-0.5">Setiap garis menunjukkan perubahan nilai satu aspek dari minggu ke minggu.</p>
+                <p class="daily-muted text-[10px] mt-0.5">Diagram batang menunjukkan perubahan nilai tiap aspek dari minggu ke minggu.</p>
             </div>
         </div>
         <div style="position:relative;height:240px;max-height:240px;">
@@ -522,20 +522,15 @@ function initCharts() {
     const aspectTrendDatasets = aspKeys.map((code, index) => ({
         label: aspectNames[index] || code,
         data: (trendDatasets[code] || []).map(value => Number(value || 0)),
+        backgroundColor: aspectColors[index] || '#38bdf8',
         borderColor: aspectColors[index] || '#38bdf8',
-        backgroundColor: 'transparent',
-        fill: false,
-        tension: 0.32,
-        spanGaps: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: aspectColors[index] || '#38bdf8',
-        pointBorderColor: '#f8fafc',
-        pointBorderWidth: 2,
+        borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false,
     }));
 
     new Chart(trendEl, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: trendLabels,
             datasets: aspectTrendDatasets
@@ -591,7 +586,10 @@ function initCharts() {
                 }
             },
             datasets: {
-                line: { borderWidth: 3 }
+                bar: {
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                }
             }
         }
     });

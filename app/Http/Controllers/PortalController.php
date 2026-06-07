@@ -456,6 +456,7 @@ class PortalController extends Controller
                 'group' => null,
                 'selectedAspect' => 'Nilai Agama & Moral',
                 'activity' => '',
+                'activityOptions' => collect(),
                 'startOfWeek' => $startOfWeek,
                 'endOfWeek' => $endOfWeek,
             ]);
@@ -508,6 +509,16 @@ class PortalController extends Controller
             ->first();
         $activity = $existingAssessment ? $existingAssessment->activity : '';
 
+        $activityOptions = DailyAssessment::query()
+            ->whereNotNull('activity')
+            ->where('activity', '<>', '')
+            ->where('activity', '<>', 'Tema/Subtema belum diisi')
+            ->selectRaw('activity, MAX(id) as latest_id')
+            ->groupBy('activity')
+            ->orderByDesc('latest_id')
+            ->limit(30)
+            ->pluck('activity');
+
         // 4. Fetch ALL assessments for the selected recap week.
         // Week range: Monday (startOfWeek) through Friday (startOfWeek + 4 days)
         $startOfWeek = $recapDate->copy()->startOfWeek();
@@ -527,6 +538,7 @@ class PortalController extends Controller
             'group', 
             'selectedAspect',
             'activity',
+            'activityOptions',
             'startOfWeek',
             'endOfWeek'
         ));

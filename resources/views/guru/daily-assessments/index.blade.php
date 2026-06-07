@@ -163,8 +163,13 @@
                             <label for="activity-input" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tema / Subtema</label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">topic</span>
-                                <input id="activity-input" name="activity" type="text" value="{{ $activity }}" placeholder="Contoh: Tanaman / Buah Mangga, Diriku / Anggota Tubuh..."
+                                <input id="activity-input" name="activity" type="text" value="{{ $activity }}" list="activity-options" autocomplete="off" placeholder="Contoh: Tanaman / Buah Mangga, Diriku / Anggota Tubuh..."
                                        class="w-full bg-slate-50 rounded-2xl py-3 pl-11 pr-3 text-xs font-bold text-slate-700 border border-slate-100 focus:ring-2 focus:ring-primary/20 outline-none transition-all"/>
+                                <datalist id="activity-options">
+                                    @foreach($activityOptions as $option)
+                                    <option value="{{ $option }}"></option>
+                                    @endforeach
+                                </datalist>
                             </div>
                         </div>
                     </div>
