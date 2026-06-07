@@ -206,7 +206,7 @@
             </div>
             <div>
                 <p class="daily-title font-extrabold text-sm leading-none">Perbandingan 6 Aspek Perkembangan</p>
-                <p class="daily-muted text-[10px] mt-0.5">Diagram batang horizontal untuk melihat aspek dengan rata-rata tertinggi.</p>
+                <p class="daily-muted text-[10px] mt-0.5">Diagram batang vertikal untuk melihat aspek dengan rata-rata tertinggi.</p>
             </div>
         </div>
         <div style="position:relative;height:320px;max-height:320px;">
@@ -618,7 +618,6 @@ function initCharts() {
                 }]
             },
             options: {
-                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
                 animation: { duration: 800 },
@@ -636,7 +635,7 @@ function initCharts() {
                     }
                 },
                 scales: {
-                    x: {
+                    y: {
                         min: 0,
                         max: 4,
                         ticks: {
@@ -647,7 +646,7 @@ function initCharts() {
                         },
                         grid: { color: 'rgba(148, 163, 184, 0.16)', drawBorder: false }
                     },
-                    y: {
+                    x: {
                         ticks: {
                             color: '#e5eefb',
                             font: { size: 10, weight: '700' }
@@ -706,10 +705,10 @@ function initCharts() {
                 datasets: [{
                     label: code,
                     data: weekData,
-                    backgroundColor: (aspectColors[idx] || '#888') + '66',
+                    backgroundColor: aspectColors[idx] || '#888',
                     borderColor: aspectColors[idx] || '#888',
                     borderWidth: 1,
-                    borderRadius: 6,
+                    borderRadius: 8,
                     borderSkipped: false
                 }]
             },
@@ -720,7 +719,13 @@ function initCharts() {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        callbacks: { label: ctx => ' ' + (scoreLabel[ctx.raw] || '—') },
+                        callbacks: {
+                            label: ctx => {
+                                const value = Number(ctx.raw || 0);
+                                const nearest = Math.round(value);
+                                return ' Nilai: ' + value.toFixed(2) + ' / 4 (' + (scoreLabel[nearest] || '-') + ')';
+                            }
+                        },
                         font: { size: 11 }
                     }
                 },
@@ -744,8 +749,8 @@ function initCharts() {
                 },
                 datasets: {
                     bar: {
-                        barPercentage: 0.65,
-                        categoryPercentage: 0.75
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
                     }
                 },
                 layout: { padding: { top: 4, bottom: 4, left: 6, right: 6 } }
