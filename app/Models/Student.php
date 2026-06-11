@@ -56,6 +56,11 @@ class Student extends Model
         return $this->hasMany(DailyAssessment::class);
     }
 
+    public function dailyLearningReports(): HasMany
+    {
+        return $this->hasMany(DailyLearningReport::class);
+    }
+
     public function checklistAssessments(): HasMany
     {
         return $this->hasMany(ChecklistAssessment::class);

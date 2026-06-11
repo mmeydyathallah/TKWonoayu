@@ -30,9 +30,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::get('/catatan-anekdot', [PortalController::class, 'anecdotalNotes'])->name('anecdotal');
     Route::post('/catatan-anekdot', [PortalController::class, 'storeAnecdotal'])->name('anecdotal.store');
     Route::delete('/catatan-anekdot/{note}', [PortalController::class, 'destroyAnecdotal'])->name('anecdotal.destroy');
-    Route::get('/hasil-karya', [PortalController::class, 'artworkAssessment'])->name('artworks');
-    Route::post('/hasil-karya', [PortalController::class, 'storeArtwork'])->name('artworks.store');
-    Route::delete('/hasil-karya/{artwork}', [PortalController::class, 'destroyArtwork'])->name('artworks.destroy');
+    Route::redirect('/hasil-karya', '/guru/penilaian-harian');
     Route::get('/narasi-perkembangan', [PortalController::class, 'developmentNarrative'])->name('development-narrative');
     Route::post('/narasi-perkembangan', [PortalController::class, 'storeDevelopmentNarrative'])->name('development-narrative.store');
     Route::delete('/narasi-perkembangan/{report}', [PortalController::class, 'destroyDevelopmentNarrative'])->name('development-narrative.destroy');

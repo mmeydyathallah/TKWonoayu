@@ -76,10 +76,6 @@
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.daily') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">event_note</span>
                     <span class="font-bold text-xs">Penilaian Harian</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('guru.artworks') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.artworks') }}">
-                    <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.artworks') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">palette</span>
-                    <span class="font-bold text-xs">Hasil Karya</span>
-                </a>
                 <a class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('guru.anecdotal') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.anecdotal') }}">
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.anecdotal') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">history_edu</span>
                     <span class="font-bold text-xs">Catatan Anekdot</span>

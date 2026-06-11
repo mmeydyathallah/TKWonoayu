@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AnecdotalNote;
 use App\Models\Artwork;
-use App\Models\DailyAssessment;
+use App\Models\DailyLearningReport;
+use App\Models\DailyLearningReportPhoto;
 use App\Models\DevelopmentReport;
 use App\Models\GuardianTelegramChat;
 use App\Models\ParentProfile;
@@ -24,6 +25,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PortalController extends Controller
@@ -442,21 +444,20 @@ class PortalController extends Controller
 
     public function dailyAssessment(Request $request): View
     {
-        if (! $this->tableReady(['students', 'daily_assessments'])) {
+        if (! $this->tableReady(['students', 'daily_learning_reports', 'daily_learning_report_photos'])) {
             $recapDate = now();
             $startOfWeek = $recapDate->copy()->startOfWeek();
             $endOfWeek = $startOfWeek->copy()->addDays(4);
 
             return view('guru.daily-assessments.index', [
                 'students' => collect(),
-                'assessmentsByStudent' => collect(),
-                'weeklyAssessments' => collect(),
+                'reportsByStudent' => collect(),
+                'weeklyReports' => collect(),
                 'date' => now(),
                 'recapDate' => $recapDate,
                 'group' => null,
-                'selectedAspect' => 'Nilai Agama & Moral',
-                'activity' => '',
-                'activityOptions' => collect(),
+                'intrakurikulerDomains' => $this->intrakurikulerDomains(),
+                'scoreOptions' => $this->scoreOptions(),
                 'startOfWeek' => $startOfWeek,
                 'endOfWeek' => $endOfWeek,
             ]);
@@ -481,135 +482,240 @@ class PortalController extends Controller
         }
 
         $students = $query->get();
+        $studentIds = $students->pluck('id');
 
-        $aspectOptions = [
-            'Nilai Agama & Moral',
-            'Fisik Motorik',
-            'Kognitif',
-            'Bahasa',
-            'Sosial Emosional',
-            'Seni',
-        ];
-        $selectedAspect = $request->input('aspect', $aspectOptions[0]);
-        if (! in_array($selectedAspect, $aspectOptions, true)) {
-            $selectedAspect = $aspectOptions[0];
-        }
-
-        // 2. Fetch existing assessments for this specific date and selected aspect
-        $assessmentsByStudent = DailyAssessment::query()
+        $reportsByStudent = DailyLearningReport::query()
+            ->with('photos')
+            ->whereIn('student_id', $studentIds)
             ->whereDate('assessed_on', $date->toDateString())
-            ->where('aspect_name', $selectedAspect)
             ->get()
             ->keyBy('student_id');
 
-        // 3. Fetch existing activity name for this day and aspect
-        $existingAssessment = DailyAssessment::query()
-            ->whereDate('assessed_on', $date->toDateString())
-            ->where('aspect_name', $selectedAspect)
-            ->first();
-        $activity = $existingAssessment ? $existingAssessment->activity : '';
-
-        $activityOptions = DailyAssessment::query()
-            ->whereNotNull('activity')
-            ->where('activity', '<>', '')
-            ->where('activity', '<>', 'Tema/Subtema belum diisi')
-            ->selectRaw('activity, MAX(id) as latest_id')
-            ->groupBy('activity')
-            ->orderByDesc('latest_id')
-            ->limit(30)
-            ->pluck('activity');
-
-        // 4. Fetch ALL assessments for the selected recap week.
-        // Week range: Monday (startOfWeek) through Friday (startOfWeek + 4 days)
         $startOfWeek = $recapDate->copy()->startOfWeek();
         $endOfWeek = $startOfWeek->copy()->addDays(4);
         
-        $weeklyAssessments = DailyAssessment::query()
+        $weeklyReports = DailyLearningReport::query()
+            ->with('photos')
+            ->whereIn('student_id', $studentIds)
             ->whereBetween('assessed_on', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->orderBy('assessed_on')
             ->get()
             ->groupBy('student_id');
 
         return view('guru.daily-assessments.index', compact(
             'students', 
-            'assessmentsByStudent', 
-            'weeklyAssessments',
+            'reportsByStudent',
+            'weeklyReports',
             'date', 
             'recapDate',
             'group', 
-            'selectedAspect',
-            'activity',
-            'activityOptions',
             'startOfWeek',
             'endOfWeek'
-        ));
+        ) + [
+            'intrakurikulerDomains' => $this->intrakurikulerDomains(),
+            'scoreOptions' => $this->scoreOptions(),
+        ]);
     }
 
     public function storeDailyAssessment(Request $request): RedirectResponse
     {
-        $date = $request->input('date', now()->toDateString());
-        $aspectName = $request->input('aspect');
-        $activity = trim((string) $request->input('activity'));
-        if ($activity === '') {
-            $activity = 'Tema/Subtema belum diisi';
-        }
-        
-        $scores = $request->input('scores', []); // Structure: [student_id => score]
-        $observations = $request->input('observations', []); // Structure: [student_id => observation]
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+            'reports' => ['nullable', 'array'],
+            'photos' => ['nullable', 'array'],
+            'photos.*.*.*' => ['nullable', 'image', 'max:5120'],
+        ]);
 
-        foreach ($scores as $studentId => $score) {
+        $date = $validated['date'];
+        $reports = $request->input('reports', []);
+        $domains = $this->intrakurikulerDomains();
+        $scores = array_keys($this->scoreOptions());
+        $savedCount = 0;
+        $deletedCount = 0;
+
+        foreach ($reports as $studentId => $payload) {
             $student = Student::find($studentId);
-            if (! $student) continue;
-
-            $observation = $observations[$studentId] ?? null;
-
-            if (empty($score)) {
-                // If the score is empty, we delete the assessment for this student, day, and aspect
-                DailyAssessment::query()
-                    ->where('student_id', $studentId)
-                    ->whereDate('assessed_on', $date)
-                    ->where('aspect_name', $aspectName)
-                    ->delete();
+            if (! $student) {
                 continue;
             }
 
-            DailyAssessment::updateOrCreate(
+            $domainData = $payload['intrakurikuler'] ?? [];
+            $hasFile = false;
+            foreach (array_keys($domains) as $domainCode) {
+                foreach ([1, 2] as $slot) {
+                    $fileKey = "photos.$studentId.$domainCode.$slot";
+                    if ($request->hasFile($fileKey)) {
+                        $hasFile = true;
+                    }
+                }
+            }
+
+            $reportData = [
+                'agama_budi_pekerti_score' => $this->normalizeScore($domainData['agama_budi_pekerti']['score_label'] ?? null),
+                'jati_diri_score' => $this->normalizeScore($domainData['jati_diri']['score_label'] ?? null),
+                'literasi_steam_score' => $this->normalizeScore($domainData['literasi_steam']['score_label'] ?? null),
+                'kokurikuler_description' => $this->cleanNullableText($payload['kokurikuler_description'] ?? null),
+                'extracurricular_implementation' => $this->cleanNullableText($payload['extracurricular_implementation'] ?? null),
+                'extracurricular_activity' => $this->cleanNullableText($payload['extracurricular_activity'] ?? null),
+                'extracurricular_score_label' => $this->normalizeScore($payload['extracurricular_score_label'] ?? null),
+            ];
+
+            foreach (array_keys($domains) as $domainCode) {
+                foreach ([1, 2] as $slot) {
+                    $title = $this->cleanNullableText($domainData[$domainCode]['photos'][$slot]['title'] ?? null);
+                    if ($request->hasFile("photos.$studentId.$domainCode.$slot") && ! $title) {
+                        return back()
+                            ->withInput()
+                            ->with('error', 'Judul foto wajib diisi saat foto intrakurikuler diupload.');
+                    }
+                }
+            }
+
+            $hasTextData = collect($reportData)->filter(fn ($value) => filled($value))->isNotEmpty();
+            $hasPhotoTitles = collect($domainData)
+                ->flatMap(fn ($domain) => $domain['photos'] ?? [])
+                ->filter(fn ($photo) => filled($photo['title'] ?? null))
+                ->isNotEmpty();
+            $deleteRequested = (bool) ($payload['delete_report'] ?? false);
+
+            if ($deleteRequested || (! $hasTextData && ! $hasPhotoTitles && ! $hasFile)) {
+                $existing = DailyLearningReport::query()
+                    ->with('photos')
+                    ->where('student_id', $studentId)
+                    ->whereDate('assessed_on', $date)
+                    ->first();
+
+                if ($existing) {
+                    $this->deleteDailyLearningReportFiles($existing);
+                    $existing->delete();
+                    $deletedCount++;
+                }
+
+                continue;
+            }
+
+            $report = DailyLearningReport::query()->updateOrCreate(
                 [
                     'student_id' => $studentId,
                     'assessed_on' => $date,
-                    'aspect_name' => $aspectName,
                 ],
-                [
+                array_merge($reportData, [
                     'class_group' => $student->class_group,
-                    'activity' => $activity,
-                    'aspect_code' => match($aspectName) {
-                        'Nilai Agama & Moral' => 'NAM',
-                        'Fisik Motorik' => 'FM',
-                        'Kognitif' => 'KOG',
-                        'Bahasa' => 'BHS',
-                        'Sosial Emosional' => 'SEM',
-                        default => 'SENI'
-                    },
-                    'score_label' => $score,
-                    'score_value' => match($score) {
-                        'BB' => 1,
-                        'MB' => 2,
-                        'BSH' => 3,
-                        'BSB' => 4,
-                        default => 0
-                    },
-                    'observation' => $observation
-                ]
+                ])
             );
+
+            foreach (array_keys($domains) as $domainCode) {
+                foreach ([1, 2] as $slot) {
+                    $title = $this->cleanNullableText($domainData[$domainCode]['photos'][$slot]['title'] ?? null);
+                    $deletePhoto = (bool) ($domainData[$domainCode]['photos'][$slot]['delete'] ?? false);
+                    $photo = DailyLearningReportPhoto::query()->firstOrNew([
+                        'daily_learning_report_id' => $report->id,
+                        'domain_code' => $domainCode,
+                        'slot' => $slot,
+                    ]);
+
+                    if ($deletePhoto && $photo->exists) {
+                        if ($photo->image_path) {
+                            Storage::disk('public')->delete($photo->image_path);
+                        }
+                        $photo->delete();
+                        continue;
+                    }
+
+                    $file = $request->file("photos.$studentId.$domainCode.$slot");
+                    if ($file) {
+                        if ($photo->exists && $photo->image_path) {
+                            Storage::disk('public')->delete($photo->image_path);
+                        }
+                        $photo->image_path = $file->store('daily-learning-reports', 'public');
+                    }
+
+                    if ($title || $photo->image_path) {
+                        $photo->title = $title;
+                        $photo->save();
+                    } elseif ($photo->exists) {
+                        $photo->delete();
+                    }
+                }
+            }
+
+            $savedCount++;
         }
 
-        return back()->with('success', 'Penilaian harian berhasil disimpan.');
+        $message = $savedCount > 0
+            ? "Penilaian harian format baru berhasil disimpan untuk {$savedCount} siswa."
+            : 'Tidak ada data penilaian baru yang disimpan.';
+
+        if ($deletedCount > 0) {
+            $message .= " {$deletedCount} laporan dikosongkan.";
+        }
+
+        return back()->with('success', $message);
     }
 
-    public function destroyDailyAssessment(DailyAssessment $assessment): RedirectResponse
+    public function destroyDailyAssessment(DailyLearningReport $assessment): RedirectResponse
     {
+        $this->deleteDailyLearningReportFiles($assessment->loadMissing('photos'));
         $assessment->delete();
 
         return back()->with('success', 'Penilaian harian berhasil dihapus.');
+    }
+
+    private function intrakurikulerDomains(): array
+    {
+        return [
+            'agama_budi_pekerti' => [
+                'label' => 'Nilai Agama dan Budi Pekerti',
+                'short' => 'Agama',
+                'icon' => 'mosque',
+                'score_column' => 'agama_budi_pekerti_score',
+            ],
+            'jati_diri' => [
+                'label' => 'Jati Diri',
+                'short' => 'Jati Diri',
+                'icon' => 'self_improvement',
+                'score_column' => 'jati_diri_score',
+            ],
+            'literasi_steam' => [
+                'label' => 'Dasar-dasar Literasi, Matematika, Sains, Teknologi, Rekayasa, dan Seni',
+                'short' => 'Literasi & STEAM',
+                'icon' => 'science',
+                'score_column' => 'literasi_steam_score',
+            ],
+        ];
+    }
+
+    private function scoreOptions(): array
+    {
+        return [
+            'BB' => 'Belum Berkembang',
+            'MB' => 'Mulai Berkembang',
+            'BSH' => 'Berkembang Sesuai Harapan',
+            'BSB' => 'Berkembang Sangat Baik',
+        ];
+    }
+
+    private function normalizeScore(?string $score): ?string
+    {
+        $score = strtoupper(trim((string) $score));
+
+        return array_key_exists($score, $this->scoreOptions()) ? $score : null;
+    }
+
+    private function cleanNullableText(mixed $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
+    }
+
+    private function deleteDailyLearningReportFiles(DailyLearningReport $report): void
+    {
+        foreach ($report->photos as $photo) {
+            if ($photo->image_path) {
+                Storage::disk('public')->delete($photo->image_path);
+            }
+        }
     }
 
     public function anecdotalNotes(Request $request): View
@@ -634,92 +740,6 @@ class PortalController extends Controller
             ->get();
 
         return view('guru.anecdotal-notes.index', compact('notes', 'students', 'selectedDate'));
-    }
-
-    public function artworkAssessment(Request $request): View
-    {
-        if (! $this->tableReady(['artworks', 'students'])) {
-            return view('guru.artworks.index', [
-                'students' => collect(),
-                'artworks' => collect(),
-                'date' => now(),
-                'group' => null
-            ]);
-        }
-
-        $students = Student::query()->orderBy('full_name')->get();
-        $date = $request->date('date') ?: now();
-        $group = $request->input('group');
-
-        $query = \App\Models\Artwork::query()
-            ->with('student')
-            ->when($date, fn($q) => $q->whereDate('created_on', $date->toDateString()))
-            ->latest('id');
-
-        if ($group) {
-            $query->whereHas('student', fn($q) => $q->where('class_group', $group));
-        }
-
-        $artworks = $query->get();
-
-        return view('guru.artworks.index', compact('students', 'artworks', 'date', 'group'));
-    }
-
-    public function storeArtwork(Request $request): \Illuminate\Http\RedirectResponse
-    {
-        $validated = $request->validate([
-            'artwork_id' => 'nullable|exists:artworks,id',
-            'student_id' => 'required|exists:students,id',
-            'created_on' => 'required|date',
-            'activity' => 'required|string|max:255',
-            'aspect' => 'required|string|max:255',
-            'score_label' => 'required|in:BB,MB,BSH,BSB',
-            'image' => 'nullable|image|max:5120',
-        ]);
-
-        $data = [
-            'student_id' => $validated['student_id'],
-            'created_on' => $validated['created_on'],
-            'title' => $validated['activity'],
-            'description' => $validated['aspect'],
-            'score_label' => $validated['score_label'],
-            'status' => 'published',
-            'score_value' => match($validated['score_label']) {
-                'BB' => 1, 'MB' => 2, 'BSH' => 3, 'BSB' => 4, default => 0
-            }
-        ];
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('artworks', 'public');
-            $data['image_url'] = '/storage/' . $imagePath;
-        }
-
-        if ($request->artwork_id) {
-            \App\Models\Artwork::where('id', $request->artwork_id)->update($data);
-            $msg = 'Penilaian hasil karya berhasil diperbarui.';
-        } else {
-            \App\Models\Artwork::create($data);
-            $msg = 'Penilaian hasil karya berhasil disimpan.';
-        }
-
-        $student = Student::query()->find($data['student_id']);
-
-        return redirect()
-            ->route('guru.artworks', array_filter([
-                'date' => $data['created_on'],
-                'group' => $student?->class_group,
-            ]))
-            ->with('success', $msg);
-    }
-
-    public function destroyArtwork(\App\Models\Artwork $artwork)
-    {
-        if ($artwork->image_url) {
-            $path = str_replace('/storage/', '', $artwork->image_url);
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
-        }
-        $artwork->delete();
-        return back()->with('success', 'Hasil karya berhasil dihapus.');
     }
 
     public function developmentNarrative(Request $request): View
@@ -817,20 +837,22 @@ class PortalController extends Controller
             ->latest('id')
             ->first();
 
-        // 2. Harian (Daily Assessments) - Grouped by Week (reliable Y-m-d|Y-m-d key)
-        $dailyAssessments = DailyAssessment::query()
-            ->where('student_id', $student->id)
-            ->orderBy('assessed_on', 'asc')
-            ->get()
-            // Exclude weekend entries (Saturday=6, Sunday=7)
-            ->filter(function($item) { return $item->assessed_on->dayOfWeekIso >= 1 && $item->assessed_on->dayOfWeekIso <= 5; })
-            ->groupBy(function($item) {
-                $date  = $item->assessed_on;
-                $start = $date->copy()->startOfWeek(); // Monday
-                $end   = $start->copy()->addDays(4);   // Friday
-                return $start->format('Y-m-d') . '|' . $end->format('Y-m-d');
-            })
-            ->sortKeys(); // oldest week first for charts and weekly cards
+        // 2. Harian format baru: laporan belajar per siswa, diurutkan dari tanggal lama ke baru.
+        $dailyLearningReports = collect();
+        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos'])) {
+            $dailyLearningReports = DailyLearningReport::query()
+                ->with('photos')
+                ->where('student_id', $student->id)
+                ->orderBy('assessed_on', 'asc')
+                ->get()
+                ->groupBy(function($item) {
+                    $date  = $item->assessed_on;
+                    $start = $date->copy()->startOfWeek(); // Monday
+                    $end   = $start->copy()->addDays(4);   // Friday
+                    return $start->format('Y-m-d') . '|' . $end->format('Y-m-d');
+                })
+                ->sortKeys();
+        }
 
         // 3. Anekdot (Anecdotal Notes)
         $anecdotalNotes = AnecdotalNote::query()
@@ -847,10 +869,13 @@ class PortalController extends Controller
         return view('wali_murid.reports.index', compact(
             'student', 
             'report', 
-            'dailyAssessments',
+            'dailyLearningReports',
             'anecdotalNotes', 
             'artworks'
-        ));
+        ) + [
+            'intrakurikulerDomains' => $this->intrakurikulerDomains(),
+            'scoreOptions' => $this->scoreOptions(),
+        ]);
     }
 
     public function parentGallery()
