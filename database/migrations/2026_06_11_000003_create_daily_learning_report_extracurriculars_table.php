@@ -11,9 +11,7 @@ return new class extends Migration
     {
         Schema::create('daily_learning_report_extracurriculars', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('daily_learning_report_id')
-                ->constrained('daily_learning_reports')
-                ->cascadeOnDelete();
+            $table->unsignedBigInteger('daily_learning_report_id');
             $table->unsignedSmallInteger('sort_order')->default(1);
             $table->string('implementation')->nullable();
             $table->string('activity')->nullable();
@@ -21,6 +19,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['daily_learning_report_id', 'sort_order'], 'daily_learning_extra_report_order_idx');
+            $table->foreign('daily_learning_report_id', 'daily_learning_extra_report_fk')
+                ->references('id')
+                ->on('daily_learning_reports')
+                ->cascadeOnDelete();
         });
 
         DB::table('daily_learning_reports')
