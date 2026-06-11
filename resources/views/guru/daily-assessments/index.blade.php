@@ -307,37 +307,87 @@
                                   class="daily-input px-4 py-3 text-xs font-bold resize-y">{{ old('reports.'.$student->id.'.kokurikuler_description', $report?->kokurikuler_description) }}</textarea>
                     </div>
 
-                    <div class="daily-soft rounded-2xl p-4 space-y-3">
+                    @php
+                        $oldExtras = old('reports.'.$student->id.'.extracurriculars');
+                        if (is_array($oldExtras)) {
+                            $extracurricularItems = collect($oldExtras)->values();
+                        } else {
+                            $extracurricularItems = $report?->extracurricularItems?->map(fn ($item) => [
+                                'implementation' => $item->implementation,
+                                'activity' => $item->activity,
+                                'score_label' => $item->score_label,
+                            ]) ?? collect();
+
+                            if ($extracurricularItems->isEmpty() && ($report?->extracurricular_implementation || $report?->extracurricular_activity || $report?->extracurricular_score_label)) {
+                                $extracurricularItems = collect([[
+                                    'implementation' => $report->extracurricular_implementation,
+                                    'activity' => $report->extracurricular_activity,
+                                    'score_label' => $report->extracurricular_score_label,
+                                ]]);
+                            }
+                        }
+
+                        if ($extracurricularItems->isEmpty()) {
+                            $extracurricularItems = collect([[
+                                'implementation' => '',
+                                'activity' => '',
+                                'score_label' => '',
+                            ]]);
+                        }
+                    @endphp
+                    <div class="daily-soft rounded-2xl p-4 space-y-4">
                         <div class="mb-1 flex items-center gap-2">
                             <span class="material-symbols-outlined text-amber-300 text-[18px]">sports_handball</span>
                             <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Ekstrakurikuler</h3>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Pelaksanaan</label>
-                            <input name="reports[{{ $student->id }}][extracurricular_implementation]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_implementation', $report?->extracurricular_implementation) }}" placeholder="Contoh: Latihan rutin, unjuk kerja, praktik bersama..."
-                                   class="daily-input px-4 py-3 text-xs font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Ekstrakurikuler</label>
-                            <input name="reports[{{ $student->id }}][extracurricular_activity]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_activity', $report?->extracurricular_activity) }}" placeholder="Contoh: Menari, menggambar, drumband..."
-                                   class="daily-input px-4 py-3 text-xs font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Keterangan Nilai</label>
-                            <div class="flex flex-wrap gap-1.5">
-                                @php $currentExtraScore = old('reports.'.$student->id.'.extracurricular_score_label', $report?->extracurricular_score_label); @endphp
-                                <label title="Kosongkan nilai">
-                                    <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="" {{ blank($currentExtraScore) ? 'checked' : '' }}>
-                                    <span class="score-pill">Kosong</span>
-                                </label>
-                                @foreach($scoreOptions as $score => $scoreLabel)
-                                <label title="{{ $scoreLabel }}">
-                                    <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="{{ $score }}" {{ $currentExtraScore === $score ? 'checked' : '' }}>
-                                    <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
-                                </label>
-                                @endforeach
+                        <div id="extracurricular-list" class="space-y-3">
+                            @foreach($extracurricularItems as $extraIndex => $extra)
+                            @php
+                                $extraImplementation = $extra['implementation'] ?? '';
+                                $extraActivity = $extra['activity'] ?? '';
+                                $extraScore = $extra['score_label'] ?? '';
+                            @endphp
+                            <div class="extracurricular-item rounded-2xl border border-slate-500/20 bg-slate-950/28 p-3 space-y-3" data-extra-index="{{ $extraIndex }}">
+                                <div class="flex items-center justify-between gap-3">
+                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Ekstrakurikuler <span data-extra-number>{{ $extraIndex + 1 }}</span></p>
+                                    <button type="button" class="remove-extra-btn rounded-lg bg-rose-500/12 px-3 py-1.5 text-[10px] font-black text-rose-200 hover:bg-rose-500 hover:text-white transition-colors">
+                                        Hapus
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Pelaksanaan</label>
+                                        <input name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][implementation]" type="text" value="{{ $extraImplementation }}" placeholder="Contoh: Latihan rutin, unjuk kerja..."
+                                               class="daily-input px-4 py-3 text-xs font-bold" data-extra-field="implementation">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Ekstrakurikuler</label>
+                                        <input name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][activity]" type="text" value="{{ $extraActivity }}" placeholder="Contoh: Menari, menggambar, drumband..."
+                                               class="daily-input px-4 py-3 text-xs font-bold" data-extra-field="activity">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Keterangan Nilai</label>
+                                    <div class="flex flex-wrap gap-1.5" data-extra-score-group>
+                                        <label title="Kosongkan nilai">
+                                            <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][score_label]" value="" {{ blank($extraScore) ? 'checked' : '' }} data-extra-field="score_label">
+                                            <span class="score-pill">Kosong</span>
+                                        </label>
+                                        @foreach($scoreOptions as $score => $scoreLabel)
+                                        <label title="{{ $scoreLabel }}">
+                                            <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][score_label]" value="{{ $score }}" {{ $extraScore === $score ? 'checked' : '' }} data-extra-field="score_label">
+                                            <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
+                                        </label>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
+                            @endforeach
                         </div>
+                        <button type="button" id="add-extracurricular-btn" class="w-full rounded-2xl border border-sky-300/24 bg-sky-500/12 px-4 py-3 text-xs font-black text-sky-100 hover:bg-sky-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[17px]">add_circle</span>
+                            Tambah Ekstrakurikuler
+                        </button>
                     </div>
                 </section>
             </div>
@@ -454,6 +504,63 @@
 </div>
 
 <script>
+    const extracurricularList = document.getElementById('extracurricular-list');
+    const addExtracurricularBtn = document.getElementById('add-extracurricular-btn');
+
+    function refreshExtracurricularItems() {
+        if (!extracurricularList) return;
+
+        extracurricularList.querySelectorAll('.extracurricular-item').forEach((item, index) => {
+            item.dataset.extraIndex = index;
+            item.querySelector('[data-extra-number]').textContent = index + 1;
+
+            item.querySelectorAll('input').forEach((input) => {
+                input.name = input.name.replace(/\[extracurriculars]\[\d+]/, `[extracurriculars][${index}]`);
+            });
+
+            const removeBtn = item.querySelector('.remove-extra-btn');
+            if (removeBtn) {
+                removeBtn.classList.toggle('opacity-60', extracurricularList.children.length === 1);
+            }
+        });
+    }
+
+    function bindRemoveExtraButtons() {
+        document.querySelectorAll('.remove-extra-btn').forEach((button) => {
+            button.onclick = function () {
+                const item = this.closest('.extracurricular-item');
+                if (!item || !extracurricularList) return;
+
+                if (extracurricularList.children.length === 1) {
+                    item.querySelectorAll('input[type="text"]').forEach((input) => input.value = '');
+                    item.querySelectorAll('input[type="radio"]').forEach((input) => input.checked = input.value === '');
+                    return;
+                }
+
+                item.remove();
+                refreshExtracurricularItems();
+                bindRemoveExtraButtons();
+            };
+        });
+    }
+
+    addExtracurricularBtn?.addEventListener('click', function () {
+        if (!extracurricularList) return;
+
+        const firstItem = extracurricularList.querySelector('.extracurricular-item');
+        if (!firstItem) return;
+
+        const clone = firstItem.cloneNode(true);
+        clone.querySelectorAll('input[type="text"]').forEach((input) => input.value = '');
+        clone.querySelectorAll('input[type="radio"]').forEach((input) => input.checked = input.value === '');
+        extracurricularList.appendChild(clone);
+        refreshExtracurricularItems();
+        bindRemoveExtraButtons();
+    });
+
+    refreshExtracurricularItems();
+    bindRemoveExtraButtons();
+
     document.querySelectorAll('input[type="file"][data-preview]').forEach((input) => {
         input.addEventListener('change', function () {
             const file = this.files && this.files[0];

@@ -43,4 +43,11 @@ class DailyLearningReport extends Model
     {
         return $this->hasMany(DailyLearningReportPhoto::class);
     }
+
+    public function extracurricularItems(): HasMany
+    {
+        return $this->hasMany(DailyLearningReportExtracurricular::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
 }

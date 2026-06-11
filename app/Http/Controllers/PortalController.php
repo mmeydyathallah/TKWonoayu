@@ -444,7 +444,7 @@ class PortalController extends Controller
 
     public function dailyAssessment(Request $request): View
     {
-        if (! $this->tableReady(['students', 'daily_learning_reports', 'daily_learning_report_photos'])) {
+        if (! $this->tableReady(['students', 'daily_learning_reports', 'daily_learning_report_photos', 'daily_learning_report_extracurriculars'])) {
             $recapDate = now();
             $startOfWeek = $recapDate->copy()->startOfWeek();
             $endOfWeek = $startOfWeek->copy()->addDays(4);
@@ -496,7 +496,7 @@ class PortalController extends Controller
         }
 
         $reportsByStudent = DailyLearningReport::query()
-            ->with('photos')
+            ->with(['photos', 'extracurricularItems'])
             ->whereIn('student_id', $studentIds)
             ->whereDate('assessed_on', $date->toDateString())
             ->get()
@@ -506,7 +506,7 @@ class PortalController extends Controller
         $endOfWeek = $startOfWeek->copy()->addDays(4);
         
         $weeklyReports = DailyLearningReport::query()
-            ->with('photos')
+            ->with(['photos', 'extracurricularItems'])
             ->whereIn('student_id', $studentIds)
             ->whereBetween('assessed_on', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
             ->orderBy('assessed_on')
@@ -572,10 +572,13 @@ class PortalController extends Controller
                 'literasi_steam_score' => $this->normalizeScore($domainData['literasi_steam']['score_label'] ?? null),
                 'literasi_steam_narrative' => $this->cleanNullableText($domainData['literasi_steam']['narrative'] ?? null),
                 'kokurikuler_description' => $this->cleanNullableText($payload['kokurikuler_description'] ?? null),
-                'extracurricular_implementation' => $this->cleanNullableText($payload['extracurricular_implementation'] ?? null),
-                'extracurricular_activity' => $this->cleanNullableText($payload['extracurricular_activity'] ?? null),
-                'extracurricular_score_label' => $this->normalizeScore($payload['extracurricular_score_label'] ?? null),
             ];
+
+            $extracurricularRows = $this->normalizeExtracurricularRows($payload['extracurriculars'] ?? []);
+            $firstExtracurricular = $extracurricularRows[0] ?? null;
+            $reportData['extracurricular_implementation'] = $firstExtracurricular['implementation'] ?? null;
+            $reportData['extracurricular_activity'] = $firstExtracurricular['activity'] ?? null;
+            $reportData['extracurricular_score_label'] = $firstExtracurricular['score_label'] ?? null;
 
             foreach (array_keys($domains) as $domainCode) {
                 foreach ([1, 2] as $slot) {
@@ -595,9 +598,9 @@ class PortalController extends Controller
                 ->isNotEmpty();
             $deleteRequested = (bool) ($payload['delete_report'] ?? false);
 
-            if ($deleteRequested || (! $hasTextData && ! $hasPhotoTitles && ! $hasFile)) {
+            if ($deleteRequested || (! $hasTextData && ! $hasPhotoTitles && ! $hasFile && $extracurricularRows === [])) {
                 $existing = DailyLearningReport::query()
-                    ->with('photos')
+                    ->with(['photos', 'extracurricularItems'])
                     ->where('student_id', $studentId)
                     ->whereDate('assessed_on', $date)
                     ->first();
@@ -654,6 +657,16 @@ class PortalController extends Controller
                         $photo->delete();
                     }
                 }
+            }
+
+            $report->extracurricularItems()->delete();
+            foreach ($extracurricularRows as $index => $row) {
+                $report->extracurricularItems()->create([
+                    'sort_order' => $index + 1,
+                    'implementation' => $row['implementation'],
+                    'activity' => $row['activity'],
+                    'score_label' => $row['score_label'],
+                ]);
             }
 
             $savedCount++;
@@ -727,6 +740,29 @@ class PortalController extends Controller
         $score = strtoupper(trim((string) $score));
 
         return array_key_exists($score, $this->scoreOptions()) ? $score : null;
+    }
+
+    private function normalizeExtracurricularRows(array $rows): array
+    {
+        return collect($rows)
+            ->map(function ($row) {
+                $implementation = $this->cleanNullableText($row['implementation'] ?? null);
+                $activity = $this->cleanNullableText($row['activity'] ?? null);
+                $scoreLabel = $this->normalizeScore($row['score_label'] ?? null);
+
+                if (! $implementation && ! $activity && ! $scoreLabel) {
+                    return null;
+                }
+
+                return [
+                    'implementation' => $implementation,
+                    'activity' => $activity,
+                    'score_label' => $scoreLabel,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 
     private function cleanNullableText(mixed $value): ?string
@@ -866,9 +902,9 @@ class PortalController extends Controller
 
         // 2. Harian format baru: laporan belajar per siswa, diurutkan dari tanggal lama ke baru.
         $dailyLearningReports = collect();
-        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos'])) {
+        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos', 'daily_learning_report_extracurriculars'])) {
             $dailyLearningReports = DailyLearningReport::query()
-                ->with('photos')
+                ->with(['photos', 'extracurricularItems'])
                 ->where('student_id', $student->id)
                 ->orderBy('assessed_on', 'asc')
                 ->get()

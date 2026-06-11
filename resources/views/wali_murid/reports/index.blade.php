@@ -210,23 +210,39 @@
                                     <span class="material-symbols-outlined text-amber-200 text-[18px]">sports_handball</span>
                                     <h4 class="text-xs font-black uppercase tracking-widest text-slate-300">Ekstrakurikuler</h4>
                                 </div>
+                                @php
+                                    $extraItems = $dailyReport->extracurricularItems;
+                                    if ($extraItems->isEmpty() && ($dailyReport->extracurricular_implementation || $dailyReport->extracurricular_activity || $dailyReport->extracurricular_score_label)) {
+                                        $extraItems = collect([(object) [
+                                            'implementation' => $dailyReport->extracurricular_implementation,
+                                            'activity' => $dailyReport->extracurricular_activity,
+                                            'score_label' => $dailyReport->extracurricular_score_label,
+                                        ]]);
+                                    }
+                                @endphp
                                 <div class="space-y-3">
-                                    <div>
-                                        <p class="text-[10px] font-black uppercase tracking-widest report-muted">Kegiatan Pelaksanaan</p>
-                                        <p class="text-sm font-bold text-white">{{ $dailyReport->extracurricular_implementation ?: '-' }}</p>
+                                    @forelse($extraItems as $extraIndex => $extra)
+                                    <div class="rounded-2xl border border-slate-600/25 bg-slate-950/30 px-3 py-3">
+                                        <div class="mb-2 flex items-center justify-between gap-2">
+                                            <p class="text-[10px] font-black uppercase tracking-widest report-muted">Ekstrakurikuler {{ $extraIndex + 1 }}</p>
+                                            @if($extra->score_label)
+                                            <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$extra->score_label] ?? '' }}">{{ $extra->score_label }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div>
+                                                <p class="text-[10px] font-black uppercase tracking-widest report-muted">Kegiatan Pelaksanaan</p>
+                                                <p class="text-sm font-bold text-white">{{ $extra->implementation ?: '-' }}</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] font-black uppercase tracking-widest report-muted">Kegiatan Ekstrakurikuler</p>
+                                                <p class="text-sm font-bold text-white">{{ $extra->activity ?: '-' }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-[10px] font-black uppercase tracking-widest report-muted">Kegiatan Ekstrakurikuler</p>
-                                        <p class="text-sm font-bold text-white">{{ $dailyReport->extracurricular_activity ?: '-' }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black uppercase tracking-widest report-muted">Keterangan Nilai</p>
-                                        @if($dailyReport->extracurricular_score_label)
-                                        <span class="mt-1 inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$dailyReport->extracurricular_score_label] ?? '' }}">{{ $dailyReport->extracurricular_score_label }}</span>
-                                        @else
-                                        <p class="text-sm font-bold report-muted">-</p>
-                                        @endif
-                                    </div>
+                                    @empty
+                                    <p class="text-sm font-bold report-muted">Belum ada data ekstrakurikuler.</p>
+                                    @endforelse
                                 </div>
                             </section>
                         </div>
