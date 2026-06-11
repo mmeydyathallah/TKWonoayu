@@ -47,11 +47,10 @@
 
     <div class="flex gap-1 border-b border-slate-700/60 overflow-x-auto">
         @foreach([
-            'raport' => 'Ringkasan',
-            'harian' => 'Harian',
-            'anekdot' => 'Anekdot',
-            'karya' => 'Hasil Karya',
-        ] as $key => $label)
+        'raport' => 'Ringkasan',
+        'harian' => 'Harian',
+        'anekdot' => 'Anekdot',
+    ] as $key => $label)
         <button type="button" onclick="switchTab('{{ $key }}')" id="btn-{{ $key }}"
                 class="tab-btn {{ $key === 'raport' ? 'active' : '' }} px-4 py-3 text-sm font-black text-slate-400 whitespace-nowrap hover:text-sky-100 transition-colors">
             {{ $label }}
@@ -102,6 +101,84 @@
     </div>
 
     <div id="tab-harian" class="hidden">
+        @php
+            $scoreToNum = ['BB' => 1, 'MB' => 2, 'BSH' => 3, 'BSB' => 4];
+            $chartColors = ['#38bdf8', '#22c55e', '#f59e0b'];
+            $chartLabels = [];
+            $domainChartDatasets = [];
+            $domainAverageValues = [];
+            $domainAverageLabels = [];
+            $domainAverageColors = [];
+
+            foreach ($intrakurikulerDomains as $domainCode => $domain) {
+                $domainChartDatasets[$domainCode] = [];
+                $domainAverageLabels[] = $domain['short'];
+            }
+
+            foreach ($dailyLearningReports as $weekKey => $items) {
+                [$startStr, $endStr] = explode('|', $weekKey);
+                $weekStart = \Carbon\Carbon::parse($startStr);
+                $chartLabels[] = $weekStart->translatedFormat('d M');
+
+                foreach ($intrakurikulerDomains as $domainCode => $domain) {
+                    $values = $items
+                        ->map(fn ($dailyReport) => $scoreToNum[$dailyReport->{$domain['score_column']}] ?? null)
+                        ->filter(fn ($value) => filled($value))
+                        ->values();
+
+                    $domainChartDatasets[$domainCode][] = $values->isNotEmpty()
+                        ? round($values->avg(), 2)
+                        : null;
+                }
+            }
+
+            $colorIndex = 0;
+            foreach ($intrakurikulerDomains as $domainCode => $domain) {
+                $values = collect($domainChartDatasets[$domainCode])->filter(fn ($value) => filled($value));
+                $domainAverageValues[] = $values->isNotEmpty() ? round($values->avg(), 2) : 0;
+                $domainAverageColors[] = $chartColors[$colorIndex] ?? '#94a3b8';
+                $colorIndex++;
+            }
+
+            $hasChartData = collect($domainChartDatasets)->flatten()->filter(fn ($value) => filled($value))->isNotEmpty();
+        @endphp
+
+        @if($hasChartData)
+        <section class="report-panel rounded-3xl p-5 mb-6">
+            <div class="mb-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-sky-400/12 text-sky-200 flex items-center justify-center">
+                    <span class="material-symbols-outlined">monitoring</span>
+                </div>
+                <div>
+                    <h2 class="font-headline text-base font-black text-white">Grafik Nilai Intrakurikuler</h2>
+                    <p class="text-[11px] font-bold report-muted">Nilai diambil dari isian Penilaian Harian guru.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                <div class="report-soft rounded-3xl p-4">
+                    <p class="mb-3 text-xs font-black text-white">Tren Nilai per Minggu</p>
+                    <div style="position:relative;height:280px;">
+                        <canvas id="daily-trend-chart"></canvas>
+                    </div>
+                </div>
+                <div class="report-soft rounded-3xl p-4">
+                    <p class="mb-3 text-xs font-black text-white">Perbandingan Rata-rata Aspek</p>
+                    <div style="position:relative;height:280px;">
+                        <canvas id="daily-average-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div id="daily-chart-data"
+                 data-labels='@json($chartLabels)'
+                 data-domains='@json(array_values($intrakurikulerDomains))'
+                 data-datasets='@json($domainChartDatasets)'
+                 data-average-labels='@json($domainAverageLabels)'
+                 data-average-values='@json($domainAverageValues)'
+                 data-average-colors='@json($domainAverageColors)'
+                 style="display:none"></div>
+        </section>
+        @endif
+
         @forelse($dailyLearningReports as $weekKey => $items)
         @php
             [$startStr, $endStr] = explode('|', $weekKey);
@@ -279,46 +356,14 @@
         </div>
     </div>
 
-    <div id="tab-karya" class="hidden">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse($artworks as $art)
-            <article class="report-panel rounded-3xl overflow-hidden">
-                <div class="aspect-video bg-slate-950/50">
-                    @if($art->image_url)
-                    <img src="{{ $art->image_url }}" class="gallery-image h-full w-full" alt="{{ $art->title }}">
-                    @else
-                    <div class="h-full w-full flex flex-col items-center justify-center text-slate-500">
-                        <span class="material-symbols-outlined text-4xl">image_not_supported</span>
-                        <span class="text-[10px] font-black uppercase tracking-widest mt-2">Foto belum tersedia</span>
-                    </div>
-                    @endif
-                </div>
-                <div class="p-5">
-                    <div class="flex items-start justify-between gap-3">
-                        <h3 class="text-sm font-black text-white leading-snug">{{ $art->title ?? 'Hasil Karya' }}</h3>
-                        @if($art->score_label)
-                        <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$art->score_label] ?? '' }}">{{ $art->score_label }}</span>
-                        @endif
-                    </div>
-                    <p class="mt-1 text-[10px] font-black uppercase tracking-widest report-muted">{{ $art->created_on?->translatedFormat('d F Y') }}</p>
-                    @if($art->description)
-                    <p class="mt-3 text-xs leading-relaxed report-muted">{{ $art->description }}</p>
-                    @endif
-                </div>
-            </article>
-            @empty
-            <div class="report-panel rounded-3xl py-16 text-center sm:col-span-2 lg:col-span-3">
-                <p class="text-sm font-bold report-muted">Belum ada karya terdokumentasi.</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
 </div>
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    const allTabs = ['raport', 'harian', 'anekdot', 'karya'];
+    const allTabs = ['raport', 'harian', 'anekdot'];
+    let dailyChartsReady = false;
 
     function switchTab(tab) {
         allTabs.forEach((key) => {
@@ -327,6 +372,113 @@
         });
         document.getElementById('tab-' + tab)?.classList.remove('hidden');
         document.getElementById('btn-' + tab)?.classList.add('active');
+
+        if (tab === 'harian') {
+            initDailyCharts();
+        }
+    }
+
+    function initDailyCharts() {
+        if (dailyChartsReady) return;
+        dailyChartsReady = true;
+
+        const store = document.getElementById('daily-chart-data');
+        if (!store || typeof Chart === 'undefined') return;
+
+        const labels = JSON.parse(store.dataset.labels || '[]');
+        const domains = JSON.parse(store.dataset.domains || '[]');
+        const rawDatasets = JSON.parse(store.dataset.datasets || '{}');
+        const averageLabels = JSON.parse(store.dataset.averageLabels || '[]');
+        const averageValues = JSON.parse(store.dataset.averageValues || '[]');
+        const averageColors = JSON.parse(store.dataset.averageColors || '[]');
+        const scoreLabel = ['', 'BB', 'MB', 'BSH', 'BSB'];
+        const colors = ['#38bdf8', '#22c55e', '#f59e0b'];
+
+        const datasets = Object.keys(rawDatasets).map((domainCode, index) => ({
+            label: domains[index]?.short || domains[index]?.label || domainCode,
+            data: (rawDatasets[domainCode] || []).map((value) => value === null ? null : Number(value)),
+            borderColor: colors[index] || '#94a3b8',
+            backgroundColor: (colors[index] || '#94a3b8') + '44',
+            tension: 0.35,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            spanGaps: true,
+        }));
+
+        const scaleOptions = {
+            y: {
+                min: 0,
+                max: 4,
+                ticks: {
+                    stepSize: 1,
+                    color: '#a9b8cc',
+                    callback: (value) => scoreLabel[value] || '',
+                },
+                grid: { color: 'rgba(148, 163, 184, .16)' },
+            },
+            x: {
+                ticks: { color: '#a9b8cc' },
+                grid: { display: false },
+            },
+        };
+
+        const trendEl = document.getElementById('daily-trend-chart');
+        if (trendEl) {
+            new Chart(trendEl, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#e5eefb', usePointStyle: true } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const value = Number(ctx.raw || 0);
+                                    return `${ctx.dataset.label}: ${value.toFixed(2)} / 4 (${scoreLabel[Math.round(value)] || '-'})`;
+                                },
+                            },
+                        },
+                    },
+                    scales: scaleOptions,
+                },
+            });
+        }
+
+        const averageEl = document.getElementById('daily-average-chart');
+        if (averageEl) {
+            new Chart(averageEl, {
+                type: 'bar',
+                data: {
+                    labels: averageLabels,
+                    datasets: [{
+                        label: 'Rata-rata Nilai',
+                        data: averageValues,
+                        backgroundColor: averageColors,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const value = Number(ctx.raw || 0);
+                                    return `Rata-rata: ${value.toFixed(2)} / 4 (${scoreLabel[Math.round(value)] || '-'})`;
+                                },
+                            },
+                        },
+                    },
+                    scales: scaleOptions,
+                },
+            });
+        }
     }
 </script>
 @endsection

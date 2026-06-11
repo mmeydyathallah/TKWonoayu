@@ -923,18 +923,11 @@ class PortalController extends Controller
             ->latest('recorded_at')
             ->get();
             
-        // 4. Hasil Karya (Artworks)
-        $artworks = Artwork::query()
-            ->where('student_id', $student->id)
-            ->latest('created_on')
-            ->get();
-
         return view('wali_murid.reports.index', compact(
             'student', 
             'report', 
             'dailyLearningReports',
-            'anecdotalNotes', 
-            'artworks'
+            'anecdotalNotes'
         ) + [
             'intrakurikulerDomains' => $this->intrakurikulerDomains(),
             'scoreOptions' => $this->scoreOptions(),
