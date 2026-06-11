@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnecdotalNote;
-use App\Models\Artwork;
 use App\Models\DailyLearningReport;
 use App\Models\DailyLearningReportPhoto;
 use App\Models\DevelopmentReport;
@@ -942,10 +941,40 @@ class PortalController extends Controller
         $student = $user->student;
         if (!$student) return redirect()->route('wali.dashboard');
 
-        $artworks = Artwork::query()->where('student_id', $student->id)->latest()->get();
-        $notes = AnecdotalNote::query()->where('student_id', $student->id)->latest()->get();
+        $galleryItems = collect();
+        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos'])) {
+            $domains = $this->intrakurikulerDomains();
+            $galleryItems = DailyLearningReport::query()
+                ->with('photos')
+                ->where('student_id', $student->id)
+                ->orderByDesc('assessed_on')
+                ->get()
+                ->flatMap(function (DailyLearningReport $report) use ($domains) {
+                    return $report->photos
+                        ->filter(fn ($photo) => filled($photo->image_path))
+                        ->sortBy([
+                            ['domain_code', 'asc'],
+                            ['slot', 'asc'],
+                        ])
+                        ->map(function ($photo) use ($report, $domains) {
+                            $domain = $domains[$photo->domain_code] ?? null;
+                            $narrativeColumn = $domain['narrative_column'] ?? null;
+                            $explanation = $narrativeColumn ? $report->{$narrativeColumn} : null;
 
-        return view('wali_murid.gallery.index', compact('student', 'artworks', 'notes'));
+                            return (object) [
+                                'image_url' => '/storage/'.$photo->image_path,
+                                'title' => $photo->title ?: 'Dokumentasi kegiatan',
+                                'domain_label' => $domain['label'] ?? 'Dokumentasi',
+                                'domain_short' => $domain['short'] ?? 'Kegiatan',
+                                'assessed_on' => $report->assessed_on,
+                                'explanation' => $explanation ?: $report->kokurikuler_description,
+                            ];
+                        });
+                })
+                ->values();
+        }
+
+        return view('wali_murid.gallery.index', compact('student', 'galleryItems'));
     }
 
     public function storeStudent(Request $request): RedirectResponse

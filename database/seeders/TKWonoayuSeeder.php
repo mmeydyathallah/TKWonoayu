@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\AnecdotalNote;
-use App\Models\Artwork;
 use App\Models\ChecklistAssessment;
 use App\Models\DailyAssessment;
 use App\Models\DevelopmentReport;
@@ -236,48 +235,6 @@ class TKWonoayuSeeder extends Seeder
                 'indicator' => 'Menceritakan pengalaman',
                 'score_label' => 'MB',
                 'score_value' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        Artwork::insert([
-            [
-                'student_id' => $bima->id,
-                'title' => 'Melukis Bebas "Keluargaku"',
-                'description' => 'Bima menggambarkan keluarga dan rumah dengan warna cerah.',
-                'aspects' => 'Kreativitas, Motorik Halus',
-                'score_label' => 'BSB',
-                'score_value' => 4,
-                'status' => 'dinilai',
-                'image_url' => 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=900&q=80',
-                'created_on' => $today->subDays(2),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'student_id' => $siti->id,
-                'title' => 'Kolase Kupu-kupu',
-                'description' => 'Siti menempel potongan kertas warna dengan rapi.',
-                'aspects' => 'Kemandirian, Fokus',
-                'score_label' => 'BSH',
-                'score_value' => 3,
-                'status' => 'dinilai',
-                'image_url' => 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80',
-                'created_on' => $today->subDays(4),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'student_id' => $raka->id,
-                'title' => 'Menara Balok',
-                'description' => 'Raka menyusun menara dengan keseimbangan yang baik.',
-                'aspects' => 'Kognitif, Fisik Motorik',
-                'score_label' => null,
-                'score_value' => null,
-                'status' => 'belum dinilai',
-                'image_url' => 'https://images.unsplash.com/photo-1607457561901-e6ec3a6d16cf?auto=format&fit=crop&w=900&q=80',
-                'created_on' => $today->subDay(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

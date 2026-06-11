@@ -66,11 +66,6 @@ class Student extends Model
         return $this->hasMany(ChecklistAssessment::class);
     }
 
-    public function artworks(): HasMany
-    {
-        return $this->hasMany(Artwork::class);
-    }
-
     public function anecdotalNotes(): HasMany
     {
         return $this->hasMany(AnecdotalNote::class);
