@@ -14,8 +14,11 @@ return new class extends Migration
             $table->date('assessed_on')->index();
             $table->string('class_group')->nullable();
             $table->string('agama_budi_pekerti_score', 8)->nullable();
+            $table->text('agama_budi_pekerti_narrative')->nullable();
             $table->string('jati_diri_score', 8)->nullable();
+            $table->text('jati_diri_narrative')->nullable();
             $table->string('literasi_steam_score', 8)->nullable();
+            $table->text('literasi_steam_narrative')->nullable();
             $table->text('kokurikuler_description')->nullable();
             $table->string('extracurricular_implementation')->nullable();
             $table->string('extracurricular_activity')->nullable();

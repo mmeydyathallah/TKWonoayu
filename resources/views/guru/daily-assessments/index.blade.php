@@ -38,8 +38,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 46px;
-        height: 32px;
+        min-width: 48px;
+        height: 34px;
         border-radius: 10px;
         border: 1px solid rgba(148, 163, 184, .26);
         background: rgba(15, 23, 42, .74);
@@ -55,7 +55,8 @@
     .score-radio:checked + .pill-BSH { background: #dcfce7; color: #15803d; }
     .score-radio:checked + .pill-BSB { background: #dbeafe; color: #1d4ed8; }
     .image-preview { object-fit: contain; background: rgba(2, 6, 23, .55); }
-    .student-focus { box-shadow: 0 0 0 3px rgba(125, 211, 252, .24), 0 24px 54px rgba(2, 6, 23, .36) !important; }
+    .student-tile { transition: transform .16s ease, border-color .16s ease, background .16s ease; }
+    .student-tile:hover { transform: translateY(-2px); border-color: rgba(125, 211, 252, .38); background: rgba(30, 41, 59, .84); }
 </style>
 @endsection
 
@@ -72,7 +73,7 @@
             </div>
         </div>
         <div class="daily-soft rounded-2xl px-4 py-3 text-xs font-bold text-slate-300">
-            Intrakurikuler, Kokurikuler, dan Ekstrakurikuler per siswa
+            Pilih siswa dulu, lalu isi laporan harian.
         </div>
     </header>
 
@@ -96,108 +97,167 @@
     </div>
     @endif
 
-    <form action="{{ route('guru.daily') }}" method="GET" id="filter-form" class="daily-panel rounded-3xl p-5 mb-6 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-        <div class="md:col-span-4 space-y-1.5">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Siswa</label>
-            <input name="search" type="text" value="{{ request('search') }}" placeholder="Cari nama siswa..."
-                   class="daily-input px-4 py-3 text-xs font-bold">
-        </div>
-        <div class="md:col-span-3 space-y-1.5">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal</label>
-            <input name="date" type="date" value="{{ $date->format('Y-m-d') }}" onchange="this.form.submit()"
-                   class="daily-input px-4 py-3 text-xs font-bold">
-        </div>
-        <div class="md:col-span-3 space-y-1.5">
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Kelompok</label>
-            <select name="group" onchange="this.form.submit()" class="daily-input px-4 py-3 text-xs font-bold">
-                <option class="text-slate-900" value="">Semua Kelompok</option>
-                @foreach(['A', 'B'] as $g)
-                <option class="text-slate-900" value="{{ $g }}" {{ $group === $g ? 'selected' : '' }}>Kelompok {{ $g }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="md:col-span-2">
-            <button type="submit" class="w-full rounded-2xl bg-sky-500 px-5 py-3 text-xs font-black text-white hover:bg-sky-400 transition-colors flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[16px]">filter_alt</span>
-                Filter
-            </button>
+    <form action="{{ route('guru.daily') }}" method="GET" id="filter-form" class="daily-panel rounded-3xl p-5 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-3 space-y-1.5">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal</label>
+                <input name="date" type="date" value="{{ $date->format('Y-m-d') }}" onchange="this.form.submit()"
+                       class="daily-input px-4 py-3 text-xs font-bold">
+            </div>
+            <div class="md:col-span-2 space-y-1.5">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Kelompok</label>
+                <select name="group" onchange="this.form.submit()" class="daily-input px-4 py-3 text-xs font-bold">
+                    <option class="text-slate-900" value="">Semua</option>
+                    @foreach(['A', 'B'] as $g)
+                    <option class="text-slate-900" value="{{ $g }}" {{ $group === $g ? 'selected' : '' }}>Kel. {{ $g }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="md:col-span-3 space-y-1.5">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Cari Siswa</label>
+                <input name="search" type="text" value="{{ $search }}" placeholder="Nama atau panggilan..."
+                       class="daily-input px-4 py-3 text-xs font-bold">
+            </div>
+            <div class="md:col-span-3 space-y-1.5">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Siswa</label>
+                <select name="student_id" onchange="this.form.submit()" class="daily-input px-4 py-3 text-xs font-bold">
+                    <option class="text-slate-900" value="">Pilih siswa...</option>
+                    @foreach($students as $studentOption)
+                    <option class="text-slate-900" value="{{ $studentOption->id }}" {{ (int) $selectedStudentId === (int) $studentOption->id ? 'selected' : '' }}>
+                        {{ $studentOption->full_name }} - Kel. {{ $studentOption->class_group }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="md:col-span-1">
+                <button type="submit" class="w-full rounded-2xl bg-sky-500 px-5 py-3 text-xs font-black text-white hover:bg-sky-400 transition-colors flex items-center justify-center" title="Filter">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                </button>
+            </div>
         </div>
     </form>
 
-    <form action="{{ route('guru.daily.store') }}" method="POST" enctype="multipart/form-data" id="daily-learning-form">
+    @if(! $selectedStudent)
+    <section class="daily-panel rounded-3xl p-5 mb-8">
+        <div class="mb-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+                <h2 class="font-headline text-base font-black text-white">Pilih Siswa</h2>
+                <p class="mt-1 text-xs font-bold text-slate-400">Form penilaian akan muncul setelah satu siswa dipilih.</p>
+            </div>
+            <span class="daily-soft rounded-2xl px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-300">{{ $students->count() }} siswa</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            @forelse($students as $student)
+            @php $hasReport = $reportsByStudent->has($student->id); @endphp
+            <a href="{{ route('guru.daily', array_filter(['date' => $date->format('Y-m-d'), 'group' => $group, 'search' => $search, 'student_id' => $student->id], fn ($value) => filled($value))) }}"
+               class="student-tile daily-soft rounded-2xl p-4 flex items-center gap-3">
+                <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=0f172a&color=e0f2fe&bold=true&size=80' }}"
+                     alt="Foto {{ $student->full_name }}" class="w-12 h-12 rounded-2xl object-cover border border-slate-500/30">
+                <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-black text-white">{{ $student->full_name }}</p>
+                    <p class="mt-1 text-[10px] font-bold text-slate-400">Kelompok {{ $student->class_group }}{{ $student->nickname ? ' - '.$student->nickname : '' }}</p>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-[9px] font-black {{ $hasReport ? 'bg-emerald-400/15 text-emerald-200 border border-emerald-300/20' : 'bg-slate-700/70 text-slate-300 border border-slate-500/20' }}">
+                    {{ $hasReport ? 'Terisi' : 'Baru' }}
+                </span>
+            </a>
+            @empty
+            <div class="col-span-full py-16 text-center">
+                <span class="material-symbols-outlined text-5xl text-slate-500">group_off</span>
+                <p class="mt-3 text-sm font-bold text-slate-400">Tidak ada siswa ditemukan.</p>
+            </div>
+            @endforelse
+        </div>
+    </section>
+    @else
+    @php
+        $student = $selectedStudent;
+        $report = $reportsByStudent->get($student->id);
+        $photosByDomain = $report?->photos?->groupBy('domain_code') ?? collect();
+        $hasReport = filled($report);
+    @endphp
+
+    <form action="{{ route('guru.daily.store') }}" method="POST" enctype="multipart/form-data" id="daily-learning-form" class="space-y-6">
         @csrf
         <input type="hidden" name="date" value="{{ $date->format('Y-m-d') }}">
+        <input type="hidden" name="group" value="{{ $group }}">
+        <input type="hidden" name="search" value="{{ $search }}">
+        <input type="hidden" name="selected_student_id" value="{{ $student->id }}">
 
-        <div class="grid grid-cols-1 gap-6">
-            @forelse($students as $student)
-            @php
-                $report = $reportsByStudent->get($student->id);
-                $photosByDomain = $report?->photos?->groupBy('domain_code') ?? collect();
-                $hasReport = filled($report);
-            @endphp
-
-            <article id="student-card-{{ $student->id }}" class="daily-panel rounded-3xl overflow-hidden">
-                <div class="daily-soft border-x-0 border-t-0 rounded-none px-5 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=0f172a&color=e0f2fe&bold=true&size=96' }}"
-                             alt="Foto {{ $student->full_name }}" class="w-12 h-12 rounded-2xl object-cover border border-slate-500/30">
-                        <div class="min-w-0">
-                            <h2 class="text-sm font-black text-white truncate">{{ $student->full_name }}</h2>
-                            <p class="text-[10px] font-bold text-slate-400 mt-1">Kelompok {{ $student->class_group }}{{ $student->nickname ? ' - '.$student->nickname : '' }}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="rounded-full px-3 py-1 text-[10px] font-black {{ $hasReport ? 'bg-emerald-400/15 text-emerald-200 border border-emerald-300/20' : 'bg-slate-700/70 text-slate-300 border border-slate-500/20' }}">
-                            {{ $hasReport ? 'Sudah Ada Data' : 'Belum Diisi' }}
-                        </span>
-                        <button type="button" onclick="focusStudent({{ $student->id }})" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-200 hover:bg-sky-500 hover:text-white transition-colors" title="Fokus siswa">
-                            <span class="material-symbols-outlined text-[17px]">center_focus_strong</span>
-                        </button>
-                        @if($hasReport)
-                        <button type="submit" form="delete-daily-{{ $report->id }}" onclick="return confirm('Hapus laporan harian {{ $student->full_name }} pada {{ $date->format('d-m-Y') }}?')" class="w-9 h-9 rounded-xl bg-rose-500/12 text-rose-200 hover:bg-rose-500 hover:text-white transition-colors" title="Hapus laporan">
-                            <span class="material-symbols-outlined text-[17px]">delete</span>
-                        </button>
-                        @endif
+        <article class="daily-panel rounded-3xl overflow-hidden">
+            <div class="daily-soft border-x-0 border-t-0 rounded-none px-5 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=0f172a&color=e0f2fe&bold=true&size=96' }}"
+                         alt="Foto {{ $student->full_name }}" class="w-14 h-14 rounded-2xl object-cover border border-slate-500/30">
+                    <div class="min-w-0">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Siswa Terpilih</p>
+                        <h2 class="text-lg font-black text-white truncate">{{ $student->full_name }}</h2>
+                        <p class="text-[11px] font-bold text-slate-400 mt-1">Kelompok {{ $student->class_group }}{{ $student->nickname ? ' - '.$student->nickname : '' }}</p>
                     </div>
                 </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-full px-3 py-1 text-[10px] font-black {{ $hasReport ? 'bg-emerald-400/15 text-emerald-200 border border-emerald-300/20' : 'bg-slate-700/70 text-slate-300 border border-slate-500/20' }}">
+                        {{ $hasReport ? 'Data tanggal ini sudah ada' : 'Belum ada data tanggal ini' }}
+                    </span>
+                    <a href="{{ route('guru.daily', array_filter(['date' => $date->format('Y-m-d'), 'group' => $group, 'search' => $search], fn ($value) => filled($value))) }}"
+                       class="rounded-xl bg-slate-800 px-4 py-2 text-xs font-black text-slate-200 hover:bg-slate-700 transition-colors">
+                        Ganti Siswa
+                    </a>
+                    @if($hasReport)
+                    <button type="submit" form="delete-daily-{{ $report->id }}" onclick="return confirm('Hapus laporan harian {{ $student->full_name }} pada {{ $date->format('d-m-Y') }}?')" class="rounded-xl bg-rose-500/12 px-4 py-2 text-xs font-black text-rose-200 hover:bg-rose-500 hover:text-white transition-colors">
+                        Hapus
+                    </button>
+                    @endif
+                </div>
+            </div>
 
-                <div class="p-5 space-y-5">
-                    <section>
-                        <div class="mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sky-300 text-[18px]">school</span>
-                            <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Intrakurikuler</h3>
-                        </div>
-                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-                            @foreach($intrakurikulerDomains as $domainCode => $domain)
-                            @php
-                                $scoreColumn = $domain['score_column'];
-                                $currentScore = old('reports.'.$student->id.'.intrakurikuler.'.$domainCode.'.score_label', $report?->{$scoreColumn});
-                            @endphp
-                            <div class="daily-soft rounded-2xl p-4 space-y-4">
-                                <div class="flex items-start gap-2">
-                                    <div class="w-9 h-9 rounded-xl bg-sky-400/10 text-sky-200 flex items-center justify-center shrink-0">
-                                        <span class="material-symbols-outlined text-[18px]">{{ $domain['icon'] }}</span>
+            <div class="p-5 space-y-5">
+                <section>
+                    <div class="mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-300 text-[18px]">school</span>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Intrakurikuler</h3>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach($intrakurikulerDomains as $domainCode => $domain)
+                        @php
+                            $scoreColumn = $domain['score_column'];
+                            $narrativeColumn = $domain['narrative_column'];
+                            $currentScore = old('reports.'.$student->id.'.intrakurikuler.'.$domainCode.'.score_label', $report?->{$scoreColumn});
+                            $currentNarrative = old('reports.'.$student->id.'.intrakurikuler.'.$domainCode.'.narrative', $report?->{$narrativeColumn});
+                        @endphp
+                        <div class="daily-soft rounded-2xl p-4">
+                            <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+                                <div class="xl:col-span-4 space-y-4">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-sky-400/10 text-sky-200 flex items-center justify-center shrink-0">
+                                            <span class="material-symbols-outlined text-[19px]">{{ $domain['icon'] }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-black text-white leading-snug">{{ $domain['label'] }}</p>
+                                            <p class="text-[10px] font-bold text-slate-400 mt-1">Nilai, narasi, dan 2 bukti foto.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <label title="Kosongkan nilai">
+                                            <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="" {{ blank($currentScore) ? 'checked' : '' }}>
+                                            <span class="score-pill">Kosong</span>
+                                        </label>
+                                        @foreach($scoreOptions as $score => $scoreLabel)
+                                        <label title="{{ $scoreLabel }}">
+                                            <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="{{ $score }}" {{ $currentScore === $score ? 'checked' : '' }}>
+                                            <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
+                                        </label>
+                                        @endforeach
                                     </div>
                                     <div>
-                                        <p class="text-xs font-black text-white leading-snug">{{ $domain['label'] }}</p>
-                                        <p class="text-[10px] font-bold text-slate-400 mt-1">Nilai aspek dan 2 bukti foto.</p>
+                                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Narasi Pelajaran</label>
+                                        <textarea name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][narrative]" rows="5" placeholder="Tuliskan perkembangan, aktivitas, atau catatan khusus pada aspek ini..."
+                                                  class="daily-input px-4 py-3 text-xs font-bold resize-y">{{ $currentNarrative }}</textarea>
                                     </div>
                                 </div>
 
-                                <div class="flex flex-wrap gap-1.5">
-                                    <label title="Kosongkan nilai">
-                                        <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="" {{ blank($currentScore) ? 'checked' : '' }}>
-                                        <span class="score-pill">Kosong</span>
-                                    </label>
-                                    @foreach($scoreOptions as $score => $scoreLabel)
-                                    <label title="{{ $scoreLabel }}">
-                                        <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="{{ $score }}" {{ $currentScore === $score ? 'checked' : '' }}>
-                                        <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
-                                    </label>
-                                    @endforeach
-                                </div>
-
-                                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3">
+                                <div class="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-3">
                                     @foreach([1, 2] as $slot)
                                     @php
                                         $photo = ($photosByDomain->get($domainCode) ?? collect())->firstWhere('slot', $slot);
@@ -206,7 +266,7 @@
                                         $oldTitleKey = 'reports.'.$student->id.'.intrakurikuler.'.$domainCode.'.photos.'.$slot.'.title';
                                     @endphp
                                     <div class="rounded-2xl border border-slate-500/20 bg-slate-950/28 p-3">
-                                        <div class="aspect-[4/3] overflow-hidden rounded-xl border border-slate-600/30 bg-slate-950/60 mb-3">
+                                        <div class="aspect-[16/10] overflow-hidden rounded-xl border border-slate-600/30 bg-slate-950/60 mb-3">
                                             @if($existingUrl)
                                             <img data-preview-target="preview-{{ $student->id }}-{{ $domainCode }}-{{ $slot }}" src="{{ $existingUrl }}" alt="{{ $photo->title }}" class="image-preview w-full h-full">
                                             @else
@@ -231,73 +291,66 @@
                                     @endforeach
                                 </div>
                             </div>
-                            @endforeach
                         </div>
-                    </section>
+                        @endforeach
+                    </div>
+                </section>
 
-                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div class="daily-soft rounded-2xl p-4">
-                            <div class="mb-3 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-emerald-300 text-[18px]">hub</span>
-                                <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Kokurikuler</h3>
-                            </div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Deskripsi Pengembangan Proyek</label>
-                            <textarea name="reports[{{ $student->id }}][kokurikuler_description]" rows="5" placeholder="Tuliskan perkembangan proyek ananda hari ini..."
-                                      class="daily-input px-4 py-3 text-xs font-bold resize-y">{{ old('reports.'.$student->id.'.kokurikuler_description', $report?->kokurikuler_description) }}</textarea>
+                <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="daily-soft rounded-2xl p-4">
+                        <div class="mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-emerald-300 text-[18px]">hub</span>
+                            <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Kokurikuler</h3>
                         </div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Deskripsi Pengembangan Proyek</label>
+                        <textarea name="reports[{{ $student->id }}][kokurikuler_description]" rows="6" placeholder="Tuliskan perkembangan proyek ananda hari ini..."
+                                  class="daily-input px-4 py-3 text-xs font-bold resize-y">{{ old('reports.'.$student->id.'.kokurikuler_description', $report?->kokurikuler_description) }}</textarea>
+                    </div>
 
-                        <div class="daily-soft rounded-2xl p-4 space-y-3">
-                            <div class="mb-1 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-amber-300 text-[18px]">sports_handball</span>
-                                <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Ekstrakurikuler</h3>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Pelaksanaan</label>
-                                <input name="reports[{{ $student->id }}][extracurricular_implementation]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_implementation', $report?->extracurricular_implementation) }}" placeholder="Contoh: Latihan rutin, unjuk kerja, praktik bersama..."
-                                       class="daily-input px-4 py-3 text-xs font-bold">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Ekstrakurikuler</label>
-                                <input name="reports[{{ $student->id }}][extracurricular_activity]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_activity', $report?->extracurricular_activity) }}" placeholder="Contoh: Menari, menggambar, drumband..."
-                                       class="daily-input px-4 py-3 text-xs font-bold">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Keterangan Nilai</label>
-                                <div class="flex flex-wrap gap-1.5">
-                                    @php $currentExtraScore = old('reports.'.$student->id.'.extracurricular_score_label', $report?->extracurricular_score_label); @endphp
-                                    <label title="Kosongkan nilai">
-                                        <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="" {{ blank($currentExtraScore) ? 'checked' : '' }}>
-                                        <span class="score-pill">Kosong</span>
-                                    </label>
-                                    @foreach($scoreOptions as $score => $scoreLabel)
-                                    <label title="{{ $scoreLabel }}">
-                                        <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="{{ $score }}" {{ $currentExtraScore === $score ? 'checked' : '' }}>
-                                        <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
-                                    </label>
-                                    @endforeach
-                                </div>
+                    <div class="daily-soft rounded-2xl p-4 space-y-3">
+                        <div class="mb-1 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-300 text-[18px]">sports_handball</span>
+                            <h3 class="text-xs font-black uppercase tracking-widest text-slate-300">Ekstrakurikuler</h3>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Pelaksanaan</label>
+                            <input name="reports[{{ $student->id }}][extracurricular_implementation]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_implementation', $report?->extracurricular_implementation) }}" placeholder="Contoh: Latihan rutin, unjuk kerja, praktik bersama..."
+                                   class="daily-input px-4 py-3 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kegiatan Ekstrakurikuler</label>
+                            <input name="reports[{{ $student->id }}][extracurricular_activity]" type="text" value="{{ old('reports.'.$student->id.'.extracurricular_activity', $report?->extracurricular_activity) }}" placeholder="Contoh: Menari, menggambar, drumband..."
+                                   class="daily-input px-4 py-3 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Keterangan Nilai</label>
+                            <div class="flex flex-wrap gap-1.5">
+                                @php $currentExtraScore = old('reports.'.$student->id.'.extracurricular_score_label', $report?->extracurricular_score_label); @endphp
+                                <label title="Kosongkan nilai">
+                                    <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="" {{ blank($currentExtraScore) ? 'checked' : '' }}>
+                                    <span class="score-pill">Kosong</span>
+                                </label>
+                                @foreach($scoreOptions as $score => $scoreLabel)
+                                <label title="{{ $scoreLabel }}">
+                                    <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurricular_score_label]" value="{{ $score }}" {{ $currentExtraScore === $score ? 'checked' : '' }}>
+                                    <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
+                                </label>
+                                @endforeach
                             </div>
                         </div>
-                    </section>
-                </div>
-            </article>
-            @empty
-            <div class="daily-panel rounded-3xl py-16 text-center">
-                <span class="material-symbols-outlined text-5xl text-slate-500">group_off</span>
-                <p class="mt-3 text-sm font-bold text-slate-400">Tidak ada siswa ditemukan.</p>
+                    </div>
+                </section>
             </div>
-            @endforelse
-        </div>
+        </article>
 
-        @if($students->isNotEmpty())
         <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
             <button type="submit" class="rounded-2xl bg-sky-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-sky-950/50 hover:bg-sky-400 active:scale-95 transition-all flex items-center gap-3">
                 <span class="material-symbols-outlined">cloud_done</span>
                 Simpan Penilaian Harian
             </button>
         </div>
-        @endif
     </form>
+    @endif
 
     @foreach($reportsByStudent as $report)
     <form id="delete-daily-{{ $report->id }}" action="{{ route('guru.daily.destroy', $report) }}" method="POST" class="hidden">
@@ -317,7 +370,8 @@
             <form action="{{ route('guru.daily') }}" method="GET" class="flex items-end gap-2">
                 <input type="hidden" name="date" value="{{ $date->format('Y-m-d') }}">
                 <input type="hidden" name="group" value="{{ $group }}">
-                <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="search" value="{{ $search }}">
+                <input type="hidden" name="student_id" value="{{ $selectedStudentId }}">
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pilih Minggu</label>
                     <input name="week" type="date" value="{{ $recapDate->format('Y-m-d') }}" onchange="this.form.submit()" class="daily-input px-4 py-2.5 text-xs font-bold">
@@ -335,21 +389,22 @@
                         @endforeach
                         <th class="px-4 py-4">Kokurikuler</th>
                         <th class="px-4 py-4">Ekstrakurikuler</th>
+                        <th class="px-4 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-700/40">
-                    @forelse($students as $student)
+                    @forelse($students as $studentRow)
                     @php
-                        $studentReports = $weeklyReports->get($student->id) ?? collect();
+                        $studentReports = $weeklyReports->get($studentRow->id) ?? collect();
                         $latestReport = $studentReports->sortByDesc('assessed_on')->first();
                     @endphp
                     <tr class="hover:bg-slate-800/35 transition-colors">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-3">
-                                <img src="{{ $student->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->full_name).'&background=0f172a&color=e0f2fe&bold=true&size=64' }}" class="w-10 h-10 rounded-xl object-cover border border-slate-500/30" alt="">
+                                <img src="{{ $studentRow->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($studentRow->full_name).'&background=0f172a&color=e0f2fe&bold=true&size=64' }}" class="w-10 h-10 rounded-xl object-cover border border-slate-500/30" alt="">
                                 <div>
-                                    <p class="text-xs font-black text-white">{{ $student->full_name }}</p>
-                                    <p class="text-[10px] font-bold text-slate-400">Kelompok {{ $student->class_group }}</p>
+                                    <p class="text-xs font-black text-white">{{ $studentRow->full_name }}</p>
+                                    <p class="text-[10px] font-bold text-slate-400">Kelompok {{ $studentRow->class_group }}</p>
                                 </div>
                             </div>
                         </td>
@@ -379,10 +434,17 @@
                             <span class="text-slate-500">-</span>
                             @endif
                         </td>
+                        <td class="px-4 py-4 text-right">
+                            <a href="{{ route('guru.daily', array_filter(['date' => $date->format('Y-m-d'), 'week' => $recapDate->format('Y-m-d'), 'group' => $group, 'search' => $search, 'student_id' => $studentRow->id], fn ($value) => filled($value))) }}"
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-sky-500/15 px-3 py-2 text-[10px] font-black text-sky-100 hover:bg-sky-500 hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-[14px]">edit</span>
+                                Isi
+                            </a>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-sm font-bold text-slate-500">Tidak ada data rekap.</td>
+                        <td colspan="7" class="px-6 py-10 text-center text-sm font-bold text-slate-500">Tidak ada data rekap.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -392,14 +454,6 @@
 </div>
 
 <script>
-    function focusStudent(studentId) {
-        const card = document.getElementById(`student-card-${studentId}`);
-        if (!card) return;
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        card.classList.add('student-focus');
-        setTimeout(() => card.classList.remove('student-focus'), 1400);
-    }
-
     document.querySelectorAll('input[type="file"][data-preview]').forEach((input) => {
         input.addEventListener('change', function () {
             const file = this.files && this.files[0];

@@ -456,6 +456,9 @@ class PortalController extends Controller
                 'date' => now(),
                 'recapDate' => $recapDate,
                 'group' => null,
+                'search' => null,
+                'selectedStudentId' => null,
+                'selectedStudent' => null,
                 'intrakurikulerDomains' => $this->intrakurikulerDomains(),
                 'scoreOptions' => $this->scoreOptions(),
                 'startOfWeek' => $startOfWeek,
@@ -467,6 +470,7 @@ class PortalController extends Controller
         $recapDate = $request->date('week') ?: $date;
         $group = $request->input('group');
         $search = $request->input('search');
+        $selectedStudentId = $request->integer('student_id') ?: null;
 
         $query = Student::query()->orderBy('full_name');
         
@@ -483,6 +487,13 @@ class PortalController extends Controller
 
         $students = $query->get();
         $studentIds = $students->pluck('id');
+        $selectedStudent = $selectedStudentId
+            ? $students->firstWhere('id', $selectedStudentId)
+            : null;
+
+        if (! $selectedStudent) {
+            $selectedStudentId = null;
+        }
 
         $reportsByStudent = DailyLearningReport::query()
             ->with('photos')
@@ -508,7 +519,10 @@ class PortalController extends Controller
             'weeklyReports',
             'date', 
             'recapDate',
-            'group', 
+            'group',
+            'search',
+            'selectedStudentId',
+            'selectedStudent',
             'startOfWeek',
             'endOfWeek'
         ) + [
@@ -552,8 +566,11 @@ class PortalController extends Controller
 
             $reportData = [
                 'agama_budi_pekerti_score' => $this->normalizeScore($domainData['agama_budi_pekerti']['score_label'] ?? null),
+                'agama_budi_pekerti_narrative' => $this->cleanNullableText($domainData['agama_budi_pekerti']['narrative'] ?? null),
                 'jati_diri_score' => $this->normalizeScore($domainData['jati_diri']['score_label'] ?? null),
+                'jati_diri_narrative' => $this->cleanNullableText($domainData['jati_diri']['narrative'] ?? null),
                 'literasi_steam_score' => $this->normalizeScore($domainData['literasi_steam']['score_label'] ?? null),
+                'literasi_steam_narrative' => $this->cleanNullableText($domainData['literasi_steam']['narrative'] ?? null),
                 'kokurikuler_description' => $this->cleanNullableText($payload['kokurikuler_description'] ?? null),
                 'extracurricular_implementation' => $this->cleanNullableText($payload['extracurricular_implementation'] ?? null),
                 'extracurricular_activity' => $this->cleanNullableText($payload['extracurricular_activity'] ?? null),
@@ -650,7 +667,14 @@ class PortalController extends Controller
             $message .= " {$deletedCount} laporan dikosongkan.";
         }
 
-        return back()->with('success', $message);
+        return redirect()
+            ->route('guru.daily', array_filter([
+                'date' => $date,
+                'group' => $request->input('group'),
+                'search' => $request->input('search'),
+                'student_id' => $request->integer('selected_student_id') ?: null,
+            ], fn ($value) => filled($value)))
+            ->with('success', $message);
     }
 
     public function destroyDailyAssessment(DailyLearningReport $assessment): RedirectResponse
@@ -669,18 +693,21 @@ class PortalController extends Controller
                 'short' => 'Agama',
                 'icon' => 'mosque',
                 'score_column' => 'agama_budi_pekerti_score',
+                'narrative_column' => 'agama_budi_pekerti_narrative',
             ],
             'jati_diri' => [
                 'label' => 'Jati Diri',
                 'short' => 'Jati Diri',
                 'icon' => 'self_improvement',
                 'score_column' => 'jati_diri_score',
+                'narrative_column' => 'jati_diri_narrative',
             ],
             'literasi_steam' => [
                 'label' => 'Dasar-dasar Literasi, Matematika, Sains, Teknologi, Rekayasa, dan Seni',
                 'short' => 'Literasi & STEAM',
                 'icon' => 'science',
                 'score_column' => 'literasi_steam_score',
+                'narrative_column' => 'literasi_steam_narrative',
             ],
         ];
     }

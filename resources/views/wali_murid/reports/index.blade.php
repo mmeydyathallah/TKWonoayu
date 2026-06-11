@@ -142,6 +142,7 @@
                                 @foreach($intrakurikulerDomains as $domainCode => $domain)
                                 @php
                                     $score = $dailyReport->{$domain['score_column']};
+                                    $narrative = $dailyReport->{$domain['narrative_column']};
                                     $domainPhotos = $photosByDomain->get($domainCode) ?? collect();
                                 @endphp
                                 <div class="rounded-2xl border border-slate-600/30 bg-slate-950/24 p-4">
@@ -158,6 +159,13 @@
                                         <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$score] ?? '' }}">{{ $score }}</span>
                                         @endif
                                     </div>
+
+                                    @if($narrative)
+                                    <div class="mb-3 rounded-2xl border border-slate-600/25 bg-slate-950/30 px-3 py-3">
+                                        <p class="text-[10px] font-black uppercase tracking-widest report-muted mb-1">Narasi Pelajaran</p>
+                                        <p class="text-xs leading-relaxed report-muted whitespace-pre-line">{{ $narrative }}</p>
+                                    </div>
+                                    @endif
 
                                     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3">
                                         @foreach([1, 2] as $slot)
