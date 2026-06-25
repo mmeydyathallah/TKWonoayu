@@ -91,7 +91,7 @@
                 <p class="mb-2 text-xs font-black uppercase tracking-[0.28em] text-sky-200">TK Wonoayu Madiun</p>
                 <h1 class="font-headline text-3xl font-black tracking-tight text-white">Selamat Datang</h1>
                 <p class="mt-3 text-sm font-medium leading-relaxed text-slate-300">
-                    Masuk ke portal guru atau wali murid untuk mengakses layanan sekolah.
+                    Masuk ke portal untuk mengakses layanan sekolah.
                 </p>
             </div>
 
@@ -104,7 +104,7 @@
             @endif
 
             <div class="relative mb-7 flex rounded-2xl border border-white/10 bg-white/10 p-1">
-                <div class="absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-white shadow-sm transition-all duration-300 pointer-events-none" id="roleIndicator"></div>
+                <div class="absolute inset-y-1 left-1 w-[calc(33.33%-0.17rem)] rounded-xl bg-white shadow-sm transition-all duration-300 pointer-events-none" id="roleIndicator"></div>
                 <button class="role-btn z-10 flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-colors" data-role="guru" type="button" onclick="selectRole('guru')">
                     <span class="material-symbols-outlined text-[20px]" data-icon="person_4">person_4</span>
                     <span>Guru</span>
@@ -112,6 +112,10 @@
                 <button class="role-btn z-10 flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-colors" data-role="wali_murid" type="button" onclick="selectRole('wali_murid')">
                     <span class="material-symbols-outlined text-[20px]" data-icon="family_restroom">family_restroom</span>
                     <span>Wali</span>
+                </button>
+                <button class="role-btn z-10 flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-colors" data-role="admin" type="button" onclick="selectRole('admin')">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+                    <span>Admin</span>
                 </button>
             </div>
 
@@ -166,9 +170,12 @@
             activeBtn.classList.add('text-slate-950');
 
             const indicator = document.getElementById('roleIndicator');
-            indicator.style.transform = role === 'guru'
-                ? 'translateX(0)'
-                : 'translateX(calc(100% + 0.25rem))';
+            const positions = {
+                'guru': 'translateX(0)',
+                'wali_murid': 'translateX(calc(100% + 0.08rem))',
+                'admin': 'translateX(calc(200% + 0.17rem))',
+            };
+            indicator.style.transform = positions[role] || 'translateX(0)';
         }
 
         window.addEventListener('DOMContentLoaded', function() {

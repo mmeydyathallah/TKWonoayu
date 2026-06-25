@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\Attendance;
 use App\Support\AttendanceSchedule;
 use App\Support\PhoneNumber;
+use App\Services\AuditLogger;
 use App\Support\RfidCode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,7 @@ class PortalController extends Controller
         $validated = $request->validate([
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
-            'role' => ['required', 'in:guru,wali_murid'],
+            'role' => ['required', 'in:guru,wali_murid,admin'],
         ]);
 
         // Cari user berdasarkan email atau name (tanpa filter role dulu)
@@ -57,34 +58,45 @@ class PortalController extends Controller
                 ->withErrors(['username' => 'Akun tidak ditemukan.']);
         }
 
-        // 2. Cek apakah password benar
+        // 2. Cek apakah akun aktif
+        if (isset($user->is_active) && ! $user->is_active) {
+            return back()
+                ->withInput($request->only('username', 'role'))
+                ->withErrors(['username' => 'Akun Anda telah dinonaktifkan. Hubungi administrator.']);
+        }
+
+        // 3. Cek apakah password benar
         if (! Hash::check($validated['password'], $user->password)) {
             return back()
                 ->withInput($request->only('username', 'role'))
                 ->withErrors(['username' => 'Kata sandi salah.']);
         }
 
-        // 3. Cek apakah role sesuai dengan yang dipilih di form
+        // 4. Cek apakah role sesuai dengan yang dipilih di form
         if ($user->role !== $validated['role']) {
             return back()
                 ->withInput($request->only('username', 'role'))
                 ->withErrors(['username' => 'Role tidak sesuai.']);
         }
 
-        // 4. Lakukan login
+        // 5. Lakukan login
         Auth::login($user);
 
-        // 5. Redirect berdasarkan role
-        if ($user->role === 'guru') {
-            return redirect()->route('guru.dashboard');
-        }
+        // 6. Catat audit login
+        AuditLogger::login();
 
-        return redirect()->route('wali.dashboard');
+        // 7. Redirect berdasarkan role
+        return match ($user->role) {
+            'admin' => redirect()->route('admin.dashboard'),
+            'guru' => redirect()->route('guru.dashboard'),
+            default => redirect()->route('wali.dashboard'),
+        };
     }
 
 
     public function logout(): RedirectResponse
     {
+        AuditLogger::logout();
         Auth::logout();
 
         return redirect()->route('auth.login');

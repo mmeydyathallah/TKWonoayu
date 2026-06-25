@@ -11,7 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Hanya seed user untuk login
-        $this->call(UserSeeder::class);
+        $this->call([
+            UserSeeder::class,
+            AdminSeeder::class,
+        ]);
     }
 }

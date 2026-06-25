@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
@@ -13,9 +15,10 @@ Route::post('/logout', [PortalController::class, 'logout'])->name('auth.logout')
 // Redirect routes
 Route::redirect('/guru', '/guru/dashboard');
 Route::redirect('/wali', '/wali/dashboard');
+Route::redirect('/admin', '/admin/dashboard');
 
-// Guru Routes - Protected by auth middleware
-Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): void {
+// Guru Routes - Protected by auth + role middleware (guru & admin can access)
+Route::prefix('guru')->name('guru.')->middleware(['auth', 'role:guru,admin'])->group(function (): void {
     Route::get('/dashboard', [PortalController::class, 'teacherDashboard'])->name('dashboard');
     Route::get('/siswa', [PortalController::class, 'studentList'])->name('students.index');
     Route::get('/siswa/tambah', [PortalController::class, 'studentForm'])->name('students.form');
@@ -39,18 +42,33 @@ Route::prefix('guru')->name('guru.')->middleware('auth')->group(function (): voi
     Route::post('/pengaturan/password', [PortalController::class, 'updatePassword'])->name('settings.password');
     Route::post('/pengaturan/absensi', [PortalController::class, 'updateAttendanceSettings'])->name('settings.attendance');
     Route::delete('/pengaturan/telegram/{chat}', [PortalController::class, 'destroyTelegramConnection'])->name('settings.telegram.destroy');
-    
-    // Attendance (Guru only)
+
+    // Attendance (Guru & Admin)
     Route::get('/absensi', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/absensi', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::put('/absensi/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
     Route::delete('/absensi/{attendance}/waktu/{field}', [AttendanceController::class, 'clearTime'])->name('attendance.clear-time');
-    
+
     // Agenda Routes
     Route::get('/agenda', [PortalController::class, 'teacherAgenda'])->name('agenda');
     Route::post('/agenda', [PortalController::class, 'storeAgenda'])->name('agenda.store');
     Route::put('/agenda/{agenda}', [PortalController::class, 'updateAgenda'])->name('agenda.update');
     Route::delete('/agenda/{agenda}', [PortalController::class, 'destroyAgenda'])->name('agenda.destroy');
+});
+
+// Admin Routes - Protected by auth + role:admin middleware
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Manajemen Pengguna
+    Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
+    Route::get('/pengguna/tambah', [UserController::class, 'create'])->name('pengguna.create');
+    Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
+    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('pengguna.edit');
+    Route::put('/pengguna/{user}', [UserController::class, 'update'])->name('pengguna.update');
+    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])->name('pengguna.destroy');
+    Route::post('/pengguna/{user}/reset-password', [UserController::class, 'resetPassword'])->name('pengguna.reset-password');
+    Route::post('/pengguna/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('pengguna.toggle-active');
 });
 
 // Wali Murid Routes - Protected by auth middleware
