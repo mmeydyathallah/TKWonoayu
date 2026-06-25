@@ -88,6 +88,7 @@ Route::prefix('wali')->name('wali.')->middleware('auth')->group(function (): voi
     Route::get('/telegram', [PortalController::class, 'parentTelegram'])->name('telegram');
     // Feedback Routes (Wali)
     Route::get('/feedback', [PortalController::class, 'parentFeedback'])->name('feedback.index');
+    Route::post('/feedback', [PortalController::class, 'storeFeedback'])->name('feedback.store');
 });
 
 Route::view('/stitch/welcome', 'welcome')->name('stitch.welcome');

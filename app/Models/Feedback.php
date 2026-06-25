@@ -15,6 +15,8 @@ class Feedback extends Model
     protected $fillable = [
         'student_id',
         'teacher_id',
+        'parent_id',
+        'reply_to',
         'title',
         'message',
         'type',
@@ -36,5 +38,20 @@ class Feedback extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Feedback::class, 'reply_to');
+    }
+
+    public function parentFeedback(): BelongsTo
+    {
+        return $this->belongsTo(Feedback::class, 'reply_to');
     }
 }

@@ -1444,7 +1444,9 @@ class PortalController extends Controller
             ]);
         }
 
-        $feedbacks = Feedback::with(['student:id,full_name,class_group', 'teacher:id,name'])
+        // Get top-level feedbacks (from parents) with replies
+        $feedbacks = Feedback::with(['student:id,full_name,class_group', 'parent:id,name', 'replies.teacher:id,name'])
+            ->whereNull('reply_to')
             ->latest()
             ->get();
 
@@ -1457,6 +1459,33 @@ class PortalController extends Controller
 
     public function storeFeedback(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
+        // Guru membalas feedback wali
+        if ($user->role === 'guru' || $user->role === 'admin') {
+            $validated = $request->validate([
+                'reply_to' => ['required', 'exists:feedbacks,id'],
+                'message' => ['required', 'string'],
+            ]);
+
+            $original = Feedback::findOrFail($validated['reply_to']);
+
+            Feedback::create([
+                'student_id' => $original->student_id,
+                'teacher_id' => Auth::id(),
+                'reply_to' => $original->id,
+                'title' => 'Balasan',
+                'message' => $validated['message'],
+                'type' => 'reply',
+            ]);
+
+            AuditLogger::log('create', 'feedbacks', "Replied to feedback ID: {$original->id}");
+
+            return redirect()->route('guru.feedback.index')
+                ->with('success', 'Balasan berhasil dikirim.');
+        }
+
+        // Wali murid mengirim feedback ke guru
         $validated = $request->validate([
             'student_id' => ['required', 'exists:students,id'],
             'title' => ['required', 'string', 'max:255'],
@@ -1466,16 +1495,16 @@ class PortalController extends Controller
 
         Feedback::create([
             'student_id' => $validated['student_id'],
-            'teacher_id' => Auth::id(),
+            'parent_id' => Auth::id(),
             'title' => $validated['title'],
             'message' => $validated['message'],
             'type' => $validated['type'],
         ]);
 
-        AuditLogger::log('create', 'feedbacks', "Created feedback for student ID: {$validated['student_id']}");
+        AuditLogger::log('create', 'feedbacks', "Parent sent feedback for student ID: {$validated['student_id']}");
 
-        return redirect()->route('guru.feedback.index')
-            ->with('success', 'Feedback berhasil dikirim ke wali murid.');
+        return redirect()->route('wali.feedback.index')
+            ->with('success', 'Feedback berhasil dikirim ke guru.');
     }
 
     public function destroyFeedback(Feedback $feedback): RedirectResponse
@@ -1499,12 +1528,23 @@ class PortalController extends Controller
             return redirect()->route('login')->withErrors(['username' => 'Akun Anda belum terhubung dengan data siswa.']);
         }
 
-        $feedbacks = Feedback::with('teacher:id,name')
+        // Get feedbacks from this parent + replies from teacher
+        $feedbacks = Feedback::with(['teacher:id,name', 'replies.teacher:id,name'])
             ->where('student_id', $student->id)
+            ->where(function ($query) use ($user) {
+                $query->where('parent_id', $user->id)
+                      ->orWhere('reply_to', function ($q) use ($user) {
+                          $q->select('id')->from('feedbacks')->where('parent_id', $user->id);
+                      });
+            })
             ->latest()
             ->get();
 
-        return view('wali_murid.feedback.index', compact('student', 'feedbacks'));
+        // Group: top-level feedbacks with their replies
+        $topLevel = $feedbacks->whereNull('reply_to');
+        $replies = $feedbacks->whereNotNull('reply_to')->groupBy('reply_to');
+
+        return view('wali_murid.feedback.index', compact('student', 'topLevel', 'replies'));
     }
 
     // ========== WEEKLY SORT FOR PARENT REPORT ==========
