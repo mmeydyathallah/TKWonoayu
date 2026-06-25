@@ -909,56 +909,6 @@ class PortalController extends Controller
             ->with('success', 'Narasi perkembangan berhasil dihapus.');
     }
 
-    public function parentReport()
-    {
-        $user = Auth::user();
-        if ($user->role === 'guru') return redirect()->route('guru.dashboard');
-        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
-
-        $student = $user->student;
-        if (!$student) return redirect()->route('wali.dashboard');
-
-        // 1. Ringkasan (Development Report)
-        $report = DevelopmentReport::query()
-            ->where('student_id', $student->id)
-            ->latest('updated_at')
-            ->latest('id')
-            ->first();
-
-        // 2. Harian format baru: laporan belajar per siswa, diurutkan dari tanggal lama ke baru.
-        $dailyLearningReports = collect();
-        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos', 'daily_learning_report_extracurriculars'])) {
-            $dailyLearningReports = DailyLearningReport::query()
-                ->with(['photos', 'extracurricularItems'])
-                ->where('student_id', $student->id)
-                ->orderBy('assessed_on', 'asc')
-                ->get()
-                ->groupBy(function($item) {
-                    $date  = $item->assessed_on;
-                    $start = $date->copy()->startOfWeek(); // Monday
-                    $end   = $start->copy()->addDays(4);   // Friday
-                    return $start->format('Y-m-d') . '|' . $end->format('Y-m-d');
-                })
-                ->sortKeys();
-        }
-
-        // 3. Anekdot (Anecdotal Notes)
-        $anecdotalNotes = AnecdotalNote::query()
-            ->where('student_id', $student->id)
-            ->latest('recorded_at')
-            ->get();
-            
-        return view('wali_murid.reports.index', compact(
-            'student', 
-            'report', 
-            'dailyLearningReports',
-            'anecdotalNotes'
-        ) + [
-            'intrakurikulerDomains' => $this->intrakurikulerDomains(),
-            'scoreOptions' => $this->scoreOptions(),
-        ]);
-    }
-
     public function parentGallery()
     {
         $user = Auth::user();
