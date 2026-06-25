@@ -198,7 +198,7 @@ class PortalController extends Controller
     public function updateAttendanceSettings(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') {
+        if (! in_array($user->role, ['guru', 'admin'])) {
             return redirect()->route('wali.dashboard');
         }
 
@@ -297,9 +297,12 @@ class PortalController extends Controller
     public function parentDashboard(): View|RedirectResponse
     {
         $user = Auth::user();
-        // Redirect Guru if they accidentally access Wali routes
+        // Redirect Guru/Admin if they accidentally access Wali routes
         if ($user->role === 'guru') {
             return redirect()->route('guru.dashboard');
+        }
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
         $student = $user->student;
@@ -359,6 +362,9 @@ class PortalController extends Controller
         if ($guardian->role === 'guru') {
             return redirect()->route('guru.dashboard');
         }
+        if ($guardian->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
         $student = $guardian->student;
         if (! $student) {
@@ -400,6 +406,9 @@ class PortalController extends Controller
         if ($guardian->role === 'guru') {
             return redirect()->route('guru.dashboard');
         }
+        if ($guardian->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
         $student = $guardian->student?->load('parentProfile');
         if (! $student) {
@@ -436,6 +445,9 @@ class PortalController extends Controller
         $guardian = Auth::user();
         if ($guardian->role === 'guru') {
             return redirect()->route('guru.dashboard');
+        }
+        if ($guardian->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
         if (! $this->tableReady(['students', 'parent_profiles'])) {
@@ -900,6 +912,7 @@ class PortalController extends Controller
     {
         $user = Auth::user();
         if ($user->role === 'guru') return redirect()->route('guru.dashboard');
+        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
 
         $student = $user->student;
         if (!$student) return redirect()->route('wali.dashboard');
@@ -949,6 +962,7 @@ class PortalController extends Controller
     {
         $user = Auth::user();
         if ($user->role === 'guru') return redirect()->route('guru.dashboard');
+        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
 
         $student = $user->student;
         if (!$student) return redirect()->route('wali.dashboard');

@@ -12,7 +12,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') {
+        if (! in_array($user->role, ['guru', 'admin'])) {
             return redirect()->route('wali.dashboard');
         }
 
@@ -68,7 +68,7 @@ class AttendanceController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') {
+        if (! in_array($user->role, ['guru', 'admin'])) {
             return redirect()->route('wali.dashboard');
         }
 
@@ -107,7 +107,7 @@ class AttendanceController extends Controller
     public function update(Request $request, Attendance $attendance)
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') {
+        if (! in_array($user->role, ['guru', 'admin'])) {
             return redirect()->route('wali.dashboard');
         }
 
@@ -124,7 +124,7 @@ class AttendanceController extends Controller
     public function clearTime(Request $request, Attendance $attendance, string $field)
     {
         $user = Auth::user();
-        if ($user->role !== 'guru') {
+        if (! in_array($user->role, ['guru', 'admin'])) {
             return redirect()->route('wali.dashboard');
         }
 
