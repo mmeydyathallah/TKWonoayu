@@ -38,7 +38,7 @@
         <h3 class="font-headline text-base font-extrabold text-slate-800 mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-blue-500 text-[22px]">edit</span> Kirim Pesan ke Guru
         </h3>
-        <form action="{{ route('guru.feedback.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('wali.feedback.store') }}" method="POST" class="space-y-4">
             @csrf
             <input type="hidden" name="student_id" value="{{ $student->id }}">
             <div>
