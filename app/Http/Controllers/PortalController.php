@@ -1620,3 +1620,4 @@ class PortalController extends Controller
             'scoreOptions' => $this->scoreOptions(),
         ]);
     }
+}
