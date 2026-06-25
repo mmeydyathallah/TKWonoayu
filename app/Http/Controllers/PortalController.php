@@ -6,6 +6,7 @@ use App\Models\AnecdotalNote;
 use App\Models\DailyLearningReport;
 use App\Models\DailyLearningReportPhoto;
 use App\Models\DevelopmentReport;
+use App\Models\Feedback;
 use App\Models\GuardianTelegramChat;
 use App\Models\ParentProfile;
 use App\Models\SchoolActivity;
@@ -1481,4 +1482,141 @@ class PortalController extends Controller
 
         return true;
     }
-}
+
+    // ========== FEEDBACK METHODS ==========
+
+    public function teacherFeedback(): View
+    {
+        if (! $this->tableReady(['feedbacks', 'students'])) {
+            return view('guru.feedback.index', [
+                'feedbacks' => collect(),
+                'students' => collect(),
+            ]);
+        }
+
+        $feedbacks = Feedback::with(['student:id,full_name,class_group', 'teacher:id,name'])
+            ->latest()
+            ->get();
+
+        $students = Student::query()
+            ->orderBy('full_name')
+            ->get(['id', 'full_name', 'class_group']);
+
+        return view('guru.feedback.index', compact('feedbacks', 'students'));
+    }
+
+    public function storeFeedback(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'student_id' => ['required', 'exists:students,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string'],
+            'type' => ['required', 'in:feedback,praise,concern,reminder'],
+        ]);
+
+        Feedback::create([
+            'student_id' => $validated['student_id'],
+            'teacher_id' => Auth::id(),
+            'title' => $validated['title'],
+            'message' => $validated['message'],
+            'type' => $validated['type'],
+        ]);
+
+        AuditLogger::log('create', 'feedbacks', "Created feedback for student ID: {$validated['student_id']}");
+
+        return redirect()->route('guru.feedback.index')
+            ->with('success', 'Feedback berhasil dikirim ke wali murid.');
+    }
+
+    public function destroyFeedback(Feedback $feedback): RedirectResponse
+    {
+        $feedback->delete();
+
+        AuditLogger::log('delete', 'feedbacks', "Deleted feedback ID: {$feedback->id}");
+
+        return back()->with('success', 'Feedback berhasil dihapus.');
+    }
+
+    public function parentFeedback(): View
+    {
+        $user = Auth::user();
+        if ($user->role === 'guru') return redirect()->route('guru.dashboard');
+        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
+
+        $student = $user->student;
+        if (!$student) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['username' => 'Akun Anda belum terhubung dengan data siswa.']);
+        }
+
+        $feedbacks = Feedback::with('teacher:id,name')
+            ->where('student_id', $student->id)
+            ->latest()
+            ->get();
+
+        return view('wali_murid.feedback.index', compact('student', 'feedbacks'));
+    }
+
+    // ========== WEEKLY SORT FOR PARENT REPORT ==========
+
+    // Updated parentReport with week filter
+    public function parentReport(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->role === 'guru') return redirect()->route('guru.dashboard');
+        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
+
+        $student = $user->student;
+        if (!$student) return redirect()->route('wali.dashboard');
+
+        $weekFilter = $request->input('week'); // format: '2026-W25' or '2026-W25..2026-W26'
+
+        // 1. Ringkasan (Development Report)
+        $report = DevelopmentReport::query()
+            ->where('student_id', $student->id)
+            ->latest('updated_at')
+            ->latest('id')
+            ->first();
+
+        // 2. Harian format baru: laporan belajar per siswa, diurutkan dari tanggal lama ke baru.
+        $dailyLearningReports = collect();
+        if ($this->tableReady(['daily_learning_reports', 'daily_learning_report_photos', 'daily_learning_report_extracurriculars'])) {
+            $query = DailyLearningReport::query()
+                ->with(['photos', 'extracurricularItems'])
+                ->where('student_id', $student->id);
+
+            if ($weekFilter) {
+                [$year, $week] = explode('-W', $weekFilter);
+                $startOfWeek = \Carbon\CarbonImmutable::createFromFormat('Y-W', "{$year}-{$week}")->startOfWeek();
+                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+                $query->whereBetween('assessed_on', [$startOfWeek->toDateString(), $endOfWeek->toDateString()]);
+            }
+
+            $dailyLearningReports = $query
+                ->orderBy('assessed_on', 'asc')
+                ->get()
+                ->groupBy(function($item) {
+                    $date  = $item->assessed_on;
+                    $start = $date->copy()->startOfWeek(); // Monday
+                    $end   = $start->copy()->addDays(4);   // Friday
+                    return $start->format('Y-m-d') . '|' . $end->format('Y-m-d');
+                })
+                ->sortKeys();
+        }
+
+        // 3. Anekdot (Anecdotal Notes)
+        $anecdotalNotes = AnecdotalNote::query()
+            ->where('student_id', $student->id)
+            ->latest('recorded_at')
+            ->get();
+
+        return view('wali_murid.reports.index', compact(
+            'student',
+            'report',
+            'dailyLearningReports',
+            'anecdotalNotes'
+        ) + [
+            'intrakurikulerDomains' => $this->intrakurikulerDomains(),
+            'scoreOptions' => $this->scoreOptions(),
+        ]);
+    }

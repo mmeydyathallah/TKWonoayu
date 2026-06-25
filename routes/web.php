@@ -54,6 +54,11 @@ Route::prefix('guru')->name('guru.')->middleware(['auth', 'role:guru,admin'])->g
     Route::post('/agenda', [PortalController::class, 'storeAgenda'])->name('agenda.store');
     Route::put('/agenda/{agenda}', [PortalController::class, 'updateAgenda'])->name('agenda.update');
     Route::delete('/agenda/{agenda}', [PortalController::class, 'destroyAgenda'])->name('agenda.destroy');
+
+    // Feedback Routes (Guru)
+    Route::get('/feedback', [PortalController::class, 'teacherFeedback'])->name('feedback.index');
+    Route::post('/feedback', [PortalController::class, 'storeFeedback'])->name('feedback.store');
+    Route::delete('/feedback/{feedback}', [PortalController::class, 'destroyFeedback'])->name('feedback.destroy');
 });
 
 // Admin Routes - Protected by auth + role:admin middleware
@@ -81,6 +86,8 @@ Route::prefix('wali')->name('wali.')->middleware('auth')->group(function (): voi
     Route::get('/absensi', [PortalController::class, 'parentAttendance'])->name('attendance');
     Route::get('/agenda', [PortalController::class, 'parentAgenda'])->name('agenda');
     Route::get('/telegram', [PortalController::class, 'parentTelegram'])->name('telegram');
+    // Feedback Routes (Wali)
+    Route::get('/feedback', [PortalController::class, 'parentFeedback'])->name('feedback.index');
 });
 
 Route::view('/stitch/welcome', 'welcome')->name('stitch.welcome');

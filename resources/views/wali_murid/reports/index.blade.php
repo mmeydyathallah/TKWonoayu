@@ -101,6 +101,29 @@
     </div>
 
     <div id="tab-harian" class="hidden">
+        {{-- Week Filter --}}
+        <form method="GET" class="report-panel rounded-3xl p-4 mb-6 flex items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-sky-200 text-[20px]">calendar_view_week</span>
+                <label class="text-xs font-black text-white uppercase tracking-widest">Filter Minggu:</label>
+            </div>
+            <select name="week" onchange="this.form.submit()" class="bg-slate-800/50 border border-slate-600/30 rounded-xl py-2 px-4 text-sm font-bold text-white focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition-all">
+                <option value="">Semua Minggu</option>
+                @foreach($dailyLearningReports->keys() as $weekKey)
+                    @php
+                        [$startStr, $endStr] = explode('|', $weekKey);
+                        $ws = \Carbon\Carbon::parse($startStr);
+                        $we = \Carbon\Carbon::parse($endStr);
+                        $weekNum = $ws->weekOfYear;
+                        $weekYear = $ws->year;
+                    @endphp
+                    <option value="{{ $weekYear }}-W{{ $weekNum }}" {{ request('week') === "{$weekYear}-W{$weekNum}" ? 'selected' : '' }}>
+                        Minggu ke-{{ $weekNum }} ({{ $ws->translatedFormat('d M') }} - {{ $we->translatedFormat('d M Y') }})
+                    </option>
+                @endforeach
+            </select>
+        </form>
+
         @php
             $scoreToNum = ['BB' => 1, 'MB' => 2, 'BSH' => 3, 'BSB' => 4];
             $chartColors = ['#38bdf8', '#22c55e', '#f59e0b'];

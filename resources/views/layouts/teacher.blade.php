@@ -84,6 +84,10 @@
                     <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.development-narrative') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">description</span>
                     <span class="font-bold text-xs">Narasi Perkembangan</span>
                 </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('guru.feedback.*') ? 'bg-primary text-white shadow-lg shadow-sky-900/35 ring-1 ring-sky-300/40' : 'bg-slate-900/35 text-slate-300 hover:bg-slate-800/85 hover:text-white' }} transition-all duration-300" href="{{ route('guru.feedback.index') }}">
+                    <span class="material-symbols-outlined text-[20px]" style="{{ request()->routeIs('guru.feedback.*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">feedback</span>
+                    <span class="font-bold text-xs">Feedback Wali Murid</span>
+                </a>
                 <div class="my-4 border-t border-slate-700/80"></div>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('guru.settings') ? 'text-primary font-black' : 'text-slate-500 hover:text-slate-900' }} transition-colors text-xs font-bold" href="{{ route('guru.settings') }}">
                     <span class="material-symbols-outlined text-[18px]">settings</span>
