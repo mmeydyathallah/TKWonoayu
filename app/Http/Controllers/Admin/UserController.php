@@ -141,11 +141,13 @@ class UserController extends Controller
             }
         }
 
+        $newStatus = ! $user->is_active;
         $user->update([
-            'is_active' => ! $user->is_active,
+            'is_active' => $newStatus,
         ]);
+        $user->refresh();
 
-        $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        $status = $newStatus ? 'diaktifkan' : 'dinonaktifkan';
         AuditLogger::log('toggle_active', 'users', "User {$user->name} {$status}");
 
         return back()->with('success', "Pengguna {$user->name} berhasil {$status}.");
