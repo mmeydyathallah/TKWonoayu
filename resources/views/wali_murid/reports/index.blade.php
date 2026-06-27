@@ -79,7 +79,7 @@
                 <div class="space-y-3">
                     @foreach($scoreOptions as $code => $label)
                     <div class="report-soft rounded-2xl p-3 flex items-center gap-3">
-                        <span class="inline-flex w-11 justify-center rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$code] ?? '' }}">{{ $code }}</span>
+                        <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$code] ?? '' }}">{{ $label }}</span>
                         <div>
                             <p class="text-xs font-black text-white">{{ $label }}</p>
                         </div>
@@ -256,7 +256,7 @@
                                             </div>
                                         </div>
                                         @if($score)
-                                        <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$score] ?? '' }}">{{ $score }}</span>
+                                        <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$score] ?? '' }}">{{ $scoreOptions[$score] ?? $score }}</span>
                                         @endif
                                     </div>
 
@@ -326,7 +326,7 @@
                                         <div class="mb-2 flex items-center justify-between gap-2">
                                             <p class="text-[10px] font-black uppercase tracking-widest report-muted">Ekstrakurikuler {{ $extraIndex + 1 }}</p>
                                             @if($extra->score_label)
-                                            <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$extra->score_label] ?? '' }}">{{ $extra->score_label }}</span>
+                                            <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$extra->score_label] ?? '' }}">{{ $scoreOptions[$extra->score_label] ?? $extra->score_label }}</span>
                                             @endif
                                         </div>
                                         <div class="space-y-2">
@@ -414,7 +414,7 @@
         const averageLabels = JSON.parse(store.dataset.averageLabels || '[]');
         const averageValues = JSON.parse(store.dataset.averageValues || '[]');
         const averageColors = JSON.parse(store.dataset.averageColors || '[]');
-        const scoreLabel = ['', 'BB', 'MB', 'BSH', 'BSB'];
+        const scoreLabel = ['', 'Belum Berkembang', 'Mulai Berkembang', 'Berkembang Sesuai Harapan', 'Berkembang Sangat Baik'];
         const colors = ['#38bdf8', '#22c55e', '#f59e0b'];
 
         const datasets = Object.keys(rawDatasets).map((domainCode, index) => ({

@@ -246,7 +246,7 @@
                                         @foreach($scoreOptions as $score => $scoreLabel)
                                         <label title="{{ $scoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="{{ $score }}" {{ $currentScore === $score ? 'checked' : '' }}>
-                                            <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
@@ -376,7 +376,7 @@
                                         @foreach($scoreOptions as $score => $scoreLabel)
                                         <label title="{{ $scoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][score_label]" value="{{ $score }}" {{ $extraScore === $score ? 'checked' : '' }} data-extra-field="score_label">
-                                            <span class="score-pill pill-{{ $score }}">{{ $score }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
@@ -477,7 +477,7 @@
                         <td class="px-4 py-4">
                             @if($latestReport?->extracurricular_score_label)
                             <div class="flex items-center gap-2">
-                                <span class="rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $latestReport->extracurricular_score_label }}</span>
+                                <span class="rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $scoreOptions[$latestReport->extracurricular_score_label] ?? $latestReport->extracurricular_score_label }}</span>
                                 <span class="text-xs font-bold text-slate-300 truncate max-w-[180px]">{{ $latestReport->extracurricular_activity ?: '-' }}</span>
                             </div>
                             @else
