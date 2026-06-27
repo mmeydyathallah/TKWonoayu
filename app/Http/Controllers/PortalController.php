@@ -590,11 +590,11 @@ class PortalController extends Controller
 
             $reportData = [
                 'agama_budi_pekerti_score' => $this->normalizeScore($domainData['agama_budi_pekerti']['score_label'] ?? null),
-                'agama_budi_pekerti_narrative' => $this->cleanNullableText($domainData['agama_budi_pekerti']['narrative'] ?? null),
+                'agama_budi_pekerti_narrative' => $this->resolveNarrative($domainData['agama_budi_pekerti'] ?? []),
                 'jati_diri_score' => $this->normalizeScore($domainData['jati_diri']['score_label'] ?? null),
-                'jati_diri_narrative' => $this->cleanNullableText($domainData['jati_diri']['narrative'] ?? null),
+                'jati_diri_narrative' => $this->resolveNarrative($domainData['jati_diri'] ?? []),
                 'literasi_steam_score' => $this->normalizeScore($domainData['literasi_steam']['score_label'] ?? null),
-                'literasi_steam_narrative' => $this->cleanNullableText($domainData['literasi_steam']['narrative'] ?? null),
+                'literasi_steam_narrative' => $this->resolveNarrative($domainData['literasi_steam'] ?? []),
                 'kokurikuler_description' => $this->cleanNullableText($payload['kokurikuler_description'] ?? null),
             ];
 
@@ -819,6 +819,18 @@ class PortalController extends Controller
         $value = trim((string) $value);
 
         return $value === '' ? null : $value;
+    }
+
+    private function resolveNarrative(array $domainData): ?string
+    {
+        $preset = $domainData['narrative_preset'] ?? null;
+        $manual = $domainData['narrative'] ?? null;
+
+        if ($preset === '__manual__' || $preset === null) {
+            return $this->cleanNullableText($manual);
+        }
+
+        return $this->cleanNullableText($preset);
     }
 
     private function deleteDailyLearningReportFiles(DailyLearningReport $report): void

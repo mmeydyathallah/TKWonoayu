@@ -256,17 +256,7 @@
                                             </div>
                                         </div>
                                         @if($score)
-                                        @php
-                                            $scorePrefix = match($score) {
-                                                'BB' => 'Anak belum berkembang',
-                                                'MB' => 'Anak mulai berkembang',
-                                                'BSH' => 'Anak berkembang sesuai harapan',
-                                                'BSB' => 'Anak berkembang sangat baik',
-                                                default => $scoreOptions[$score] ?? $score,
-                                            };
-                                            $fullScoreText = "{$scorePrefix} dalam hal {$domain['label']}";
-                                        @endphp
-                                        <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$score] ?? '' }}">{{ $fullScoreText }}</span>
+                                        <span class="shrink-0 rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$score] ?? '' }}">{{ $scoreOptions[$score] ?? $score }}</span>
                                         @endif
                                     </div>
 
@@ -336,17 +326,7 @@
                                         <div class="mb-2 flex items-center justify-between gap-2">
                                             <p class="text-[10px] font-black uppercase tracking-widest report-muted">Ekstrakurikuler {{ $extraIndex + 1 }}</p>
                                             @if($extra->score_label)
-                                            @php
-                                                $extraPrefix = match($extra->score_label) {
-                                                    'BB' => 'Anak belum berkembang',
-                                                    'MB' => 'Anak mulai berkembang',
-                                                    'BSH' => 'Anak berkembang sesuai harapan',
-                                                    'BSB' => 'Anak berkembang sangat baik',
-                                                    default => $scoreOptions[$extra->score_label] ?? $extra->score_label,
-                                                };
-                                                $extraFullText = "{$extraPrefix} dalam hal ekstrakurikuler";
-                                            @endphp
-                                            <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$extra->score_label] ?? '' }}">{{ $extraFullText }}</span>
+                                            <span class="inline-flex rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreColors[$extra->score_label] ?? '' }}">{{ $scoreOptions[$extra->score_label] ?? $extra->score_label }}</span>
                                             @endif
                                         </div>
                                         <div class="space-y-2">

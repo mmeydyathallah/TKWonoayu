@@ -244,26 +244,32 @@
                                             <span class="score-pill">Kosong</span>
                                         </label>
                                         @foreach($scoreOptions as $score => $scoreLabel)
-                                        @php
-                                            $scorePrefix = match($score) {
-                                                'BB' => 'Anak belum berkembang',
-                                                'MB' => 'Anak mulai berkembang',
-                                                'BSH' => 'Anak berkembang sesuai harapan',
-                                                'BSB' => 'Anak berkembang sangat baik',
-                                                default => $scoreLabel,
-                                            };
-                                            $fullScoreLabel = "{$scorePrefix} dalam hal {$domain['label']}";
-                                        @endphp
-                                        <label title="{{ $fullScoreLabel }}">
+                                        <label title="{{ $scoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="{{ $score }}" {{ $currentScore === $score ? 'checked' : '' }}>
-                                            <span class="score-pill pill-{{ $score }}">{{ $fullScoreLabel }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Narasi Pelajaran</label>
-                                        <textarea name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][narrative]" rows="5" placeholder="Tuliskan perkembangan, aktivitas, atau catatan khusus pada aspek ini..."
-                                                  class="daily-input px-4 py-3 text-xs font-bold resize-y">{{ $currentNarrative }}</textarea>
+                                        @php
+                                            $narrativeOptions = [
+                                                'BB' => "Anak belum berkembang dalam hal {$domain['label']}",
+                                                'MB' => "Anak mulai berkembang dalam hal {$domain['label']}",
+                                                'BSH' => "Anak berkembang sesuai harapan dalam hal {$domain['label']}",
+                                                'BSB' => "Anak berkembang sangat baik dalam hal {$domain['label']}",
+                                            ];
+                                            $isManualNarrative = $currentNarrative && !in_array($currentNarrative, $narrativeOptions);
+                                        @endphp
+                                        <select name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][narrative_preset]" class="daily-input px-4 py-3 text-xs font-bold w-full mb-2" onchange="toggleNarrativeManual(this, '{{ $student->id }}_{{ $domainCode }}')">
+                                            <option value="">-- Pilih Narasi --</option>
+                                            @foreach($narrativeOptions as $code => $optionText)
+                                                <option value="{{ $optionText }}" {{ $currentNarrative === $optionText ? 'selected' : '' }}>{{ $optionText }}</option>
+                                            @endforeach
+                                            <option value="__manual__" {{ $isManualNarrative ? 'selected' : '' }}>Input Manual</option>
+                                        </select>
+                                        <textarea name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][narrative]" rows="3" placeholder="Ketik narasi manual..."
+                                                  class="daily-input px-4 py-3 text-xs font-bold resize-y {{ $isManualNarrative ? '' : 'hidden' }}" id="manual_{{ $student->id }}_{{ $domainCode }}">{{ $isManualNarrative ? $currentNarrative : '' }}</textarea>
                                     </div>
                                 </div>
 
@@ -384,19 +390,9 @@
                                             <span class="score-pill">Kosong</span>
                                         </label>
                                         @foreach($scoreOptions as $score => $scoreLabel)
-                                        @php
-                                            $scorePrefix = match($score) {
-                                                'BB' => 'Anak belum berkembang',
-                                                'MB' => 'Anak mulai berkembang',
-                                                'BSH' => 'Anak berkembang sesuai harapan',
-                                                'BSB' => 'Anak berkembang sangat baik',
-                                                default => $scoreLabel,
-                                            };
-                                            $extraScoreLabel = "{$scorePrefix} dalam hal ekstrakurikuler";
-                                        @endphp
-                                        <label title="{{ $extraScoreLabel }}">
+                                        <label title="{{ $scoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][score_label]" value="{{ $score }}" {{ $extraScore === $score ? 'checked' : '' }} data-extra-field="score_label">
-                                            <span class="score-pill pill-{{ $score }}">{{ $extraScoreLabel }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
@@ -485,17 +481,7 @@
                         @endphp
                         <td class="px-4 py-4 text-center">
                             @if($score)
-                            @php
-                                $summaryPrefix = match($score) {
-                                    'BB' => 'Anak belum berkembang',
-                                    'MB' => 'Anak mulai berkembang',
-                                    'BSH' => 'Anak berkembang sesuai harapan',
-                                    'BSB' => 'Anak berkembang sangat baik',
-                                    default => $score,
-                                };
-                                $summaryFullText = "{$summaryPrefix} dalam hal {$domain['label']}";
-                            @endphp
-                            <span class="inline-flex items-center justify-center rounded-lg border px-2 py-1 text-[9px] font-black {{ $scoreBadge[$score] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}" title="{{ $summaryFullText }}">{{ $summaryFullText }}</span>
+                            <span class="inline-flex min-w-10 items-center justify-center rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$score] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}">{{ $scoreOptions[$score] ?? $score }}</span>
                             @else
                             <span class="text-slate-500">-</span>
                             @endif
@@ -506,18 +492,8 @@
                         </td>
                         <td class="px-4 py-4">
                             @if($latestReport?->extracurricular_score_label)
-                            @php
-                                $extraSummaryPrefix = match($latestReport->extracurricular_score_label) {
-                                    'BB' => 'Anak belum berkembang',
-                                    'MB' => 'Anak mulai berkembang',
-                                    'BSH' => 'Anak berkembang sesuai harapan',
-                                    'BSB' => 'Anak berkembang sangat baik',
-                                    default => $scoreOptions[$latestReport->extracurricular_score_label] ?? $latestReport->extracurricular_score_label,
-                                };
-                                $extraSummaryText = "{$extraSummaryPrefix} dalam hal ekstrakurikuler";
-                            @endphp
                             <div class="flex items-center gap-2">
-                                <span class="rounded-lg border px-2 py-1 text-[9px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $extraSummaryText }}</span>
+                                <span class="rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $scoreOptions[$latestReport->extracurricular_score_label] ?? $latestReport->extracurricular_score_label }}</span>
                                 <span class="text-xs font-bold text-slate-300 truncate max-w-[180px]">{{ $latestReport->extracurricular_activity ?: '-' }}</span>
                             </div>
                             @else
@@ -623,6 +599,33 @@
                 target.replaceWith(img);
             };
             reader.readAsDataURL(file);
+        });
+    });
+
+    function toggleNarrativeManual(select, id) {
+        const manualTextarea = document.getElementById('manual_' + id);
+        if (!manualTextarea) return;
+
+        if (select.value === '__manual__') {
+            manualTextarea.classList.remove('hidden');
+        } else {
+            manualTextarea.classList.add('hidden');
+            manualTextarea.value = '';
+        }
+    }
+
+    document.querySelectorAll('select[name*="[narrative_preset]"]').forEach(function(sel) {
+        sel.addEventListener('change', function() {
+            var name = this.name.replace('[narrative_preset]', '');
+            var textarea = document.querySelector('textarea[name="' + name + '[narrative]"]');
+            if (this.value === '__manual__') {
+                if (textarea) textarea.classList.remove('hidden');
+            } else {
+                if (textarea) {
+                    textarea.classList.add('hidden');
+                    textarea.value = '';
+                }
+            }
         });
     });
 </script>
