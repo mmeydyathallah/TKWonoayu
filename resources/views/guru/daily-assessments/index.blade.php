@@ -244,9 +244,19 @@
                                             <span class="score-pill">Kosong</span>
                                         </label>
                                         @foreach($scoreOptions as $score => $scoreLabel)
-                                        <label title="{{ $scoreLabel }}">
+                                        @php
+                                            $scorePrefix = match($score) {
+                                                'BB' => 'Anak belum berkembang',
+                                                'MB' => 'Anak mulai berkembang',
+                                                'BSH' => 'Anak berkembang sesuai harapan',
+                                                'BSB' => 'Anak berkembang sangat baik',
+                                                default => $scoreLabel,
+                                            };
+                                            $fullScoreLabel = "{$scorePrefix} dalam hal {$domain['label']}";
+                                        @endphp
+                                        <label title="{{ $fullScoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][intrakurikuler][{{ $domainCode }}][score_label]" value="{{ $score }}" {{ $currentScore === $score ? 'checked' : '' }}>
-                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $fullScoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
@@ -374,9 +384,19 @@
                                             <span class="score-pill">Kosong</span>
                                         </label>
                                         @foreach($scoreOptions as $score => $scoreLabel)
-                                        <label title="{{ $scoreLabel }}">
+                                        @php
+                                            $scorePrefix = match($score) {
+                                                'BB' => 'Anak belum berkembang',
+                                                'MB' => 'Anak mulai berkembang',
+                                                'BSH' => 'Anak berkembang sesuai harapan',
+                                                'BSB' => 'Anak berkembang sangat baik',
+                                                default => $scoreLabel,
+                                            };
+                                            $extraScoreLabel = "{$scorePrefix} dalam hal ekstrakurikuler";
+                                        @endphp
+                                        <label title="{{ $extraScoreLabel }}">
                                             <input class="score-radio" type="radio" name="reports[{{ $student->id }}][extracurriculars][{{ $extraIndex }}][score_label]" value="{{ $score }}" {{ $extraScore === $score ? 'checked' : '' }} data-extra-field="score_label">
-                                            <span class="score-pill pill-{{ $score }}">{{ $scoreLabel }}</span>
+                                            <span class="score-pill pill-{{ $score }}">{{ $extraScoreLabel }}</span>
                                         </label>
                                         @endforeach
                                     </div>
@@ -465,7 +485,17 @@
                         @endphp
                         <td class="px-4 py-4 text-center">
                             @if($score)
-                            <span class="inline-flex min-w-10 items-center justify-center rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$score] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}">{{ $score }}</span>
+                            @php
+                                $summaryPrefix = match($score) {
+                                    'BB' => 'Anak belum berkembang',
+                                    'MB' => 'Anak mulai berkembang',
+                                    'BSH' => 'Anak berkembang sesuai harapan',
+                                    'BSB' => 'Anak berkembang sangat baik',
+                                    default => $score,
+                                };
+                                $summaryFullText = "{$summaryPrefix} dalam hal {$domain['label']}";
+                            @endphp
+                            <span class="inline-flex items-center justify-center rounded-lg border px-2 py-1 text-[9px] font-black {{ $scoreBadge[$score] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}" title="{{ $summaryFullText }}">{{ $summaryFullText }}</span>
                             @else
                             <span class="text-slate-500">-</span>
                             @endif
@@ -476,8 +506,18 @@
                         </td>
                         <td class="px-4 py-4">
                             @if($latestReport?->extracurricular_score_label)
+                            @php
+                                $extraSummaryPrefix = match($latestReport->extracurricular_score_label) {
+                                    'BB' => 'Anak belum berkembang',
+                                    'MB' => 'Anak mulai berkembang',
+                                    'BSH' => 'Anak berkembang sesuai harapan',
+                                    'BSB' => 'Anak berkembang sangat baik',
+                                    default => $scoreOptions[$latestReport->extracurricular_score_label] ?? $latestReport->extracurricular_score_label,
+                                };
+                                $extraSummaryText = "{$extraSummaryPrefix} dalam hal ekstrakurikuler";
+                            @endphp
                             <div class="flex items-center gap-2">
-                                <span class="rounded-lg border px-2 py-1 text-[10px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $scoreOptions[$latestReport->extracurricular_score_label] ?? $latestReport->extracurricular_score_label }}</span>
+                                <span class="rounded-lg border px-2 py-1 text-[9px] font-black {{ $scoreBadge[$latestReport->extracurricular_score_label] ?? '' }}">{{ $extraSummaryText }}</span>
                                 <span class="text-xs font-bold text-slate-300 truncate max-w-[180px]">{{ $latestReport->extracurricular_activity ?: '-' }}</span>
                             </div>
                             @else

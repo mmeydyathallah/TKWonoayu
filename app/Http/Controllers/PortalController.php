@@ -759,6 +759,31 @@ class PortalController extends Controller
         ];
     }
 
+    private function scoreLabelWithDomain(string $scoreCode, ?string $domainLabel = null): string
+    {
+        $base = $this->scoreOptions()[$scoreCode] ?? $scoreCode;
+
+        $prefix = match ($scoreCode) {
+            'BB' => 'Anak belum berkembang',
+            'MB' => 'Anak mulai berkembang',
+            'BSH' => 'Anak berkembang sesuai harapan',
+            'BSB' => 'Anak berkembang sangat baik',
+            default => $base,
+        };
+
+        return $domainLabel ? "{$prefix} dalam hal {$domainLabel}" : $base;
+    }
+
+    private function scoreOptionsWithDomain(?string $domainLabel = null): array
+    {
+        $options = $this->scoreOptions();
+        $result = [];
+        foreach ($options as $code => $label) {
+            $result[$code] = $this->scoreLabelWithDomain($code, $domainLabel);
+        }
+        return $result;
+    }
+
     private function normalizeScore(?string $score): ?string
     {
         $score = strtoupper(trim((string) $score));
