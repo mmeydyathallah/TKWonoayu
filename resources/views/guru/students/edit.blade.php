@@ -108,6 +108,7 @@
                     <p class="text-[10px] text-on-surface-variant/70 ml-1">Isi UID kartu dari alat PN532. Spasi, titik dua, dan strip akan dinormalisasi otomatis.</p>
                     @error('rfid_code')<p class="text-xs font-bold text-rose-600">{{ $message }}</p>@enderror
                 </div>
+                @include('guru.students.partials.fingerprint-field')
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-on-surface-variant ml-1 font-body">Kelompok (Group)</label>
                     <div class="relative">

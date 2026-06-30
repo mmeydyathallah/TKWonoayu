@@ -134,12 +134,28 @@
                                         <span class="material-symbols-outlined text-[16px] text-primary">badge</span>
                                         <span>Induk: {{ $student->student_no }}</span>
                                     </div>
-                                    <div class="flex items-center gap-2 text-[10px] text-slate-400 font-bold tracking-tight">
-                                        <span class="material-symbols-outlined text-[16px]">nfc</span>
-                                        <span>RFID: {{ $student->rfid_code ?? '-' }}</span>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-tight">
+                                        @if($student->rfid_code)
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-600" title="RFID: {{ $student->rfid_code }}">
+                                                <span class="material-symbols-outlined text-[14px]">nfc</span> RFID
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-400" title="RFID belum diisi">
+                                                <span class="material-symbols-outlined text-[14px]">nfc</span> -
+                                            </span>
+                                        @endif
+                                        @if($student->fingerprint_id)
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600" title="Fingerprint ID: {{ $student->fingerprint_id }}">
+                                                <span class="material-symbols-outlined text-[14px]">fingerprint</span> FP
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-400" title="Fingerprint belum terdaftar">
+                                                <span class="material-symbols-outlined text-[14px]">fingerprint</span> -
+                                            </span>
+                                        @endif
                                     </div>
                                     <div class="flex items-center gap-2 text-[10px] text-slate-400 font-bold tracking-tight">
-                                        <span class="material-symbols-outlined text-[16px]">fingerprint</span>
+                                        <span class="material-symbols-outlined text-[16px]">badge</span>
                                         <span>NIK: {{ $student->nik ?? '-' }}</span>
                                     </div>
                                 </div>

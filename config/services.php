@@ -26,6 +26,11 @@ return [
         'token' => env('RFID_ATTENDANCE_TOKEN'),
     ],
 
+    'fingerprint' => [
+        'token' => env('FINGERPRINT_TOKEN', env('RFID_ATTENDANCE_TOKEN')),
+        'max_templates' => (int) env('FINGERPRINT_MAX_TEMPLATES', 162),
+    ],
+
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
