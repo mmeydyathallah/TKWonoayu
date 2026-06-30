@@ -467,27 +467,12 @@ void doEnrollment() {
     return;
   }
 
-  // Download template data
-  if (finger.loadModel(slotId) != FINGERPRINT_OK) {
-    failEnrollment("Load model gagal setelah store");
-    return;
-  }
+  Serial.println("Stored template at slot: " + String(slotId));
 
-  uint8_t templateData[512];
-  int templateLen = finger.getModel(templateData, sizeof(templateData));
-  if (templateLen <= 0) {
-    failEnrollment("Download template gagal");
-    return;
-  }
-
-  Serial.println("Template len: " + String(templateLen));
-
-  // Base64 encode and send to server
-  String b64 = base64Encode(templateData, templateLen);
+  // Send fingerprint_id to server (template stays in FPM10A memory)
   String body = "token=" + String(API_TOKEN) +
                 "&enrollment_id=" + String(enrollEnrollmentId) +
-                "&fingerprint_id=" + String(slotId) +
-                "&fingerprint_data=" + b64;
+                "&fingerprint_id=" + String(slotId);
 
   String resp = postForm("/fingerprint/enrollment/complete", body);
   Serial.println("Complete resp: " + resp);

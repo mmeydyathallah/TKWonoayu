@@ -115,7 +115,7 @@ class FingerprintController extends Controller
         $validated = $request->validate([
             'enrollment_id' => ['required', 'exists:fingerprint_enrollments,id'],
             'fingerprint_id' => ['required', 'integer', 'min:1', 'max:162'],
-            'fingerprint_data' => ['required', 'string'],
+            'fingerprint_data' => ['nullable', 'string'],
         ]);
 
         $enrollment = FingerprintEnrollment::findOrFail($validated['enrollment_id']);
@@ -124,9 +124,12 @@ class FingerprintController extends Controller
             return response()->json(['success' => false, 'message' => 'Enrollment sudah tidak pending.'], 422);
         }
 
-        $templateBytes = base64_decode($validated['fingerprint_data'], true);
-        if ($templateBytes === false) {
-            return response()->json(['success' => false, 'message' => 'Data fingerprint bukan base64 valid.'], 422);
+        $templateBytes = null;
+        if (! empty($validated['fingerprint_data'])) {
+            $templateBytes = base64_decode($validated['fingerprint_data'], true);
+            if ($templateBytes === false) {
+                $templateBytes = null;
+            }
         }
 
         // Free up old fingerprint slot if student had one
