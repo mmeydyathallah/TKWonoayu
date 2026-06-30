@@ -83,6 +83,7 @@ class Student extends Model
     {
         return [
             'birth_date' => 'date',
+            'fingerprint_enrolled_at' => 'datetime',
         ];
     }
 }
