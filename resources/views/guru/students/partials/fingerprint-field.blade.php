@@ -73,6 +73,14 @@
 let fingerprintPollTimer = null;
 let fingerprintEnrollmentId = null;
 
+function fpHeaders(extra = {}) {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+    return Object.assign({
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': token,
+    }, extra);
+}
+
 async function requestFingerprintEnroll(studentId) {
     if (!studentId) {
         alert('Simpan data siswa terlebih dahulu sebelum mendaftarkan fingerprint.');
@@ -85,7 +93,7 @@ async function requestFingerprintEnroll(studentId) {
         const resp = await fetch('{{ route("api.fingerprint.enrollment.request") }}', {
             method: 'POST',
             body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: fpHeaders(),
         });
         const data = await resp.json();
 
@@ -116,7 +124,7 @@ async function requestFingerprintDelete(studentId) {
         const resp = await fetch('{{ route("api.fingerprint.deletion.request") }}', {
             method: 'POST',
             body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: fpHeaders(),
         });
         const data = await resp.json();
 
@@ -141,7 +149,7 @@ async function pollFingerprintStatus() {
 
     try {
         const resp = await fetch('/api/fingerprint/enrollment/status/' + fingerprintEnrollmentId, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: fpHeaders(),
         });
         const data = await resp.json();
         if (!data.success) return;

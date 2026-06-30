@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="theme-color" content="#020617"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <link rel="icon" href="{{ asset('images/logo-tk.png') }}" type="image/png"/>
     <title>{{ $title ?? 'TK Wonoayu Madiun - Teacher Portal' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
